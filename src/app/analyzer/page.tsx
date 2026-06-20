@@ -529,7 +529,9 @@ function AnalyzerContent() {
               >
                 Insert Final CTA
               </button>
-                        {/* Action Buttons */}
+            </div>
+
+            {/* Action Buttons */}
             <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4 pt-4 border-t border-card-border/50">
               <div className="flex flex-wrap gap-2 items-center w-full sm:w-auto">
                 <button
@@ -577,7 +579,7 @@ function AnalyzerContent() {
                 <Sparkles size={16} />
                 Analyze Draft
               </button>
-            </div>    </div>
+            </div>
           </div>
         </div>
 

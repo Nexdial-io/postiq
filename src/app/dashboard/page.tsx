@@ -242,7 +242,7 @@ export default function Dashboard() {
             </a>
             <a href="/features" className="flex items-center gap-1.5 text-[10px] font-semibold text-zinc-500 hover:text-brand-purple transition-colors py-0.5 cursor-pointer">
               <TrendingUp size={10} className="shrink-0" />
-              Advertise on LinkedIn
+              Advertise on PostIQ
             </a>
           </div>
         </div>

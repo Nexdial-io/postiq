@@ -504,31 +504,33 @@ function AnalyzerContent() {
             )}
 
             {/* Smart Auto Fixes */}
-            <div className="flex flex-wrap gap-2 pt-2">
-              <span className="text-xs font-bold text-zinc-400 flex items-center mr-2">
+            <div className="flex flex-col sm:flex-row sm:items-center gap-2 pt-2">
+              <span className="text-xs font-bold text-zinc-400 flex items-center mr-2 w-full sm:w-auto">
                 <Wand2 size={13} className="mr-1" /> Auto-Fix Tools:
               </span>
-              <button
-                onClick={() => handleAutoFix('hook')}
-                disabled={!content.trim()}
-                className="px-3 py-1.5 rounded-lg border border-card-border bg-[#eef3f8] dark:bg-[#383f47] text-xs font-semibold hover:bg-[#e6ecf2] dark:hover:bg-[#434c56] disabled:opacity-50 disabled:pointer-events-none transition-all"
-              >
-                Optimize Hook
-              </button>
-              <button
-                onClick={() => handleAutoFix('format')}
-                disabled={!content.trim()}
-                className="px-3 py-1.5 rounded-lg border border-card-border bg-[#eef3f8] dark:bg-[#383f47] text-xs font-semibold hover:bg-[#e6ecf2] dark:hover:bg-[#434c56] disabled:opacity-50 disabled:pointer-events-none transition-all"
-              >
-                Structure Spacing
-              </button>
-              <button
-                onClick={() => handleAutoFix('cta')}
-                disabled={!content.trim()}
-                className="px-3 py-1.5 rounded-lg border border-card-border bg-[#eef3f8] dark:bg-[#383f47] text-xs font-semibold hover:bg-[#e6ecf2] dark:hover:bg-[#434c56] disabled:opacity-50 disabled:pointer-events-none transition-all"
-              >
-                Insert Final CTA
-              </button>
+              <div className="flex flex-wrap gap-2 items-center w-full sm:w-auto">
+                <button
+                  onClick={() => handleAutoFix('hook')}
+                  disabled={!content.trim()}
+                  className="flex-grow sm:flex-grow-0 text-center justify-center px-2.5 py-1.5 rounded-lg border border-card-border bg-[#eef3f8] dark:bg-[#383f47] text-[10px] sm:text-xs font-semibold hover:bg-[#e6ecf2] dark:hover:bg-[#434c56] disabled:opacity-50 disabled:pointer-events-none transition-all cursor-pointer"
+                >
+                  Optimize Hook
+                </button>
+                <button
+                  onClick={() => handleAutoFix('format')}
+                  disabled={!content.trim()}
+                  className="flex-grow sm:flex-grow-0 text-center justify-center px-2.5 py-1.5 rounded-lg border border-card-border bg-[#eef3f8] dark:bg-[#383f47] text-[10px] sm:text-xs font-semibold hover:bg-[#e6ecf2] dark:hover:bg-[#434c56] disabled:opacity-50 disabled:pointer-events-none transition-all cursor-pointer"
+                >
+                  Structure Spacing
+                </button>
+                <button
+                  onClick={() => handleAutoFix('cta')}
+                  disabled={!content.trim()}
+                  className="flex-grow sm:flex-grow-0 text-center justify-center px-2.5 py-1.5 rounded-lg border border-card-border bg-[#eef3f8] dark:bg-[#383f47] text-[10px] sm:text-xs font-semibold hover:bg-[#e6ecf2] dark:hover:bg-[#434c56] disabled:opacity-50 disabled:pointer-events-none transition-all cursor-pointer"
+                >
+                  Insert Final CTA
+                </button>
+              </div>
             </div>
 
             {/* Action Buttons */}

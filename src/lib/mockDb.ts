@@ -1,4 +1,5 @@
 // Client-side local storage mock database to persist workspace data.
+import { networkDb } from './db';
 
 export interface UserProfile {
   name: string;
@@ -154,9 +155,45 @@ const setStorageItem = (key: string, value: any) => {
   }
 };
 
+const getFallbackProfileForUser = (userId: string): UserProfile => {
+  const user = networkDb.getUserById(userId);
+  if (!user) return DEFAULT_PROFILE;
+  
+  return {
+    name: user.name,
+    headline: user.headline,
+    about: user.about,
+    experience: userId === 'user-alex' ? DEFAULT_PROFILE.experience : [
+      {
+        role: user.headline.split('|')[0].trim(),
+        company: "Creator Academy",
+        duration: "2022 - Present",
+        description: `Lead growth and content strategy. Focused on LinkedIn marketing, personal branding, and B2B SaaS consulting.`
+      }
+    ],
+    skills: user.skills,
+    certifications: userId === 'user-alex' ? DEFAULT_PROFILE.certifications : ["PostIQ Certified Creator", "LinkedIn Growth Strategist"],
+    score: user.profileScore
+  };
+};
+
 export const mockDb = {
-  getProfile: (): UserProfile => getStorageItem("liq_profile", DEFAULT_PROFILE),
-  saveProfile: (profile: UserProfile): void => setStorageItem("liq_profile", profile),
+  getProfile: (): UserProfile => {
+    const activeId = networkDb.getActiveUserId();
+    const fallback = getFallbackProfileForUser(activeId);
+    return getStorageItem(`liq_profile_${activeId}`, fallback);
+  },
+  saveProfile: (profile: UserProfile): void => {
+    const activeId = networkDb.getActiveUserId();
+    setStorageItem(`liq_profile_${activeId}`, profile);
+    
+    // Synchronize to the network database representation so it reflects in layouts and network tab instantly
+    networkDb.updateUser(activeId, {
+      name: profile.name,
+      headline: profile.headline,
+      profileScore: profile.score
+    });
+  },
 
   getAnalyses: (): PostAnalysis[] => getStorageItem("liq_analyses", []),
   saveAnalysis: (analysis: PostAnalysis): void => {

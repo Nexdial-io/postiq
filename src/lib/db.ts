@@ -137,11 +137,23 @@ export const networkDb = {
   
   getActiveUser: (): NetworkUser => {
     const activeId = networkDb.getActiveUserId();
-    return MOCK_NETWORK_USERS.find(u => u.id === activeId) || MOCK_NETWORK_USERS[0];
+    return networkDb.getUserById(activeId) || MOCK_NETWORK_USERS[0];
   },
 
   getUserById: (id: string): NetworkUser | undefined => {
-    return MOCK_NETWORK_USERS.find(u => u.id === id);
+    const overrides = getStorageData<{ [id: string]: Partial<NetworkUser> }>("liq_user_overrides", {});
+    const baseUser = MOCK_NETWORK_USERS.find(u => u.id === id);
+    if (!baseUser) return undefined;
+    if (overrides[id]) {
+      return { ...baseUser, ...overrides[id] };
+    }
+    return baseUser;
+  },
+
+  updateUser: (userId: string, updates: Partial<NetworkUser>): void => {
+    const overrides = getStorageData<{ [id: string]: Partial<NetworkUser> }>("liq_user_overrides", {});
+    overrides[userId] = { ...(overrides[userId] || {}), ...updates };
+    setStorageData("liq_user_overrides", overrides);
   },
 
   // Relations database
@@ -155,7 +167,9 @@ export const networkDb = {
       .filter(r => r.status === 'accepted' && (r.senderId === userId || r.receiverId === userId))
       .map(r => r.senderId === userId ? r.receiverId : r.senderId);
     
-    return MOCK_NETWORK_USERS.filter(u => connectedIds.includes(u.id));
+    return connectedIds
+      .map(id => networkDb.getUserById(id))
+      .filter((u): u is NetworkUser => u !== undefined);
   },
 
   // Retrieve pending requests sent to a user
@@ -165,7 +179,9 @@ export const networkDb = {
       .filter(r => r.status === 'pending' && r.receiverId === userId)
       .map(r => r.senderId);
     
-    return MOCK_NETWORK_USERS.filter(u => pendingSenderIds.includes(u.id));
+    return pendingSenderIds
+      .map(id => networkDb.getUserById(id))
+      .filter((u): u is NetworkUser => u !== undefined);
   },
 
   // Retrieve connections that have pending requests sent BY a user (outgoing)
@@ -234,6 +250,9 @@ export const networkDb = {
     // Also exclude ourselves
     const excludedIds = [...relatedIds, userId];
 
-    return MOCK_NETWORK_USERS.filter(u => !excludedIds.includes(u.id));
+    return MOCK_NETWORK_USERS
+      .filter(u => !excludedIds.includes(u.id))
+      .map(u => networkDb.getUserById(u.id))
+      .filter((u): u is NetworkUser => u !== undefined);
   }
 };

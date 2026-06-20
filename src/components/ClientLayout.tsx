@@ -41,6 +41,7 @@ export default function ClientLayout({ children }: ClientLayoutProps) {
   const pathname = usePathname();
   const router = useRouter();
   const [isDark, setIsDark] = useState(true);
+  const [mounted, setMounted] = useState(false);
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [showNotifications, setShowNotifications] = useState(false);
   const [profile, setProfile] = useState<any>(null);
@@ -50,6 +51,10 @@ export default function ClientLayout({ children }: ClientLayoutProps) {
   const [showMeDropdown, setShowMeDropdown] = useState(false);
 
   useEffect(() => {
+    setMounted(true);
+    // Remove preload class to allow transitions after page load
+    document.documentElement.classList.remove('preload');
+    
     // Load theme from storage
     const savedTheme = localStorage.getItem('liq_theme');
     const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
@@ -169,7 +174,7 @@ export default function ClientLayout({ children }: ClientLayoutProps) {
           <div className="max-w-[1128px] mx-auto px-4 h-16 flex items-center justify-between">
             <Link href="/" className="flex items-center space-x-2 group">
               <img 
-                src="/postiq-icon.png" 
+                src="/postiq-icon.png?v=2" 
                 alt="PostIQ Logo" 
                 className="w-9 h-9 rounded-xl shadow-md shadow-brand-purple/10 group-hover:scale-105 transition-transform duration-250"
               />
@@ -209,7 +214,11 @@ export default function ClientLayout({ children }: ClientLayoutProps) {
                 className="p-2 rounded-lg hover:bg-black/5 dark:hover:bg-white/5 transition-colors"
                 title="Toggle Theme"
               >
-                {isDark ? <Sun size={18} className="text-yellow-400 animate-pulse" /> : <Moon size={18} className="text-zinc-600" />}
+                {mounted ? (
+                  isDark ? <Sun size={18} className="text-yellow-400 animate-pulse" /> : <Moon size={18} className="text-zinc-600" />
+                ) : (
+                  <div className="w-[18px] h-[18px]" />
+                )}
               </button>
               
               <Link 
@@ -295,7 +304,7 @@ export default function ClientLayout({ children }: ClientLayoutProps) {
             <div className="col-span-2 space-y-4">
               <Link href="/" className="flex items-center space-x-2">
                 <img 
-                  src="/postiq-icon.png" 
+                  src="/postiq-icon.png?v=2" 
                   alt="PostIQ Logo" 
                   className="w-8 h-8 rounded-lg shadow-sm"
                 />
@@ -387,7 +396,7 @@ export default function ClientLayout({ children }: ClientLayoutProps) {
           <div className="flex items-center space-x-3 flex-shrink-0">
             <Link href="/dashboard" className="flex items-center space-x-2 shrink-0 group">
               <img 
-                src="/postiq-icon.png" 
+                src="/postiq-icon.png?v=2" 
                 alt="PostIQ Logo" 
                 className="w-8 h-8 rounded shadow-md group-hover:scale-105 transition-transform duration-200"
               />
@@ -546,7 +555,11 @@ export default function ClientLayout({ children }: ClientLayoutProps) {
                         onClick={toggleTheme}
                         className="p-1 rounded-md bg-black/5 dark:bg-white/5 border border-card-border text-zinc-400 hover:text-zinc-200"
                       >
-                        {isDark ? <Sun size={12} className="text-yellow-400 animate-pulse" /> : <Moon size={12} />}
+                        {mounted ? (
+                          isDark ? <Sun size={12} className="text-yellow-400 animate-pulse" /> : <Moon size={12} />
+                        ) : (
+                          <div className="w-[12px] h-[12px]" />
+                        )}
                       </button>
                     </div>
 

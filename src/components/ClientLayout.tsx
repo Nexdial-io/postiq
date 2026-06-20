@@ -168,9 +168,11 @@ export default function ClientLayout({ children }: ClientLayoutProps) {
         <header className="sticky top-0 z-50 glass-panel border-b border-card-border bg-nav-bg w-full backdrop-blur-md">
           <div className="max-w-[1128px] mx-auto px-4 h-16 flex items-center justify-between">
             <Link href="/" className="flex items-center space-x-2 group">
-              <div className="w-9 h-9 rounded-xl bg-gradient-to-tr from-brand-purple to-brand-indigo flex items-center justify-center text-white font-bold shadow-md shadow-brand-purple/20 group-hover:scale-105 transition-transform duration-250">
-                IQ
-              </div>
+              <img 
+                src="/postiq-icon.png" 
+                alt="PostIQ Logo" 
+                className="w-9 h-9 rounded-xl shadow-md shadow-brand-purple/10 group-hover:scale-105 transition-transform duration-250"
+              />
               <span className="font-extrabold text-xl tracking-tight bg-gradient-to-r from-brand-purple to-brand-emerald bg-clip-text text-transparent group-hover:opacity-90 transition-opacity">
                 PostIQ
               </span>
@@ -292,9 +294,11 @@ export default function ClientLayout({ children }: ClientLayoutProps) {
             {/* Column 1: Brand details */}
             <div className="col-span-2 space-y-4">
               <Link href="/" className="flex items-center space-x-2">
-                <div className="w-8 h-8 rounded-lg bg-gradient-to-tr from-brand-purple to-brand-indigo flex items-center justify-center text-white font-bold">
-                  IQ
-                </div>
+                <img 
+                  src="/postiq-icon.png" 
+                  alt="PostIQ Logo" 
+                  className="w-8 h-8 rounded-lg shadow-sm"
+                />
                 <span className="font-extrabold text-lg text-gradient">
                   PostIQ
                 </span>
@@ -382,10 +386,11 @@ export default function ClientLayout({ children }: ClientLayoutProps) {
           {/* Left Side: Logo & Search Box */}
           <div className="flex items-center space-x-3 flex-shrink-0">
             <Link href="/dashboard" className="flex items-center space-x-2 shrink-0 group">
-              {/* LinkedIn-style Blue square with "IQ" in white */}
-              <div className="w-8 h-8 rounded bg-brand-purple flex items-center justify-center text-white font-black text-base shadow-md group-hover:scale-105 transition-transform duration-200">
-                IQ
-              </div>
+              <img 
+                src="/postiq-icon.png" 
+                alt="PostIQ Logo" 
+                className="w-8 h-8 rounded shadow-md group-hover:scale-105 transition-transform duration-200"
+              />
               <span className="hidden lg:inline-block font-extrabold text-sm tracking-tight text-gradient">
                 PostIQ
               </span>

@@ -16,6 +16,11 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   title: "PostIQ – AI-Powered Creator Intelligence for LinkedIn",
   description: "PostIQ helps LinkedIn creators grow faster with AI post scoring, profile intelligence, hook generators, hashtag analytics, content calendar & competitor insights. Powered by AI at postiq.nexdial.io.",
+  icons: {
+    icon: "/postiq-icon.png",
+    shortcut: "/postiq-icon.png",
+    apple: "/postiq-icon.png",
+  },
 };
 
 export default function RootLayout({

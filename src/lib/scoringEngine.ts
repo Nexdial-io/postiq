@@ -107,12 +107,30 @@ export function analyzePostContent(content: string): PostAnalysis {
 
   // 6. CTA Quality (10% weight, max 100 subscore)
   let ctaScore = 30;
-  const lastLine = lines[lines.length - 1] || "";
-  const lastTwoLines = (lines[lines.length - 2] || "") + " " + lastLine;
+  
+  // Filter out any trailing lines at the end that only contain hashtags
+  const linesWithoutTrailingHashtags = [...lines];
+  while (linesWithoutTrailingHashtags.length > 0) {
+    const lastIdx = linesWithoutTrailingHashtags.length - 1;
+    const line = linesWithoutTrailingHashtags[lastIdx];
+    const tokens = line.split(/\s+/).filter(Boolean);
+    const isAllHashtags = tokens.length > 0 && tokens.every(token => 
+      token.startsWith('#') || token.toLowerCase().startsWith('hashtag#')
+    );
+    if (isAllHashtags) {
+      linesWithoutTrailingHashtags.pop();
+    } else {
+      break;
+    }
+  }
+
+  const lastLine = linesWithoutTrailingHashtags[linesWithoutTrailingHashtags.length - 1] || "";
+  const lastTwoLines = (linesWithoutTrailingHashtags[linesWithoutTrailingHashtags.length - 2] || "") + " " + lastLine;
   
   const ctaIndicators = [
     'what do you think', 'agree?', 'comment below', 'repost', 'share your',
-    'thoughts?', 'subscribe', 'link in', 'get the guide', 'dm me', 'check out'
+    'thoughts?', 'subscribe', 'link in', 'get the guide', 'dm me', 'check out',
+    'which one', 'targeting', 'preparing', 'your take', 'your thoughts', 'do you'
   ];
   let hasCta = false;
   ctaIndicators.forEach(cta => {
@@ -120,13 +138,13 @@ export function analyzePostContent(content: string): PostAnalysis {
       hasCta = true;
     }
   });
-  if (hasCta) ctaScore += 60;
-  if (lastLine.includes('?')) ctaScore += 10;
+  if (hasCta) ctaScore += 50;
+  if (lastLine.includes('?') || lastTwoLines.includes('?')) ctaScore += 20;
   ctaScore = Math.min(100, Math.max(0, ctaScore));
 
   // 7. Hashtags (5% weight, max 100 subscore)
   let hashtagScore = 50;
-  const hashtags = (cleanContent.match(/#\w+/g) || []);
+  const hashtags = (cleanContent.match(/(?:hashtag)?#\w+/gi) || []);
   const hashtagCount = hashtags.length;
   if (hashtagCount >= 2 && hashtagCount <= 5) hashtagScore = 100;
   else if (hashtagCount === 1) hashtagScore = 75;

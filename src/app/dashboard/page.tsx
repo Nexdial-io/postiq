@@ -320,7 +320,7 @@ export default function Dashboard() {
             const banner = getBannerStyleOrClass(profile?.bannerUrl);
             return (
               <div 
-                className={`h-11 w-full relative ${banner.className}`} 
+                className={`h-20 sm:h-24 w-full relative transition-all ${banner.className}`} 
                 style={banner.style}
               />
             );

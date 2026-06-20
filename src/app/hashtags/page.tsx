@@ -177,7 +177,7 @@ export default function Hashtags() {
               <div className="flex justify-between items-center border-b border-card-border/50 pb-3">
                 <div className="flex items-center gap-2">
                   <h3 className="font-bold text-base">Keywords Matrix</h3>
-                  <span className="text-xs px-2 py-0.5 rounded bg-brand-purple/10 text-brand-purple font-bold">
+                  <span className="text-xs px-2 py-0.5 rounded bg-[#71B7FB]/10 text-[#71B7FB] font-bold">
                     {selectedTags.length} selected
                   </span>
                 </div>

@@ -73,7 +73,7 @@ function AnalyzerContent() {
   };
 
   const breakdownFields = [
-    { label: "Hook Quality (20%)", value: analysis?.breakdown.hook || 0, color: "bg-brand-purple" },
+    { label: "Hook Quality (20%)", value: analysis?.breakdown.hook || 0, color: "bg-[#71B7FB]" },
     { label: "Readability (15%)", value: analysis?.breakdown.readability || 0, color: "bg-brand-emerald" },
     { label: "Authority Statement (15%)", value: analysis?.breakdown.authority || 0, color: "bg-blue-500" },
     { label: "Emotional Impact (15%)", value: analysis?.breakdown.emotional || 0, color: "bg-brand-rose" },
@@ -204,8 +204,8 @@ function AnalyzerContent() {
 
                 <div className="flex items-center gap-6">
                   {/* Gauge */}
-                  <div className="relative w-24 h-24 flex items-center justify-center rounded-full border-[6px] border-brand-purple/20 bg-brand-purple/5 shadow-inner">
-                    <span className="text-3xl font-extrabold text-brand-purple">{analysis.score}</span>
+                  <div className="relative w-24 h-24 flex items-center justify-center rounded-full border-[6px] border-[#71B7FB]/20 bg-[#71B7FB]/5 shadow-inner">
+                    <span className="text-3xl font-extrabold text-[#71B7FB]">{analysis.score}</span>
                     <span className="text-[10px] text-zinc-500 absolute bottom-3">/100</span>
                   </div>
                   

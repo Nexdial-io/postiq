@@ -252,7 +252,7 @@ export default function ProfileIntelligence() {
                 <h3 className="font-bold text-base border-b border-card-border/50 pb-3">LinkedIn SSI (Social Selling Index) Simulation</h3>
                 <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
                   {[
-                    { label: "Establish Brand", score: 18, max: 25, color: "text-brand-purple" },
+                    { label: "Establish Brand", score: 18, max: 25, color: "text-[#71B7FB]" },
                     { label: "Find Right People", score: 14, max: 25, color: "text-brand-indigo" },
                     { label: "Engage with Insights", score: 12, max: 25, color: "text-brand-emerald" },
                     { label: "Build Relationships", score: 19, max: 25, color: "text-brand-amber" },
@@ -282,7 +282,7 @@ export default function ProfileIntelligence() {
               <div className="glass-panel rounded-2xl p-6 space-y-4">
                 <h3 className="font-bold text-base border-b border-card-border/50 pb-2">Creator Authority Score</h3>
                 <div className="flex items-center gap-4">
-                  <span className="text-3xl font-extrabold text-brand-purple">64%</span>
+                  <span className="text-3xl font-extrabold text-[#71B7FB]">64%</span>
                   <div className="text-xs text-zinc-500 font-medium">
                     Moderate posting consistency. Optimize hashtags to reach a wider network index.
                   </div>
@@ -503,7 +503,7 @@ export default function ProfileIntelligence() {
                     <h3 className="font-bold text-base">Match Analysis</h3>
                     <span className={`px-2.5 py-1 rounded-lg text-xs font-extrabold border ${
                       matchResult.score >= 80 ? 'border-brand-emerald bg-brand-emerald/10 text-brand-emerald' :
-                      matchResult.score >= 60 ? 'border-brand-purple bg-brand-purple/10 text-brand-purple' :
+                      matchResult.score >= 60 ? 'border-[#71B7FB]/25 bg-[#71B7FB]/10 text-[#71B7FB]' :
                       'border-brand-rose bg-brand-rose/10 text-brand-rose'
                     }`}>
                       {matchResult.score}% Match

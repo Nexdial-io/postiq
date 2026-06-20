@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import React, { useState, useEffect, Suspense } from 'react';
 import { useSearchParams } from 'next/navigation';
@@ -232,7 +232,7 @@ function BillingContent() {
             <div className="space-y-3">
               {[
                 { date: "June 15, 2026", desc: "FinTech Platform Pro Trial", amount: "$0.00", status: "Paid" },
-                { date: "May 15, 2026", desc: "LinkedInIQ Free Setup", amount: "$0.00", status: "Paid" }
+                { date: "May 15, 2026", desc: "PostIQ Free Setup", amount: "$0.00", status: "Paid" }
               ].map((inv, idx) => (
                 <div key={idx} className="p-3.5 rounded-xl border border-card-border bg-black/[0.01] dark:bg-white/[0.01] flex justify-between items-center text-xs font-semibold">
                   <div>

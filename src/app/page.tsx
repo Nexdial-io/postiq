@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import React, { useState } from 'react';
 import Link from 'next/link';
@@ -82,7 +82,7 @@ export default function Home() {
           </h1>
           
           <p className="text-lg md:text-xl text-zinc-600 dark:text-zinc-400 max-w-2xl mx-auto font-medium">
-            LinkedInIQ AI is the ultimate toolkit for professionals, creators, and marketers seeking to build authority, attract recruiters, and scale engagement.
+            PostIQ is the ultimate toolkit for professionals, creators, and marketers seeking to build authority, attract recruiters, and scale engagement.
           </p>
 
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4 pt-6">

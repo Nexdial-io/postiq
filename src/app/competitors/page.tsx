@@ -284,7 +284,7 @@ export default function Competitors() {
                           "{post.content}"
                         </p>
                         <div className="flex gap-4 text-[10px] text-zinc-500 font-bold pt-1.5">
-                          <span>Engagement Score: <strong className="text-brand-purple">{post.engagement.toLocaleString()}</strong></span>
+                          <span>Engagement Score: <strong className="text-[#71B7FB]">{post.engagement.toLocaleString()}</strong></span>
                           <span>Published: {post.date}</span>
                         </div>
                       </div>

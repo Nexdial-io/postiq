@@ -7,11 +7,11 @@
   --color-foreground: var(--foreground);
   --font-sans: var(--font-sans);
   
-  --color-brand-purple: #7c3aed;
-  --color-brand-indigo: #4f46e5;
-  --color-brand-emerald: #10b981;
-  --color-brand-rose: #f43f5e;
-  --color-brand-amber: #f59e0b;
+  --color-brand-purple: #0a66c2;     /* LinkedIn Blue */
+  --color-brand-indigo: #004182;     /* Darker LinkedIn Blue */
+  --color-brand-emerald: #059669;    /* LinkedIn Green / Success */
+  --color-brand-rose: #d11124;       /* Alert Red */
+  --color-brand-amber: #c37d16;      /* Premium Gold */
   
   --color-card-bg: var(--card-bg);
   --color-card-border: var(--card-border);
@@ -20,22 +20,22 @@
 }
 
 :root {
-  --background: #fafafa;
-  --foreground: #09090b;
-  --card-bg: rgba(255, 255, 255, 0.75);
-  --card-border: rgba(9, 9, 11, 0.08);
-  --nav-bg: rgba(255, 255, 255, 0.7);
-  --sidebar-bg: #f4f4f5;
-  --font-sans: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+  --background: #f3f2ef;             /* LinkedIn feed light gray background */
+  --foreground: rgba(0, 0, 0, 0.9);  /* LinkedIn dark primary text */
+  --card-bg: #ffffff;                /* Solid white cards */
+  --card-border: #dadada;            /* Standard LinkedIn card border */
+  --nav-bg: #ffffff;                 /* Solid white header */
+  --sidebar-bg: #ffffff;
+  --font-sans: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
 }
 
 .dark {
-  --background: #030014;
-  --foreground: #f4f4f5;
-  --card-bg: rgba(10, 8, 28, 0.55);
-  --card-border: rgba(124, 58, 237, 0.15);
-  --nav-bg: rgba(3, 0, 20, 0.7);
-  --sidebar-bg: #07041a;
+  --background: #090f14;             /* Official LinkedIn Dark Theme Background */
+  --foreground: rgba(255, 255, 255, 0.95); /* LinkedIn light primary text */
+  --card-bg: #1d2226;                /* Official LinkedIn Dark Card Background */
+  --card-border: #2f353e;            /* Official LinkedIn Dark Card Border */
+  --nav-bg: #1d2226;                 /* Official LinkedIn Dark Nav Background */
+  --sidebar-bg: #1d2226;
 }
 
 body {
@@ -46,35 +46,65 @@ body {
   transition: background-color 0.3s ease, color 0.3s ease;
 }
 
-/* Glassmorphism Styles */
+/* Solid Panel Styles matching official LinkedIn cards */
 .glass-panel {
   background: var(--card-bg);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
   border: 1px solid var(--card-border);
-  box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.05);
+  border-radius: 8px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05), 0 1px 2px rgba(0, 0, 0, 0.08);
 }
 
 .dark .glass-panel {
-  box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37), inset 0 1px 1px rgba(255, 255, 255, 0.05);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.15), 0 1px 2px rgba(0, 0, 0, 0.2);
+}
+
+/* Override text color utilities to align with official LinkedIn typography contrast */
+/* Light Mode (default state) */
+.text-zinc-900, .text-zinc-800, .text-zinc-750, .text-zinc-700, .text-zinc-650 {
+  color: rgba(0, 0, 0, 0.9) !important; /* LinkedIn Light Mode Primary Text (nearly black) */
+}
+.text-zinc-600, .text-zinc-550, .text-zinc-500, .text-zinc-450, .text-zinc-400 {
+  color: rgba(0, 0, 0, 0.6) !important; /* LinkedIn Light Mode Secondary Text (medium gray) */
+}
+
+/* Dark Mode (.dark class active on html or body) */
+.dark .text-zinc-900, 
+.dark .text-zinc-800, 
+.dark .text-zinc-750, 
+.dark .text-zinc-700, 
+.dark .text-zinc-650,
+.dark .text-zinc-400,
+.dark .text-zinc-350,
+.dark .text-zinc-300,
+.dark .text-zinc-250,
+.dark .text-zinc-200,
+.dark .text-zinc-100 {
+  color: rgba(255, 255, 255, 0.95) !important; /* LinkedIn Dark Mode Primary Text (almost pure white) */
+}
+
+.dark .text-zinc-600, 
+.dark .text-zinc-550, 
+.dark .text-zinc-500, 
+.dark .text-zinc-450 {
+  color: rgba(255, 255, 255, 0.6) !important; /* LinkedIn Dark Mode Secondary Text (light gray) */
 }
 
 /* Glow Borders and Text */
 .glow-purple {
-  box-shadow: 0 0 25px -5px rgba(124, 58, 237, 0.4);
+  box-shadow: 0 0 25px -5px rgba(10, 102, 194, 0.45);
 }
 
 .glow-emerald {
-  box-shadow: 0 0 25px -5px rgba(16, 185, 129, 0.4);
+  box-shadow: 0 0 25px -5px rgba(5, 150, 105, 0.45);
 }
 
 .glow-indigo {
-  box-shadow: 0 0 25px -5px rgba(79, 70, 229, 0.4);
+  box-shadow: 0 0 25px -5px rgba(0, 65, 130, 0.45);
 }
 
 .glow-border {
   border: 1px solid transparent;
-  background-image: linear-gradient(var(--card-bg), var(--card-bg)), linear-gradient(135deg, #7c3aed 0%, #4f46e5 100%);
+  background-image: linear-gradient(var(--card-bg), var(--card-bg)), linear-gradient(135deg, #0a66c2 0%, #004182 100%);
   background-origin: border-box;
   background-clip: padding-box, border-box;
 }
@@ -114,13 +144,22 @@ body {
 
 /* Custom Utilities */
 .text-gradient {
-  background: linear-gradient(135deg, #a78bfa 0%, #818cf8 50%, #34d399 100%);
+  background: linear-gradient(135deg, #70b5f9 0%, #0a66c2 50%, #059669 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
 }
 
 .light .text-gradient {
-  background: linear-gradient(135deg, #6d28d9 0%, #4f46e5 50%, #059669 100%);
+  background: linear-gradient(135deg, #004182 0%, #0a66c2 50%, #059669 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
+}
+
+/* Scrollbar hide utility — used on sticky sidebar columns */
+.scrollbar-hide {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
 }

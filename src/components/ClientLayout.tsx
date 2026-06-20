@@ -44,7 +44,17 @@ export default function ClientLayout({ children }: ClientLayoutProps) {
   const [mounted, setMounted] = useState(false);
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [showNotifications, setShowNotifications] = useState(false);
-  const [profile, setProfile] = useState<any>(null);
+  const [profile, setProfile] = useState<any>(() => {
+    if (typeof window !== 'undefined') {
+      try {
+        const item = localStorage.getItem("liq_profile");
+        return item ? JSON.parse(item) : { name: "Alex Rivera", headline: "Senior Product Manager" };
+      } catch (e) {
+        return { name: "Alex Rivera", headline: "Senior Product Manager" };
+      }
+    }
+    return { name: "Alex Rivera", headline: "Senior Product Manager" };
+  });
   const [searchQuery, setSearchQuery] = useState('');
   const [showSearchModal, setShowSearchModal] = useState(false);
   const [publicMenuOpen, setPublicMenuOpen] = useState(false);

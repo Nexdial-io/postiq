@@ -22,6 +22,28 @@ export const metadata: Metadata = {
     shortcut: "/postiq-icon.png",
     apple: "/postiq-icon.png",
   },
+  openGraph: {
+    title: "PostIQ – AI-Powered Creator Intelligence for LinkedIn",
+    description: "PostIQ helps LinkedIn creators grow faster with AI post scoring, profile intelligence, hook generators, hashtag analytics, content calendar & competitor insights.",
+    url: "https://postiq.nexdial.io",
+    siteName: "PostIQ",
+    images: [
+      {
+        url: "/og-image.png",
+        width: 1200,
+        height: 630,
+        alt: "PostIQ – AI-Powered Creator Intelligence for LinkedIn",
+      },
+    ],
+    locale: "en_US",
+    type: "website",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "PostIQ – AI-Powered Creator Intelligence for LinkedIn",
+    description: "PostIQ helps LinkedIn creators grow faster with AI post scoring, profile intelligence, hook generators, hashtag analytics, content calendar & competitor insights.",
+    images: ["/og-image.png"],
+  },
 };
 
 export default function RootLayout({

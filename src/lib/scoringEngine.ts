@@ -96,10 +96,10 @@ export function analyzePostContent(content: string): PostAnalysis {
   // Spacing / line breaks
   const lineCount = cleanContent.split('\n').length;
   const spacingRatio = lineCount / words.length;
-  if (spacingRatio > 0.05 && spacingRatio < 0.2) formattingScore += 40; // good paragraph breaks
+  if (spacingRatio > 0.05 && spacingRatio < 0.35) formattingScore += 40; // good paragraph breaks
   
   // Lists check (bullet points, emojis as bullets, numbers)
-  const listRegex = /^([\s]*[-*•+✓👉🚀📍1-9]\s)/m;
+  const listRegex = /^([\s]*[-*•+✓👉🚀📍1-9]\s)/mu;
   if (listRegex.test(cleanContent)) {
     formattingScore += 20;
   }
@@ -255,7 +255,7 @@ export function analyzePostContent(content: string): PostAnalysis {
   };
 }
 
-function cleanOldAutoFixes(content: string): string {
+function cleanOldHooks(content: string): string {
   let cleaned = content.trim();
 
   // List of all generated hooks to check at start
@@ -277,6 +277,24 @@ function cleanOldAutoFixes(content: string): string {
     "Here is the hard truth about B2B SaaS product development:"
   ];
 
+  // Remove old hooks from the start
+  let hookRemoved = true;
+  while (hookRemoved) {
+    hookRemoved = false;
+    for (const hook of knownHooks) {
+      if (cleaned.startsWith(hook)) {
+        cleaned = cleaned.substring(hook.length).trim();
+        hookRemoved = true;
+      }
+    }
+  }
+
+  return cleaned.trim();
+}
+
+function cleanOldCtas(content: string): string {
+  let cleaned = content.trim();
+
   // List of all generated CTAs to check at end
   const knownCtas = [
     "Are you preparing for DP-600, DP-700, or DP-800? Which strategy will you try first?\n\n💬 Drop your target certification in the comments and let's discuss!",
@@ -291,19 +309,7 @@ function cleanOldAutoFixes(content: string): string {
     "What's your take on this? Are you seeing a similar trend in your industry?\n💬 Drop your thoughts in the comments below!"
   ];
 
-  // 1. Remove old hooks from the start
-  let hookRemoved = true;
-  while (hookRemoved) {
-    hookRemoved = false;
-    for (const hook of knownHooks) {
-      if (cleaned.startsWith(hook)) {
-        cleaned = cleaned.substring(hook.length).trim();
-        hookRemoved = true;
-      }
-    }
-  }
-
-  // 2. Remove old CTAs from the end
+  // Remove old CTAs from the end
   let ctaRemoved = true;
   while (ctaRemoved) {
     ctaRemoved = false;
@@ -336,12 +342,19 @@ function cleanOldAutoFixes(content: string): string {
 }
 
 export function autoFixPost(content: string, type: 'hook' | 'cta' | 'format'): string {
-  // Always clean up previous generated hooks and CTAs first
-  const cleanContent = cleanOldAutoFixes(content);
+  // Only clean the specific auto-fix type to allow compounding fixes
+  let cleanContent = "";
+  if (type === 'hook') {
+    cleanContent = cleanOldHooks(content);
+  } else if (type === 'cta') {
+    cleanContent = cleanOldCtas(content);
+  } else {
+    cleanContent = content; // do not remove hook or CTA when just formatting spacing
+  }
+
   const lowerContent = cleanContent.toLowerCase();
-  const lines = cleanContent.split('\n').map(l => l.trim()).filter(Boolean);
   
-  if (lines.length === 0) return content;
+  if (!cleanContent.trim()) return content;
 
   // Extract core keywords from content to customize fallback templates
   let topicPhrase = "this industry";
@@ -374,13 +387,17 @@ export function autoFixPost(content: string, type: 'hook' | 'cta' | 'format'): s
       hook = `Here is the hard truth about succeeding in ${topicPhrase} in 2026:`;
     }
     
-    // Prepend or replace first line if it's too short
-    if (lines[0].length < 50) {
-      lines[0] = hook;
-    } else {
-      lines.unshift(hook);
+    // We split by paragraph (double newline) to keep list items within paragraph single-spaced
+    const paragraphs = cleanContent.split(/\n\s*\n/).map(p => p.trim()).filter(Boolean);
+    if (paragraphs.length > 0) {
+      if (paragraphs[0].length < 50) {
+        paragraphs[0] = hook;
+      } else {
+        paragraphs.unshift(hook);
+      }
+      return paragraphs.join('\n\n');
     }
-    return lines.join('\n\n');
+    return hook + "\n\n" + cleanContent;
   }
 
   if (type === 'cta') {
@@ -397,24 +414,54 @@ export function autoFixPost(content: string, type: 'hook' | 'cta' | 'format'): s
     } else {
       cta = `What is your take on ${topicPhrase}? Let's discuss in the comments below! If you found this helpful, feel free to Repost ♻️`;
     }
-    
     return cleanContent + "\n\n---\n\n" + cta;
   }
 
   if (type === 'format') {
-    // Add visual formatting by splitting paragraphs and adding emojis to bullet lines
-    const formattedLines = lines.map(line => {
-      // Check if it's a markdown horizontal rule (like --- or ***)
-      const isHorizontalRule = /^[*-]{3,}$/.test(line);
+    // Split into all non-empty lines
+    const lines = cleanContent.split('\n').map(l => l.trim()).filter(Boolean);
+    if (lines.length === 0) return cleanContent;
+
+    const output: string[] = [];
+    
+    for (let i = 0; i < lines.length; i++) {
+      let line = lines[i];
       
-      // If line looks like a bullet item but has no emoji, add one (ensure it's not a horizontal rule)
+      // Convert standard bullet markers like - or * to 🚀 if not already done
+      const isHorizontalRule = /^[*-]{3,}$/.test(line);
       if ((line.startsWith('-') || line.startsWith('*')) && !isHorizontalRule) {
-        return "🚀 " + line.substring(1).trim();
+        line = "🚀 " + line.substring(1).trim();
       }
-      return line;
-    });
-    // Join with double carriage returns for LinkedIn styling
-    return formattedLines.join('\n\n');
+      
+      output.push(line);
+      
+      if (i < lines.length - 1) {
+        const nextLine = lines[i + 1];
+        
+        // Check if current or next line is a bullet / list item
+        const currentIsBullet = /^([🚀\-*•+✓✔▪▫–—○●◽◾]|\d+\.)/u.test(line);
+        const nextIsBullet = /^([🚀\-*•+✓✔▪▫–—○●◽◾]|\d+\.)/u.test(nextLine);
+        const currentIsHeader = line.endsWith(':');
+        
+        let keepSingleSpaced = false;
+        
+        // Keep single spaced if:
+        // 1. Both lines are bullet list items
+        if (currentIsBullet && nextIsBullet) {
+          keepSingleSpaced = true;
+        }
+        // 2. Current line is a list introduction (ends with :) and next line is a bullet
+        if (currentIsHeader && nextIsBullet) {
+          keepSingleSpaced = true;
+        }
+        
+        if (!keepSingleSpaced) {
+          output.push(""); // Insert double space
+        }
+      }
+    }
+    
+    return output.join('\n');
   }
 
   return content;

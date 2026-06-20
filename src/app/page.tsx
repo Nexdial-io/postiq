@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import React, { useState } from 'react';
 import Link from 'next/link';
@@ -13,9 +13,13 @@ import {
   BarChart3, 
   MessageSquare,
   Activity,
-  Cpu
+  Cpu,
+  Wand2,
+  Share2,
+  BookmarkCheck
 } from 'lucide-react';
-import { analyzePostContent } from '@/lib/scoringEngine';
+import { analyzePostContent, autoFixPost } from '@/lib/scoringEngine';
+import confetti from 'canvas-confetti';
 
 export default function Home() {
   const [demoContent, setDemoContent] = useState(
@@ -23,11 +27,38 @@ export default function Home() {
   );
   const [analysis, setAnalysis] = useState(analyzePostContent(demoContent));
   const [isAnnual, setIsAnnual] = useState(false);
+  const [showFullPreview, setShowFullPreview] = useState(false);
+  const [shareSuccess, setShareSuccess] = useState(false);
 
   const handleDemoChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     const text = e.target.value;
     setDemoContent(text);
     setAnalysis(analyzePostContent(text));
+    setShowFullPreview(false);
+  };
+
+  const handleAutoFix = (type: 'hook' | 'cta' | 'format') => {
+    const fixed = autoFixPost(demoContent, type);
+    setDemoContent(fixed);
+    setAnalysis(analyzePostContent(fixed));
+    setShowFullPreview(false);
+    confetti({
+      particleCount: 50,
+      spread: 40,
+      origin: { y: 0.8 }
+    });
+  };
+
+  const handleShareScore = () => {
+    const shareText = `I just scored a ${analysis.score}/100 on my LinkedIn post draft using PostIQ! 🚀\n\nTest your own drafts and optimize hooks at https://postiq.nexdial.io`;
+    navigator.clipboard.writeText(shareText);
+    setShareSuccess(true);
+    confetti({
+      particleCount: 80,
+      spread: 60,
+      origin: { y: 0.7 }
+    });
+    setTimeout(() => setShareSuccess(false), 3000);
   };
 
   const features = [
@@ -105,7 +136,7 @@ export default function Home() {
 
       {/* Live Demo Widget Section */}
       <section id="demo" className="w-full max-w-5xl px-4 py-16 scroll-mt-16">
-        <div className="glass-panel rounded-3xl p-6 md:p-8 glow-border">
+        <div className="glass-panel rounded-xl p-6 md:p-8 border border-card-border/70">
           <div className="flex flex-col lg:flex-row gap-8">
             {/* Input Box */}
             <div className="flex-1 space-y-4">
@@ -116,26 +147,90 @@ export default function Home() {
                 </h3>
                 <span className="text-xs text-zinc-500 font-semibold">{demoContent.length} chars</span>
               </div>
+              
               <textarea
                 value={demoContent}
                 onChange={handleDemoChange}
                 placeholder="Paste or write your LinkedIn post here..."
-                rows={10}
-                className="w-full p-4 rounded-2xl bg-black/10 dark:bg-white/5 border border-card-border text-sm focus:outline-none focus:border-brand-purple transition-all resize-none font-sans"
+                rows={8}
+                className="w-full p-4 rounded-xl bg-[#f8f9fa] dark:bg-[#141b22] border border-card-border text-sm focus:outline-none focus:border-brand-purple transition-all resize-none font-sans"
               />
-              <p className="text-xs text-zinc-500 italic">
-                Tip: Add line breaks, emojis, a call to action, or write about trending topics like AI or SaaS to watch the score change!
-              </p>
+
+              {/* Smart Auto Fixes */}
+              <div className="flex flex-wrap gap-2 pt-2">
+                <span className="text-xs font-bold text-zinc-400 flex items-center mr-1">
+                  <Wand2 size={13} className="mr-1" /> AI Auto-Fix:
+                </span>
+                <button
+                  onClick={() => handleAutoFix('hook')}
+                  disabled={!demoContent.trim()}
+                  className="px-2.5 py-1 rounded-lg border border-card-border bg-[#eef3f8] dark:bg-[#383f47] text-[10px] font-bold hover:bg-[#e6ecf2] dark:hover:bg-[#434c56] disabled:opacity-50 disabled:pointer-events-none transition-all cursor-pointer"
+                >
+                  Optimize Hook
+                </button>
+                <button
+                  onClick={() => handleAutoFix('format')}
+                  disabled={!demoContent.trim()}
+                  className="px-2.5 py-1 rounded-lg border border-card-border bg-[#eef3f8] dark:bg-[#383f47] text-[10px] font-bold hover:bg-[#e6ecf2] dark:hover:bg-[#434c56] disabled:opacity-50 disabled:pointer-events-none transition-all cursor-pointer"
+                >
+                  Structure Spacing
+                </button>
+                <button
+                  onClick={() => handleAutoFix('cta')}
+                  disabled={!demoContent.trim()}
+                  className="px-2.5 py-1 rounded-lg border border-card-border bg-[#eef3f8] dark:bg-[#383f47] text-[10px] font-bold hover:bg-[#e6ecf2] dark:hover:bg-[#434c56] disabled:opacity-50 disabled:pointer-events-none transition-all cursor-pointer"
+                >
+                  Insert CTA
+                </button>
+              </div>
+
+              {/* Live LinkedIn Feed Preview */}
+              <div className="space-y-2 pt-4 border-t border-card-border/50">
+                <h4 className="text-[10px] font-bold uppercase tracking-wider text-zinc-400">Live LinkedIn Feed Preview</h4>
+                <div className="border border-card-border/60 rounded-xl p-4 bg-white dark:bg-[#1d2226] text-zinc-900 dark:text-[#e0e0e0] font-sans text-left">
+                  {/* Header */}
+                  <div className="flex items-center space-x-3 mb-3">
+                    <div className="w-9 h-9 rounded-full bg-brand-purple flex items-center justify-center text-white font-bold text-sm shadow-inner uppercase shrink-0">
+                      G
+                    </div>
+                    <div className="min-w-0 flex-1">
+                      <div className="flex items-center gap-1">
+                        <span className="font-bold text-xs text-zinc-900 dark:text-white hover:text-blue-600 dark:hover:text-blue-400 hover:underline cursor-pointer">Guest Creator</span>
+                        <span className="text-[10px] text-zinc-400 dark:text-zinc-500 font-semibold">• 1st</span>
+                      </div>
+                      <span className="text-[9px] text-zinc-505 dark:text-zinc-400 block truncate leading-tight">
+                        SaaS Founder & Growth Expert (Visiting PostIQ)
+                      </span>
+                      <span className="text-[9px] text-zinc-400 dark:text-zinc-500 block leading-tight mt-0.5">Just now • 🌐</span>
+                    </div>
+                  </div>
+                  
+                  {/* Body Text */}
+                  <div className="text-xs text-zinc-800 dark:text-zinc-350 whitespace-pre-wrap leading-relaxed break-words">
+                    {demoContent.length > 250 && !showFullPreview 
+                      ? demoContent.substring(0, 220) + "..."
+                      : demoContent}
+                    {demoContent.length > 250 && !showFullPreview && (
+                      <button 
+                        onClick={() => setShowFullPreview(true)} 
+                        className="text-brand-purple font-semibold hover:underline ml-1"
+                      >
+                        see more
+                      </button>
+                    )}
+                  </div>
+                </div>
+              </div>
             </div>
 
             {/* Live Output */}
             <div className="w-full lg:w-[350px] space-y-6 flex flex-col justify-between">
-              <div>
-                <h4 className="text-sm font-semibold uppercase tracking-wider text-zinc-500 mb-4">AI Score Card</h4>
+              <div className="space-y-6">
+                <h4 className="text-sm font-semibold uppercase tracking-wider text-zinc-500 border-b border-card-border/50 pb-2">AI Score Card</h4>
                 
                 {/* Score Gauge */}
-                <div className="flex items-center gap-4 mb-6">
-                  <div className="relative w-20 h-20 flex items-center justify-center rounded-full border-4 border-brand-purple/20 bg-brand-purple/5">
+                <div className="flex items-center gap-4">
+                  <div className="relative w-20 h-20 flex items-center justify-center rounded-full border-4 border-brand-purple/20 bg-brand-purple/5 shrink-0">
                     <span className="text-2xl font-extrabold text-brand-purple">{analysis.score}</span>
                     <span className="text-[10px] text-zinc-500 absolute bottom-3">/100</span>
                   </div>
@@ -146,7 +241,7 @@ export default function Home() {
                         analysis.metrics.virality === 'Viral' ? 'bg-brand-rose/10 text-brand-rose' :
                         analysis.metrics.virality === 'High' ? 'bg-brand-purple/10 text-brand-purple' :
                         analysis.metrics.virality === 'Medium' ? 'bg-brand-indigo/10 text-brand-indigo' :
-                        'bg-zinc-500/10 text-zinc-500'
+                        'bg-zinc-550/10 text-zinc-555'
                       }`}>
                         {analysis.metrics.virality}
                       </span>
@@ -160,7 +255,7 @@ export default function Home() {
                 {/* Score breakdown metrics */}
                 <div className="space-y-3">
                   <div>
-                    <div className="flex justify-between text-xs mb-1 font-semibold">
+                    <div className="flex justify-between text-xs mb-1 font-semibold text-zinc-700 dark:text-zinc-300">
                       <span>Hook Quality (20%)</span>
                       <span>{analysis.breakdown.hook}%</span>
                     </div>
@@ -169,7 +264,7 @@ export default function Home() {
                     </div>
                   </div>
                   <div>
-                    <div className="flex justify-between text-xs mb-1 font-semibold">
+                    <div className="flex justify-between text-xs mb-1 font-semibold text-zinc-700 dark:text-zinc-300">
                       <span>Emotional Impact (15%)</span>
                       <span>{analysis.breakdown.emotional}%</span>
                     </div>
@@ -178,7 +273,7 @@ export default function Home() {
                     </div>
                   </div>
                   <div>
-                    <div className="flex justify-between text-xs mb-1 font-semibold">
+                    <div className="flex justify-between text-xs mb-1 font-semibold text-zinc-700 dark:text-zinc-300">
                       <span>Readability (15%)</span>
                       <span>{analysis.breakdown.readability}%</span>
                     </div>
@@ -187,14 +282,33 @@ export default function Home() {
                     </div>
                   </div>
                 </div>
+
+                {/* Suggestions */}
+                <div className="pt-4 border-t border-card-border/50">
+                  <h5 className="text-xs font-bold text-zinc-500 uppercase tracking-wider mb-2">Key Recommendation</h5>
+                  <p className="text-xs text-zinc-600 dark:text-zinc-400 bg-[#f8f9fa] dark:bg-[#141b22] p-3 rounded-xl border border-card-border/50 font-medium leading-relaxed">
+                    {analysis.suggestions[0]}
+                  </p>
+                </div>
               </div>
 
-              {/* Suggestions */}
-              <div className="mt-6 pt-4 border-t border-card-border">
-                <h5 className="text-xs font-bold text-zinc-500 uppercase tracking-wider mb-2">Key Recommendation</h5>
-                <p className="text-xs text-zinc-600 dark:text-zinc-400 bg-black/10 dark:bg-white/5 p-3 rounded-xl border border-card-border/50">
-                  {analysis.suggestions[0]}
-                </p>
+              {/* Share Score / Launch App Action Panel */}
+              <div className="pt-4 border-t border-card-border/50 space-y-2.5">
+                <button
+                  onClick={handleShareScore}
+                  className="w-full py-2.5 rounded-xl border border-card-border/80 bg-[#eef3f8] dark:bg-[#383f47] text-xs font-bold text-zinc-700 dark:text-zinc-300 hover:bg-[#e6ecf2] dark:hover:bg-[#434c56] transition-all flex items-center justify-center gap-1.5 cursor-pointer"
+                >
+                  <Share2 size={13} />
+                  {shareSuccess ? 'Copied Share Link!' : 'Share My Score Draft'}
+                </button>
+
+                <Link
+                  href="/dashboard"
+                  className="w-full py-2.5 rounded-xl bg-gradient-to-r from-brand-purple to-brand-indigo text-white text-center text-xs font-bold shadow-md shadow-brand-purple/20 hover:opacity-95 transition-all flex items-center justify-center gap-1"
+                >
+                  <BookmarkCheck size={13} />
+                  Unlock Full Tool Suite Free
+                </Link>
               </div>
             </div>
           </div>

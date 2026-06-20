@@ -529,11 +529,9 @@ function AnalyzerContent() {
               >
                 Insert Final CTA
               </button>
-            </div>
-
-            {/* Action Buttons */}
-            <div className="flex justify-between items-center pt-4 border-t border-card-border/50">
-              <div className="flex gap-2">
+                        {/* Action Buttons */}
+            <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4 pt-4 border-t border-card-border/50">
+              <div className="flex flex-wrap gap-2 items-center w-full sm:w-auto">
                 <button
                   onClick={() => {
                     setContent("");
@@ -542,17 +540,17 @@ function AnalyzerContent() {
                     setOriginalScore(0);
                     setShowFullPreview(false);
                   }}
-                  className="px-4 py-2 rounded-xl text-xs font-bold text-zinc-500 hover:text-zinc-800 dark:hover:text-zinc-200 hover:bg-black/5 dark:hover:bg-white/5 transition-all"
+                  className="flex-grow sm:flex-grow-0 px-4 py-2.5 rounded-xl text-xs font-bold text-zinc-500 hover:text-zinc-800 dark:hover:text-zinc-200 hover:bg-black/5 dark:hover:bg-white/5 transition-all text-center cursor-pointer"
                 >
                   Clear
                 </button>
                 <button
                   onClick={handleCopyDraft}
                   disabled={!content.trim()}
-                  className={`px-4 py-2 rounded-xl text-xs font-bold transition-all flex items-center gap-1.5 ${
+                  className={`flex-grow sm:flex-grow-0 px-4 py-2.5 rounded-xl text-xs font-bold transition-all flex items-center justify-center gap-1.5 cursor-pointer ${
                     copySuccess 
                       ? 'text-brand-emerald bg-brand-emerald/10' 
-                      : 'text-zinc-550 hover:text-zinc-800 dark:hover:text-zinc-200 hover:bg-black/5 dark:hover:bg-white/5 disabled:opacity-50 disabled:pointer-events-none'
+                      : 'text-zinc-555 hover:text-zinc-800 dark:hover:text-zinc-200 hover:bg-black/5 dark:hover:bg-white/5 disabled:opacity-50 disabled:pointer-events-none'
                   }`}
                 >
                   {copySuccess ? <Check size={13} /> : <Copy size={13} />}
@@ -562,7 +560,7 @@ function AnalyzerContent() {
                 {originalContent && originalContent !== content && (
                   <button
                     onClick={handleRestoreOriginal}
-                    className="px-4 py-2 rounded-xl text-xs font-bold text-zinc-500 hover:text-zinc-800 dark:hover:text-zinc-200 hover:bg-black/5 dark:hover:bg-white/5 transition-all flex items-center gap-1"
+                    className="w-full sm:w-auto px-4 py-2.5 rounded-xl text-xs font-bold text-zinc-500 hover:text-zinc-800 dark:hover:text-zinc-200 hover:bg-black/5 dark:hover:bg-white/5 transition-all flex items-center justify-center gap-1 cursor-pointer"
                     title="Restore back to the original draft text"
                   >
                     <RotateCcw size={13} />
@@ -574,12 +572,12 @@ function AnalyzerContent() {
               <button
                 onClick={handleAnalyze}
                 disabled={!content.trim()}
-                className="px-6 py-3 rounded-xl bg-gradient-to-r from-brand-purple to-brand-indigo text-white font-bold text-sm shadow-md shadow-brand-purple/20 hover:opacity-95 disabled:opacity-50 disabled:pointer-events-none transition-all flex items-center gap-1.5"
+                className="w-full sm:w-auto px-6 py-3.5 rounded-xl bg-gradient-to-r from-brand-purple to-brand-indigo text-white font-bold text-sm shadow-md shadow-brand-purple/20 hover:opacity-95 disabled:opacity-50 disabled:pointer-events-none transition-all flex items-center justify-center gap-1.5 cursor-pointer"
               >
                 <Sparkles size={16} />
                 Analyze Draft
               </button>
-            </div>
+            </div>    </div>
           </div>
         </div>
 

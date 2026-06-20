@@ -181,7 +181,7 @@ export default function ProfileIntelligence() {
         </div>
         
         {/* Profile score indicator */}
-        <div className="flex items-center gap-4 bg-black/10 dark:bg-white/5 border border-card-border p-3 rounded-2xl">
+        <div className="flex items-center gap-4 bg-[#f8f9fa] dark:bg-[#141b22] border border-card-border/70 p-3 rounded-xl">
           <div className="relative w-12 h-12 flex items-center justify-center rounded-full border-4 border-brand-emerald/20 bg-brand-emerald/5">
             <span className="text-sm font-extrabold text-brand-emerald">{profile.score}</span>
           </div>
@@ -222,7 +222,7 @@ export default function ProfileIntelligence() {
             
             {/* Score Breakdown Cards */}
             <div className="md:col-span-2 space-y-6">
-              <div className="glass-panel rounded-2xl p-6 space-y-6">
+              <div className="glass-panel rounded-xl p-6 border border-card-border/70 space-y-6">
                 <h3 className="font-bold text-base border-b border-card-border/50 pb-3">Strength Index Breakdown</h3>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
                   {[
@@ -248,7 +248,7 @@ export default function ProfileIntelligence() {
               </div>
 
               {/* SSI Predictor */}
-              <div className="glass-panel rounded-2xl p-6 space-y-4">
+              <div className="glass-panel rounded-xl p-6 border border-card-border/70 space-y-4">
                 <h3 className="font-bold text-base border-b border-card-border/50 pb-3">LinkedIn SSI (Social Selling Index) Simulation</h3>
                 <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
                   {[
@@ -257,7 +257,7 @@ export default function ProfileIntelligence() {
                     { label: "Engage with Insights", score: 12, max: 25, color: "text-brand-emerald" },
                     { label: "Build Relationships", score: 19, max: 25, color: "text-brand-amber" },
                   ].map((item, idx) => (
-                    <div key={idx} className="p-4 rounded-xl border border-card-border/60 bg-black/[0.01] dark:bg-white/[0.01] text-center space-y-2">
+                    <div key={idx} className="p-4 rounded-xl border border-card-border/65 bg-[#f8f9fa] dark:bg-[#141b22] text-center space-y-2">
                       <span className="text-[10px] font-bold text-zinc-500 block leading-tight">{item.label}</span>
                       <strong className={`text-2xl font-extrabold ${item.color}`}>{item.score}</strong>
                       <span className="text-[10px] text-zinc-500 block">/ {item.max}</span>
@@ -269,7 +269,7 @@ export default function ProfileIntelligence() {
 
             {/* Recruiter Appeal & Creator potential */}
             <div className="space-y-6">
-              <div className="glass-panel rounded-2xl p-6 space-y-4">
+              <div className="glass-panel rounded-xl p-6 border border-card-border/70 space-y-4">
                 <h3 className="font-bold text-base border-b border-card-border/50 pb-2">Recruiter Appeal Index</h3>
                 <div className="flex items-center gap-4">
                   <span className="text-3xl font-extrabold text-brand-emerald">82%</span>
@@ -279,7 +279,7 @@ export default function ProfileIntelligence() {
                 </div>
               </div>
 
-              <div className="glass-panel rounded-2xl p-6 space-y-4">
+              <div className="glass-panel rounded-xl p-6 border border-card-border/70 space-y-4">
                 <h3 className="font-bold text-base border-b border-card-border/50 pb-2">Creator Authority Score</h3>
                 <div className="flex items-center gap-4">
                   <span className="text-3xl font-extrabold text-[#71B7FB]">64%</span>
@@ -289,7 +289,7 @@ export default function ProfileIntelligence() {
                 </div>
               </div>
 
-              <div className="glass-panel rounded-2xl p-6 bg-gradient-to-br from-brand-purple/[0.02] to-brand-indigo/[0.02] border-brand-purple/10">
+              <div className="glass-panel rounded-xl p-6 border border-card-border/70">
                 <h3 className="font-bold text-xs uppercase tracking-wider text-zinc-500">Key Priorities</h3>
                 <ul className="mt-3 space-y-2 text-xs font-semibold text-zinc-600 dark:text-zinc-400">
                   <li className="flex items-start gap-2">
@@ -312,7 +312,7 @@ export default function ProfileIntelligence() {
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
             {/* Input Editor */}
             <div className="lg:col-span-1 space-y-6">
-              <div className="glass-panel rounded-2xl p-6 space-y-4">
+              <div className="glass-panel rounded-xl p-6 border border-card-border/70 space-y-4">
                 <h3 className="font-bold text-base border-b border-card-border/50 pb-3">Current Profiles Data</h3>
                 
                 <div className="space-y-4">
@@ -322,7 +322,7 @@ export default function ProfileIntelligence() {
                       value={profile.headline}
                       onChange={(e) => handleProfileSave({ ...profile, headline: e.target.value })}
                       rows={3}
-                      className="w-full p-3 rounded-lg bg-black/10 dark:bg-white/5 border border-card-border text-xs focus:outline-none focus:border-brand-purple resize-none"
+                      className="w-full p-3 rounded-lg bg-[#f8f9fa] dark:bg-[#141b22] border border-card-border text-xs focus:outline-none focus:border-brand-purple resize-none"
                     />
                   </div>
 
@@ -332,14 +332,14 @@ export default function ProfileIntelligence() {
                       value={profile.about}
                       onChange={(e) => handleProfileSave({ ...profile, about: e.target.value })}
                       rows={5}
-                      className="w-full p-3 rounded-lg bg-black/10 dark:bg-white/5 border border-card-border text-xs focus:outline-none focus:border-brand-purple resize-none"
+                      className="w-full p-3 rounded-lg bg-[#f8f9fa] dark:bg-[#141b22] border border-card-border text-xs focus:outline-none focus:border-brand-purple resize-none"
                     />
                   </div>
                 </div>
               </div>
 
               {/* Skills & Credentials Manager */}
-              <div className="glass-panel rounded-2xl p-6 space-y-4">
+              <div className="glass-panel rounded-xl p-6 border border-card-border/70 space-y-4">
                 <h3 className="font-bold text-base border-b border-card-border/50 pb-3">Skills & Certifications</h3>
                 
                 <div>
@@ -350,7 +350,7 @@ export default function ProfileIntelligence() {
                       placeholder="Add skill..."
                       value={newSkill}
                       onChange={(e) => setNewSkill(e.target.value)}
-                      className="flex-1 px-3 py-1.5 rounded-lg bg-black/10 dark:bg-white/5 border border-card-border text-xs focus:outline-none"
+                      className="flex-1 px-3 py-1.5 rounded-lg bg-[#f8f9fa] dark:bg-[#141b22] border border-card-border text-xs focus:outline-none"
                       onKeyDown={(e) => e.key === 'Enter' && handleAddSkill()}
                     />
                     <button onClick={handleAddSkill} className="p-2 rounded-lg bg-brand-purple text-white hover:opacity-90">
@@ -375,7 +375,7 @@ export default function ProfileIntelligence() {
                       placeholder="Add certification..."
                       value={newCert}
                       onChange={(e) => setNewCert(e.target.value)}
-                      className="flex-1 px-3 py-1.5 rounded-lg bg-black/10 dark:bg-white/5 border border-card-border text-xs focus:outline-none"
+                      className="flex-1 px-3 py-1.5 rounded-lg bg-[#f8f9fa] dark:bg-[#141b22] border border-card-border text-xs focus:outline-none"
                       onKeyDown={(e) => e.key === 'Enter' && handleAddCert()}
                     />
                     <button onClick={handleAddCert} className="p-2 rounded-lg bg-brand-purple text-white hover:opacity-90">
@@ -396,7 +396,7 @@ export default function ProfileIntelligence() {
 
             {/* Generated Studio Copies */}
             <div className="lg:col-span-2 space-y-6">
-              <div className="glass-panel rounded-2xl p-6 space-y-6">
+              <div className="glass-panel rounded-xl p-6 border border-card-border/70 space-y-6">
                 <h3 className="font-bold text-base flex items-center gap-2 border-b border-card-border/50 pb-3">
                   <Sparkles size={16} className="text-brand-purple" />
                   Optimized Generator Outputs
@@ -411,14 +411,14 @@ export default function ProfileIntelligence() {
                     { tag: "Creator Version (Authority Focused)", text: "Lead Product Manager @ FinTech Leader | Launching AI Growth Engines | Writing daily on PLG frameworks" },
                     { tag: "Executive Version (Branding Focused)", text: "Product Executive | Specializing in Fintech SaaS Scalability & High-Performance Product Teams" }
                   ].map((hl, i) => (
-                    <div key={i} className="p-3 rounded-xl border border-card-border bg-black/[0.01] dark:bg-white/[0.01] flex justify-between items-start gap-4">
+                    <div key={i} className="p-3 rounded-xl border border-card-border/70 bg-[#f8f9fa] dark:bg-[#141b22] flex justify-between items-start gap-4">
                       <div className="space-y-1">
                         <span className="text-[9px] font-bold text-brand-purple bg-brand-purple/10 px-1.5 py-0.5 rounded uppercase">{hl.tag}</span>
                         <p className="text-xs font-semibold text-zinc-800 dark:text-zinc-200">{hl.text}</p>
                       </div>
                       <button 
                         onClick={() => handleCopyText(hl.text, `hl-${i}`)}
-                        className={`p-1.5 rounded hover:bg-black/5 dark:hover:bg-white/5 transition-all ${copySuccess === `hl-${i}` ? 'text-brand-emerald' : 'text-zinc-400'}`}
+                        className={`p-1.5 rounded hover:bg-[#e6ecf2] dark:hover:bg-[#434c56] transition-all ${copySuccess === `hl-${i}` ? 'text-brand-emerald' : 'text-zinc-400'}`}
                         title="Copy to clipboard"
                       >
                         {copySuccess === `hl-${i}` ? <Check size={14} /> : <Copy size={14} />}
@@ -430,7 +430,7 @@ export default function ProfileIntelligence() {
                 {/* About Rewrite output */}
                 <div className="space-y-4 pt-4 border-t border-card-border/50">
                   <h4 className="text-xs font-bold uppercase tracking-wider text-zinc-500">Optimized About Statement</h4>
-                  <div className="p-4 rounded-xl border border-card-border bg-black/[0.01] dark:bg-white/[0.01] space-y-4 relative">
+                  <div className="p-4 rounded-xl border border-card-border/70 bg-[#f8f9fa] dark:bg-[#141b22] space-y-4 relative">
                     <button 
                       onClick={() => handleCopyText(
                         `I am a Lead Product Manager with 8+ years of experience specialized in scaling B2B SaaS and fintech applications. \n\n🚀 Key Achievements:\n- Drove a 40% increase in active trial sign-ups by redesigning the onboarding flow.\n- Built and launched an AI recommendations engine yielding an 18% lift in customer LTV.\n- Scaled payment integrations handling $200M+ in yearly transactions.\n\nSkills: Product Strategy, SaaS Growth, AI/ML Integrations, PLG metrics, A/B Testing.`,
@@ -463,7 +463,7 @@ export default function ProfileIntelligence() {
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
             {/* Input Job Description */}
             <div className="lg:col-span-1 space-y-4">
-              <div className="glass-panel rounded-2xl p-6 space-y-4">
+              <div className="glass-panel rounded-xl p-6 border border-card-border/70 space-y-4">
                 <h3 className="font-bold text-base border-b border-card-border/50 pb-3 flex items-center gap-2">
                   <Briefcase size={16} className="text-brand-purple" />
                   Target Job Details
@@ -474,7 +474,7 @@ export default function ProfileIntelligence() {
                   onChange={(e) => setJobDescription(e.target.value)}
                   placeholder="Paste the target job description here..."
                   rows={10}
-                  className="w-full p-3 rounded-lg bg-black/10 dark:bg-white/5 border border-card-border text-xs focus:outline-none focus:border-brand-purple resize-none font-sans"
+                  className="w-full p-3 rounded-lg bg-[#f8f9fa] dark:bg-[#141b22] border border-card-border/70 text-xs focus:outline-none focus:border-brand-purple resize-none font-sans"
                 />
 
                 <button
@@ -490,7 +490,7 @@ export default function ProfileIntelligence() {
             {/* Match output results */}
             <div className="lg:col-span-2">
               {!matchResult ? (
-                <div className="glass-panel rounded-2xl p-8 py-20 text-center flex flex-col items-center justify-center border-dashed border-2">
+                <div className="glass-panel rounded-xl p-8 py-20 text-center flex flex-col items-center justify-center border-dashed border-2 border-card-border/60 bg-[#f8f9fa] dark:bg-[#141b22]">
                   <Briefcase size={36} className="text-zinc-400 mb-3" />
                   <h4 className="font-bold text-zinc-800 dark:text-zinc-200">Ready to match</h4>
                   <p className="text-xs text-zinc-500 mt-1 max-w-[250px] mx-auto">
@@ -498,7 +498,7 @@ export default function ProfileIntelligence() {
                   </p>
                 </div>
               ) : (
-                <div className="glass-panel rounded-2xl p-6 space-y-6">
+                <div className="glass-panel rounded-xl p-6 border border-card-border/70 space-y-6">
                   <div className="flex justify-between items-center border-b border-card-border/50 pb-3">
                     <h3 className="font-bold text-base">Match Analysis</h3>
                     <span className={`px-2.5 py-1 rounded-lg text-xs font-extrabold border ${
@@ -584,7 +584,7 @@ export default function ProfileIntelligence() {
                     </h4>
                     <div className="space-y-2">
                       {matchResult.roadmap.map((step: string, i: number) => (
-                        <div key={i} className="flex gap-2 p-3 rounded-xl border border-card-border/50 bg-black/5 dark:bg-white/5">
+                        <div key={i} className="flex gap-2 p-3 rounded-xl border border-card-border/50 bg-[#f8f9fa] dark:bg-[#141b22]">
                           <ChevronRight size={14} className="text-brand-purple shrink-0 mt-0.5" />
                           <p className="text-xs text-zinc-600 dark:text-zinc-400 font-semibold">{step}</p>
                         </div>
@@ -604,7 +604,7 @@ export default function ProfileIntelligence() {
             <div className="md:col-span-2 space-y-6">
               
               {/* Keywords audit */}
-              <div className="glass-panel rounded-2xl p-6 space-y-4">
+              <div className="glass-panel rounded-xl p-6 border border-card-border/70 space-y-4">
                 <h3 className="font-bold text-base border-b border-card-border/50 pb-3 flex items-center gap-2">
                   <Search size={16} className="text-brand-purple" />
                   SEO Searchability Engine
@@ -636,7 +636,7 @@ export default function ProfileIntelligence() {
               </div>
 
               {/* Certifications recommend */}
-              <div className="glass-panel rounded-2xl p-6 space-y-4">
+              <div className="glass-panel rounded-xl p-6 border border-card-border/70 space-y-4">
                 <h3 className="font-bold text-base border-b border-card-border/50 pb-3 flex items-center gap-2">
                   <Award size={16} className="text-brand-emerald" />
                   Recommended Career Certifications
@@ -647,7 +647,7 @@ export default function ProfileIntelligence() {
                     { name: "Professional Scrum Product Owner (PSPO I)", institution: "Scrum.org", impact: "Medium - alternative credentials" },
                     { name: "Product Management Leadership Certification", institution: "Reforge", impact: "High - establishes growth strategies authority" }
                   ].map((cert, idx) => (
-                    <div key={idx} className="p-3 rounded-xl border border-card-border bg-black/[0.01] dark:bg-white/[0.01] flex justify-between items-center">
+                    <div key={idx} className="p-3 rounded-xl border border-card-border/65 bg-[#f8f9fa] dark:bg-[#141b22] flex justify-between items-center">
                       <div>
                         <strong className="text-xs text-zinc-800 dark:text-zinc-200 block">{cert.name}</strong>
                         <span className="text-[10px] text-zinc-500">{cert.institution}</span>
@@ -661,7 +661,7 @@ export default function ProfileIntelligence() {
 
             {/* Photo / Banner visual audit */}
             <div className="space-y-6">
-              <div className="glass-panel rounded-2xl p-6 space-y-4">
+              <div className="glass-panel rounded-xl p-6 border border-card-border/70 space-y-4">
                 <h3 className="font-bold text-base border-b border-card-border/50 pb-2 flex items-center gap-1.5">
                   <Camera size={16} className="text-brand-purple" />
                   Profile Photo Audit
@@ -685,7 +685,7 @@ export default function ProfileIntelligence() {
                 </div>
               </div>
 
-              <div className="glass-panel rounded-2xl p-6 space-y-4">
+              <div className="glass-panel rounded-xl p-6 border border-card-border/70 space-y-4">
                 <h3 className="font-bold text-base border-b border-card-border/50 pb-2 flex items-center gap-1.5">
                   <ImageIcon size={16} className="text-brand-indigo" />
                   Banner Graphic Audit
@@ -711,7 +711,7 @@ export default function ProfileIntelligence() {
         {/* GROWTH ROADMAP TAB */}
         {activeTab === 'roadmap' && (
           <div className="max-w-3xl mx-auto space-y-6">
-            <div className="glass-panel rounded-2xl p-6 space-y-6">
+            <div className="glass-panel rounded-xl p-6 border border-card-border/70 space-y-6">
               <h3 className="font-bold text-base border-b border-card-border/50 pb-3 flex items-center gap-2">
                 <TrendingUp size={16} className="text-brand-purple" />
                 Your 90-Day Authority Growth Roadmap

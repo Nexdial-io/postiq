@@ -174,20 +174,26 @@ export default function ContentCalendar() {
         <div className="lg:col-span-3 space-y-8">
           
           {/* Calendar Header Nav */}
-          <div className="flex justify-between items-center glass-panel rounded-2xl p-4">
+          <div className="flex justify-between items-center glass-panel rounded-xl p-4 border border-card-border/70">
             <div className="flex items-center gap-2">
               <CalendarIcon className="text-brand-purple" size={18} />
               <strong className="text-sm">Weekly View</strong>
             </div>
             
-            <div className="flex items-center gap-3 text-xs">
-              <button onClick={handlePrevWeek} className="p-1 rounded-lg border border-card-border hover:bg-black/5 dark:hover:bg-white/5">
+            <div className="flex items-center gap-3 text-xs font-bold">
+              <button 
+                onClick={handlePrevWeek} 
+                className="p-1 rounded-lg border border-card-border/80 bg-[#eef3f8] dark:bg-[#383f47] text-zinc-650 dark:text-zinc-350 hover:bg-[#e6ecf2] dark:hover:bg-[#434c56] transition-all"
+              >
                 <ChevronLeft size={16} />
               </button>
               <span className="font-bold text-zinc-700 dark:text-zinc-300">
                 {new Date(weekDates[0]).toLocaleDateString(undefined, {month: 'short', day: 'numeric'})} – {new Date(weekDates[6]).toLocaleDateString(undefined, {month: 'short', day: 'numeric', year: 'numeric'})}
               </span>
-              <button onClick={handleNextWeek} className="p-1 rounded-lg border border-card-border hover:bg-black/5 dark:hover:bg-white/5">
+              <button 
+                onClick={handleNextWeek} 
+                className="p-1 rounded-lg border border-card-border/80 bg-[#eef3f8] dark:bg-[#383f47] text-zinc-650 dark:text-zinc-350 hover:bg-[#e6ecf2] dark:hover:bg-[#434c56] transition-all"
+              >
                 <ChevronRight size={16} />
               </button>
             </div>
@@ -203,8 +209,8 @@ export default function ContentCalendar() {
               return (
                 <div 
                   key={idx} 
-                  className={`glass-panel rounded-2xl p-4 min-h-[220px] flex flex-col justify-between border-2 transition-all ${
-                    isToday ? 'border-brand-purple/40 bg-brand-purple/[0.01]' : 'border-card-border'
+                  className={`glass-panel rounded-xl p-4 min-h-[220px] flex flex-col justify-between border-2 transition-all ${
+                    isToday ? 'border-brand-purple/40 bg-brand-purple/[0.01]' : 'border-card-border/70'
                   }`}
                 >
                   <div className="space-y-3">
@@ -227,7 +233,7 @@ export default function ContentCalendar() {
                     {/* Day Scheduled Posts list */}
                     <div className="space-y-2 max-h-[140px] overflow-y-auto pr-1">
                       {dayEvents.map(event => (
-                        <div key={event.id} className="p-2.5 rounded-lg border border-card-border bg-black/[0.02] dark:bg-white/[0.02] space-y-1.5 relative group">
+                        <div key={event.id} className="p-2.5 rounded-lg border border-card-border/60 bg-[#f8f9fa] dark:bg-[#141b22] space-y-1.5 relative group">
                           <div className="flex justify-between items-center text-[9px] font-bold text-zinc-400">
                             <span className="flex items-center gap-0.5">
                               <Clock size={9} />
@@ -263,7 +269,7 @@ export default function ContentCalendar() {
           </div>
 
           {/* Best Time to Post Heatmap Widget */}
-          <div className="glass-panel rounded-2xl p-6 space-y-6">
+          <div className="glass-panel rounded-xl p-6 border border-card-border/70 space-y-6">
             <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 border-b border-card-border/50 pb-4">
               <h3 className="font-bold text-base flex items-center gap-1.5">
                 <TrendingUp size={16} className="text-brand-emerald" />
@@ -272,7 +278,7 @@ export default function ContentCalendar() {
               
               {/* Selectors */}
               <div className="flex flex-wrap gap-2 text-xs">
-                <div className="flex items-center gap-1.5 border border-card-border bg-black/5 dark:bg-white/5 px-2.5 py-1.5 rounded-lg">
+                <div className="flex items-center gap-1.5 border border-card-border/70 bg-[#eef3f8] dark:bg-[#383f47] px-2.5 py-1.5 rounded-lg">
                   <Users size={12} className="text-zinc-400" />
                   <select 
                     value={audience} 
@@ -285,7 +291,7 @@ export default function ContentCalendar() {
                   </select>
                 </div>
 
-                <div className="flex items-center gap-1.5 border border-card-border bg-black/5 dark:bg-white/5 px-2.5 py-1.5 rounded-lg">
+                <div className="flex items-center gap-1.5 border border-card-border/70 bg-[#eef3f8] dark:bg-[#383f47] px-2.5 py-1.5 rounded-lg">
                   <Globe size={12} className="text-zinc-400" />
                   <select 
                     value={region} 
@@ -343,7 +349,7 @@ export default function ContentCalendar() {
 
         {/* Right Column (1): AI Suggestions Sidebar */}
         <div className="lg:col-span-1 space-y-6">
-          <div className="glass-panel rounded-2xl p-6 space-y-4">
+          <div className="glass-panel rounded-xl p-6 border border-card-border/70 space-y-4">
             <h3 className="font-bold text-base flex items-center gap-1.5 border-b border-card-border/50 pb-3">
               <Sparkles className="text-brand-purple" size={16} />
               AI Plan Suggestions
@@ -355,7 +361,7 @@ export default function ContentCalendar() {
 
             <div className="space-y-4">
               {plannerSuggestions.map((sug, i) => (
-                <div key={i} className="p-3.5 rounded-xl border border-card-border bg-black/[0.01] dark:bg-white/[0.01] space-y-2.5">
+                <div key={i} className="p-3.5 rounded-xl border border-card-border bg-[#f8f9fa] dark:bg-[#141b22] space-y-2.5">
                   <div className="flex justify-between items-center text-[10px] font-bold">
                     <span className="text-brand-purple">{sug.title}</span>
                     <span className="px-1.5 py-0.2 rounded bg-zinc-200 dark:bg-zinc-800 text-zinc-500">{sug.type}</span>
@@ -389,7 +395,7 @@ export default function ContentCalendar() {
       {/* Schedule Event Add Modal */}
       {showAddModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
-          <div className="w-full max-w-md glass-panel border border-card-border rounded-2xl shadow-xl p-6 space-y-4 animate-in zoom-in-95 duration-200">
+          <div className="w-full max-w-md glass-panel border border-card-border/70 rounded-xl shadow-xl p-6 space-y-4 animate-in zoom-in-95 duration-200">
             <div className="flex justify-between items-center border-b border-card-border pb-3">
               <h3 className="font-bold text-base">Schedule LinkedIn Update</h3>
               <button onClick={() => setShowAddModal(false)} className="text-zinc-500 hover:text-zinc-800">×</button>
@@ -402,7 +408,7 @@ export default function ContentCalendar() {
                   type="text" 
                   value={selectedDay} 
                   disabled 
-                  className="w-full px-3 py-2 rounded-lg bg-black/10 dark:bg-white/5 border border-card-border text-zinc-500 font-semibold"
+                  className="w-full px-3 py-2 rounded-lg bg-[#f8f9fa] dark:bg-[#141b22] border border-card-border text-zinc-500 font-semibold"
                 />
               </div>
 
@@ -413,7 +419,7 @@ export default function ContentCalendar() {
                     type="time" 
                     value={time} 
                     onChange={(e) => setTime(e.target.value)}
-                    className="w-full px-3 py-2 rounded-lg bg-black/10 dark:bg-white/5 border border-card-border text-xs focus:outline-none"
+                    className="w-full px-3 py-2 rounded-lg bg-[#f8f9fa] dark:bg-[#141b22] border border-card-border text-xs focus:outline-none"
                   />
                 </div>
                 <div>
@@ -421,7 +427,7 @@ export default function ContentCalendar() {
                   <select 
                     value={postType} 
                     onChange={(e) => setPostType(e.target.value)}
-                    className="w-full px-3 py-2 rounded-lg bg-black/10 dark:bg-white/5 border border-card-border text-xs focus:outline-none"
+                    className="w-full px-3 py-2 rounded-lg bg-[#f8f9fa] dark:bg-[#141b22] border border-card-border text-xs focus:outline-none"
                   >
                     <option value="Post">Standard Post</option>
                     <option value="Carousel">Carousel slides</option>
@@ -437,7 +443,7 @@ export default function ContentCalendar() {
                   onChange={(e) => setContent(e.target.value)}
                   placeholder="Write draft update..."
                   rows={4}
-                  className="w-full p-3 rounded-lg bg-black/10 dark:bg-white/5 border border-card-border text-xs focus:outline-none resize-none font-sans"
+                  className="w-full p-3 rounded-lg bg-[#f8f9fa] dark:bg-[#141b22] border border-card-border text-xs focus:outline-none resize-none font-sans"
                 />
               </div>
             </div>

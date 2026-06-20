@@ -46,16 +46,16 @@ export default function TrendsPage() {
         </div>
         
         {/* Toggle Filter */}
-        <div className="inline-flex items-center p-1 rounded-xl bg-black/10 dark:bg-white/5 border border-card-border gap-2 text-xs">
+        <div className="inline-flex items-center p-1 rounded-xl bg-[#eef3f8] dark:bg-[#383f47] border border-card-border/70 gap-2 text-xs">
           <button
             onClick={() => setFilter('all')}
-            className={`px-4 py-1.5 rounded-lg font-bold transition-all ${filter === 'all' ? 'bg-gradient-to-r from-brand-purple to-brand-indigo text-white shadow' : 'text-zinc-500'}`}
+            className={`px-4 py-1.5 rounded-lg font-bold transition-all ${filter === 'all' ? 'bg-gradient-to-r from-brand-purple to-brand-indigo text-white shadow' : 'text-zinc-500 hover:text-zinc-800 dark:hover:text-zinc-200'}`}
           >
             All Trends
           </button>
           <button
             onClick={() => setFilter('high')}
-            className={`px-4 py-1.5 rounded-lg font-bold transition-all ${filter === 'high' ? 'bg-gradient-to-r from-brand-purple to-brand-indigo text-white shadow' : 'text-zinc-500'}`}
+            className={`px-4 py-1.5 rounded-lg font-bold transition-all ${filter === 'high' ? 'bg-gradient-to-r from-brand-purple to-brand-indigo text-white shadow' : 'text-zinc-500 hover:text-zinc-800 dark:hover:text-zinc-200'}`}
           >
             High Opportunity
           </button>
@@ -67,7 +67,7 @@ export default function TrendsPage() {
         {filteredTrends.map((trend, index) => (
           <div 
             key={index}
-            className="glass-panel rounded-3xl p-6 flex flex-col justify-between hover:border-brand-emerald/40 hover:-translate-y-0.5 transition-all duration-300 relative group overflow-hidden"
+            className="glass-panel rounded-xl p-6 flex flex-col justify-between border border-card-border/70 hover:border-brand-emerald/40 hover:-translate-y-0.5 transition-all duration-300 relative group overflow-hidden"
           >
             {/* Hover accent */}
             <div className="absolute top-0 right-0 w-24 h-24 rounded-full bg-brand-emerald/5 blur-[25px] opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none"></div>
@@ -86,7 +86,7 @@ export default function TrendsPage() {
               </div>
 
               {/* Status parameters */}
-              <div className="grid grid-cols-2 gap-2 text-[10px] border-t border-card-border/50 pt-4 font-semibold text-zinc-500">
+              <div className="grid grid-cols-2 gap-2 text-[10px] border-t border-card-border/40 pt-4 font-semibold text-zinc-500">
                 <div className="space-y-0.5">
                   <span>Difficulty:</span>
                   <strong className={`block ${

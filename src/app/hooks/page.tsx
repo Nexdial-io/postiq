@@ -144,7 +144,7 @@ function HookStudioContent() {
             
             {/* Input Form */}
             <div className="lg:col-span-1">
-              <div className="glass-panel rounded-2xl p-6 space-y-4">
+              <div className="glass-panel rounded-xl p-6 border border-card-border/70 space-y-4">
                 <h3 className="font-bold text-base border-b border-card-border/50 pb-3 flex items-center gap-1.5">
                   <BrainCircuit size={16} className="text-brand-purple" />
                   Define Hook Topic
@@ -157,7 +157,7 @@ function HookStudioContent() {
                     value={topic}
                     onChange={(e) => setTopic(e.target.value)}
                     placeholder="e.g. B2B SaaS marketing growth"
-                    className="w-full px-3 py-2 rounded-xl bg-black/10 dark:bg-white/5 border border-card-border text-xs focus:outline-none focus:border-brand-purple"
+                    className="w-full px-3 py-2 rounded-xl bg-[#f8f9fa] dark:bg-[#141b22] border border-card-border text-xs focus:outline-none focus:border-brand-purple"
                     onKeyDown={(e) => e.key === 'Enter' && handleGenerateHooks("")}
                   />
                 </div>
@@ -175,7 +175,7 @@ function HookStudioContent() {
             {/* Generated Hooks Output */}
             <div className="lg:col-span-2">
               {!generatedHooks ? (
-                <div className="glass-panel rounded-2xl p-8 py-20 text-center flex flex-col items-center justify-center border-dashed border-2">
+                <div className="glass-panel rounded-xl p-8 py-20 text-center flex flex-col items-center justify-center border-dashed border-2 border-card-border/60 bg-[#f8f9fa] dark:bg-[#141b22]">
                   <Compass size={36} className="text-zinc-400 mb-3" />
                   <h4 className="font-bold text-zinc-800 dark:text-zinc-200">Generate hooks</h4>
                   <p className="text-xs text-zinc-500 mt-1 max-w-[200px] mx-auto">
@@ -202,11 +202,11 @@ function HookStudioContent() {
                       
                       <div className="space-y-2.5">
                         {cat.list.map((hook: string, hIdx: number) => (
-                          <div key={hIdx} className="p-3 rounded-lg border border-card-border bg-black/[0.01] dark:bg-white/[0.01] flex justify-between items-center gap-4 text-xs font-medium">
+                          <div key={hIdx} className="p-3 rounded-lg border border-card-border/70 bg-[#f8f9fa] dark:bg-[#141b22] flex justify-between items-center gap-4 text-xs font-medium">
                             <span className="text-zinc-800 dark:text-zinc-200 leading-relaxed">"{hook}"</span>
                             <button
                               onClick={() => handleCopy(hook, `hook-${idx}-${hIdx}`)}
-                              className={`p-1 rounded hover:bg-black/5 dark:hover:bg-white/5 transition-all shrink-0 ${copySuccess === `hook-${idx}-${hIdx}` ? 'text-brand-emerald' : 'text-zinc-400'}`}
+                              className={`p-1 rounded hover:bg-[#e6ecf2] dark:hover:bg-[#434c56] transition-all shrink-0 ${copySuccess === `hook-${idx}-${hIdx}` ? 'text-brand-emerald' : 'text-zinc-400'}`}
                             >
                               {copySuccess === `hook-${idx}-${hIdx}` ? <Check size={14} /> : <Copy size={14} />}
                             </button>
@@ -226,7 +226,7 @@ function HookStudioContent() {
           /* POST REWRITER TAB */
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
             {/* Input Box */}
-            <div className="glass-panel rounded-2xl p-6 space-y-4">
+            <div className="glass-panel rounded-xl p-6 border border-card-border/70 space-y-4">
               <h3 className="font-bold text-base border-b border-card-border/50 pb-3 flex items-center gap-1.5">
                 <PenTool size={16} className="text-brand-purple" />
                 Original Post Draft
@@ -237,7 +237,7 @@ function HookStudioContent() {
                 onChange={(e) => setDraft(e.target.value)}
                 placeholder="Paste the post you want to rewrite..."
                 rows={10}
-                className="w-full p-4 rounded-xl bg-black/10 dark:bg-white/5 border border-card-border text-xs focus:outline-none focus:border-brand-purple resize-none font-sans"
+                className="w-full p-4 rounded-xl bg-[#f8f9fa] dark:bg-[#141b22] border border-card-border text-xs focus:outline-none focus:border-brand-purple resize-none font-sans"
               />
 
               <div className="flex justify-between items-center pt-2">
@@ -254,12 +254,12 @@ function HookStudioContent() {
             </div>
 
             {/* Rewritten Output */}
-            <div className="glass-panel rounded-2xl p-6 space-y-6">
+            <div className="glass-panel rounded-xl p-6 border border-card-border/70 space-y-6">
               <div className="flex justify-between items-center border-b border-card-border/50 pb-3">
                 <h3 className="font-bold text-base">Rewritten Versions</h3>
                 
                 {/* Tone Selectors */}
-                <div className="flex p-0.5 rounded-lg bg-black/10 dark:bg-white/5 border border-card-border gap-1">
+                <div className="flex p-0.5 rounded-lg bg-[#eef3f8] dark:bg-[#383f47] border border-card-border gap-1">
                   {(['viral', 'professional', 'executive', 'story', 'creator'] as const).map((tone) => (
                     <button
                       key={tone}
@@ -275,12 +275,12 @@ function HookStudioContent() {
               </div>
 
               {!rewrittenContent ? (
-                <div className="py-20 text-center flex flex-col items-center justify-center border-dashed border-2 rounded-xl">
+                <div className="py-20 text-center flex flex-col items-center justify-center border-dashed border-2 border-card-border/60 bg-[#f8f9fa] dark:bg-[#141b22] rounded-xl">
                   <Sparkles size={32} className="text-zinc-400 mb-2" />
                   <span className="text-xs text-zinc-500">Click rewrite to view output options</span>
                 </div>
               ) : (
-                <div className="p-4 rounded-xl border border-card-border bg-black/[0.01] dark:bg-white/[0.01] relative space-y-4">
+                <div className="p-4 rounded-xl border border-card-border/70 bg-[#f8f9fa] dark:bg-[#141b22] relative space-y-4">
                   <div className="flex justify-between items-center border-b border-card-border/30 pb-2">
                     <span className="text-[9px] font-extrabold bg-brand-purple/10 text-brand-purple px-1.5 py-0.5 rounded uppercase">
                       {selectedTone} tone
@@ -288,7 +288,7 @@ function HookStudioContent() {
                     
                     <button
                       onClick={() => handleCopy(rewrittenContent[selectedTone], 'rewrite-copy')}
-                      className={`p-1.5 rounded hover:bg-black/5 dark:hover:bg-white/5 transition-all flex items-center gap-1 text-[10px] font-bold ${
+                      className={`p-1.5 rounded hover:bg-[#e6ecf2] dark:hover:bg-[#434c56] transition-all flex items-center gap-1 text-[10px] font-bold ${
                         copySuccess === 'rewrite-copy' ? 'text-brand-emerald' : 'text-zinc-400'
                       }`}
                     >

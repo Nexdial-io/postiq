@@ -101,7 +101,7 @@ function AnalyzerContent() {
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
         {/* Left 2 Columns: Draft Editor & Actions */}
         <div className="lg:col-span-2 space-y-6">
-          <div className="glass-panel rounded-2xl p-6 space-y-4">
+          <div className="glass-panel rounded-xl p-6 border border-card-border/70 space-y-4">
             <div className="flex justify-between items-center">
               <label htmlFor="post-content" className="text-sm font-bold text-zinc-800 dark:text-zinc-200">Post Content Draft</label>
               <div className="flex gap-4 text-xs text-zinc-500 font-semibold">
@@ -116,7 +116,7 @@ function AnalyzerContent() {
               onChange={(e) => setContent(e.target.value)}
               placeholder="Start drafting or paste your post here..."
               rows={12}
-              className="w-full p-4 rounded-xl bg-black/10 dark:bg-white/5 border border-card-border text-sm focus:outline-none focus:border-brand-purple transition-all resize-none font-sans"
+              className="w-full p-4 rounded-xl bg-[#f8f9fa] dark:bg-[#141b22] border border-card-border text-sm focus:outline-none focus:border-brand-purple transition-all resize-none font-sans"
             />
 
             {/* Smart Auto Fixes */}
@@ -127,21 +127,21 @@ function AnalyzerContent() {
               <button
                 onClick={() => handleAutoFix('hook')}
                 disabled={!content.trim()}
-                className="px-3 py-1.5 rounded-lg border border-card-border bg-black/5 dark:bg-white/5 text-xs font-semibold hover:border-brand-purple/50 disabled:opacity-50 disabled:pointer-events-none transition-all"
+                className="px-3 py-1.5 rounded-lg border border-card-border bg-[#eef3f8] dark:bg-[#383f47] text-xs font-semibold hover:bg-[#e6ecf2] dark:hover:bg-[#434c56] disabled:opacity-50 disabled:pointer-events-none transition-all"
               >
                 Optimize Hook
               </button>
               <button
                 onClick={() => handleAutoFix('format')}
                 disabled={!content.trim()}
-                className="px-3 py-1.5 rounded-lg border border-card-border bg-black/5 dark:bg-white/5 text-xs font-semibold hover:border-brand-purple/50 disabled:opacity-50 disabled:pointer-events-none transition-all"
+                className="px-3 py-1.5 rounded-lg border border-card-border bg-[#eef3f8] dark:bg-[#383f47] text-xs font-semibold hover:bg-[#e6ecf2] dark:hover:bg-[#434c56] disabled:opacity-50 disabled:pointer-events-none transition-all"
               >
                 Structure Spacing
               </button>
               <button
                 onClick={() => handleAutoFix('cta')}
                 disabled={!content.trim()}
-                className="px-3 py-1.5 rounded-lg border border-card-border bg-black/5 dark:bg-white/5 text-xs font-semibold hover:border-brand-purple/50 disabled:opacity-50 disabled:pointer-events-none transition-all"
+                className="px-3 py-1.5 rounded-lg border border-card-border bg-[#eef3f8] dark:bg-[#383f47] text-xs font-semibold hover:bg-[#e6ecf2] dark:hover:bg-[#434c56] disabled:opacity-50 disabled:pointer-events-none transition-all"
               >
                 Insert Final CTA
               </button>
@@ -171,7 +171,7 @@ function AnalyzerContent() {
         {/* Right 1 Column: Results Display */}
         <div className="space-y-6">
           {!analysis ? (
-            <div className="glass-panel rounded-2xl p-8 text-center py-20 space-y-4 flex flex-col items-center justify-center border-dashed border-2">
+            <div className="glass-panel rounded-xl p-8 text-center py-20 space-y-4 flex flex-col items-center justify-center border-dashed border-2 border-card-border/60 bg-[#f8f9fa] dark:bg-[#141b22]">
               <FileText className="text-zinc-400 w-12 h-12 stroke-[1.5]" />
               <div>
                 <h3 className="font-bold text-zinc-800 dark:text-zinc-200">No Analysis Done</h3>
@@ -184,7 +184,7 @@ function AnalyzerContent() {
             <div className="space-y-6">
               
               {/* Score card & Save button */}
-              <div className="glass-panel rounded-2xl p-6 space-y-6 relative overflow-hidden">
+              <div className="glass-panel rounded-xl p-6 border border-card-border/70 space-y-6 relative overflow-hidden">
                 <div className="absolute top-0 right-0 w-32 h-32 bg-brand-purple/5 rounded-full blur-2xl pointer-events-none"></div>
                 
                 <div className="flex justify-between items-center">
@@ -226,7 +226,7 @@ function AnalyzerContent() {
               </div>
 
               {/* LinkedIn Feed Preview */}
-              <div className="glass-panel rounded-2xl p-6 space-y-4">
+              <div className="glass-panel rounded-xl p-6 border border-card-border/70 space-y-4">
                 <h4 className="text-xs font-bold uppercase tracking-wider text-zinc-500 border-b border-card-border/50 pb-2">LinkedIn Feed Preview</h4>
                 
                 <div className="bg-white dark:bg-[#1d2226] border border-zinc-200 dark:border-zinc-800 rounded-xl p-4 text-zinc-900 dark:text-[#e0e0e0] font-sans">
@@ -294,11 +294,11 @@ function AnalyzerContent() {
               </div>
 
               {/* Engagement Predictions */}
-              <div className="glass-panel rounded-2xl p-6 space-y-4">
+              <div className="glass-panel rounded-xl p-6 border border-card-border/70 space-y-4">
                 <h4 className="text-xs font-bold uppercase tracking-wider text-zinc-500 border-b border-card-border/50 pb-2">Engagement Predictions</h4>
                 
                 <div className="grid grid-cols-2 gap-4">
-                  <div className="p-3 rounded-xl border border-card-border bg-black/[0.01] dark:bg-white/[0.01] flex items-center gap-3">
+                  <div className="p-3 rounded-xl border border-card-border bg-[#f8f9fa] dark:bg-[#141b22] flex items-center gap-3">
                     <div className="p-2 rounded-lg bg-blue-500/10 text-blue-500 border border-blue-500/20">
                       <ThumbsUp size={16} />
                     </div>
@@ -308,7 +308,7 @@ function AnalyzerContent() {
                     </div>
                   </div>
 
-                  <div className="p-3 rounded-xl border border-card-border bg-black/[0.01] dark:bg-white/[0.01] flex items-center gap-3">
+                  <div className="p-3 rounded-xl border border-card-border bg-[#f8f9fa] dark:bg-[#141b22] flex items-center gap-3">
                     <div className="p-2 rounded-lg bg-teal-500/10 text-teal-500 border border-teal-500/20">
                       <MessageSquare size={16} />
                     </div>
@@ -318,7 +318,7 @@ function AnalyzerContent() {
                     </div>
                   </div>
 
-                  <div className="p-3 rounded-xl border border-card-border bg-black/[0.01] dark:bg-white/[0.01] flex items-center gap-3">
+                  <div className="p-3 rounded-xl border border-card-border bg-[#f8f9fa] dark:bg-[#141b22] flex items-center gap-3">
                     <div className="p-2 rounded-lg bg-brand-purple/10 text-brand-purple border border-brand-purple/20">
                       <Share2 size={16} />
                     </div>
@@ -328,7 +328,7 @@ function AnalyzerContent() {
                     </div>
                   </div>
 
-                  <div className="p-3 rounded-xl border border-card-border bg-black/[0.01] dark:bg-white/[0.01] flex items-center gap-3">
+                  <div className="p-3 rounded-xl border border-card-border bg-[#f8f9fa] dark:bg-[#141b22] flex items-center gap-3">
                     <div className="p-2 rounded-lg bg-brand-emerald/10 text-brand-emerald border border-brand-emerald/20">
                       <Eye size={16} />
                     </div>
@@ -341,7 +341,7 @@ function AnalyzerContent() {
               </div>
 
               {/* Subscores Breakdown */}
-              <div className="glass-panel rounded-2xl p-6 space-y-4">
+              <div className="glass-panel rounded-xl p-6 border border-card-border/70 space-y-4">
                 <h4 className="text-xs font-bold uppercase tracking-wider text-zinc-500 border-b border-card-border/50 pb-2">Subscore Ratios</h4>
                 <div className="space-y-3.5">
                   {breakdownFields.map((field, idx) => (
@@ -359,11 +359,11 @@ function AnalyzerContent() {
               </div>
 
               {/* Recommendations */}
-              <div className="glass-panel rounded-2xl p-6 space-y-4">
+              <div className="glass-panel rounded-xl p-6 border border-card-border/70 space-y-4">
                 <h4 className="text-xs font-bold uppercase tracking-wider text-zinc-500 border-b border-card-border/50 pb-2">Actionable Suggestions</h4>
                 <div className="space-y-3">
                   {analysis.suggestions.map((suggestion, idx) => (
-                    <div key={idx} className="flex gap-2 p-3 rounded-xl border border-card-border/50 bg-black/5 dark:bg-white/5">
+                    <div key={idx} className="flex gap-2 p-3 rounded-xl border border-card-border/50 bg-[#f8f9fa] dark:bg-[#141b22]">
                       <AlertCircle size={14} className="text-brand-purple shrink-0 mt-0.5" />
                       <p className="text-xs text-zinc-600 dark:text-zinc-400 font-medium leading-relaxed">{suggestion}</p>
                     </div>

@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 import { 
@@ -45,21 +45,16 @@ export default function ClientLayout({ children }: ClientLayoutProps) {
   const [mounted, setMounted] = useState(false);
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [showNotifications, setShowNotifications] = useState(false);
-  const [profile, setProfile] = useState<any>(() => {
-    if (typeof window !== 'undefined') {
-      try {
-        const activeUser = networkDb.getActiveUser();
-        return {
-          name: activeUser.name,
-          headline: activeUser.headline,
-          score: activeUser.profileScore
-        };
-      } catch (e) {
-        return { name: "Alex Rivera", headline: "Senior Product Manager" };
-      }
-    }
-    return { name: "Alex Rivera", headline: "Senior Product Manager" };
+  const [profile, setProfile] = useState<any>({ 
+    name: "Alex Rivera", 
+    headline: "Senior Product Manager @ FinTech Leader | Building AI-Driven Growth Engines | Product Consultant", 
+    avatarUrl: "",
+    bannerUrl: "",
+    score: 72 
   });
+  
+  const notificationsRef = useRef<HTMLDivElement>(null);
+  const meDropdownRef = useRef<HTMLDivElement>(null);
   const [searchQuery, setSearchQuery] = useState('');
   const [showSearchModal, setShowSearchModal] = useState(false);
   const [publicMenuOpen, setPublicMenuOpen] = useState(false);
@@ -84,16 +79,24 @@ export default function ClientLayout({ children }: ClientLayoutProps) {
     }
     
     // Load profile
-    try {
-      const activeUser = networkDb.getActiveUser();
-      setProfile({
-        name: activeUser.name,
-        headline: activeUser.headline,
-        score: activeUser.profileScore
-      });
-    } catch (e) {
-      setProfile(mockDb.getProfile());
-    }
+    const loadProfileData = () => {
+      try {
+        const activeUser = networkDb.getActiveUser();
+        setProfile({
+          name: activeUser.name,
+          headline: activeUser.headline,
+          avatarUrl: activeUser.avatarUrl,
+          bannerUrl: activeUser.bannerUrl,
+          score: activeUser.profileScore,
+          isVerified: activeUser.isVerified
+        });
+      } catch (e) {
+        setProfile(mockDb.getProfile());
+      }
+    };
+
+    loadProfileData();
+    window.addEventListener('liq-profile-updated', loadProfileData);
     
     // Keyboard shortcut for command search (Ctrl+K)
     const handleKeyDown = (e: KeyboardEvent) => {
@@ -102,8 +105,26 @@ export default function ClientLayout({ children }: ClientLayoutProps) {
         setShowSearchModal(prev => !prev);
       }
     };
+
+    // Close dropdowns on click outside
+    const handleClickOutside = (e: MouseEvent) => {
+      const target = e.target as HTMLElement;
+      if (meDropdownRef.current && !meDropdownRef.current.contains(target)) {
+        setShowMeDropdown(false);
+      }
+      if (notificationsRef.current && !notificationsRef.current.contains(target)) {
+        setShowNotifications(false);
+      }
+    };
+
     window.addEventListener('keydown', handleKeyDown);
-    return () => window.removeEventListener('keydown', handleKeyDown);
+    document.addEventListener('mousedown', handleClickOutside);
+    
+    return () => {
+      window.removeEventListener('keydown', handleKeyDown);
+      window.removeEventListener('liq-profile-updated', loadProfileData);
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
   }, []);
 
   const toggleTheme = () => {
@@ -474,7 +495,7 @@ export default function ClientLayout({ children }: ClientLayoutProps) {
           <div className="flex items-center space-x-2 flex-shrink-0">
             
             {/* Notifications Bell */}
-            <div className="relative">
+            <div className="relative" ref={notificationsRef}>
               <button 
                 onClick={() => { setShowNotifications(prev => !prev); setShowMeDropdown(false); }}
                 className="p-1.5 rounded hover:bg-black/5 dark:hover:bg-white/5 transition-colors relative text-zinc-550 dark:text-zinc-400 hover:text-brand-purple dark:hover:text-white"
@@ -506,14 +527,18 @@ export default function ClientLayout({ children }: ClientLayoutProps) {
 
             {/* Profile Dropdown ("Me") */}
             {profile && (
-              <div className="relative">
+              <div className="relative" ref={meDropdownRef}>
                 <button
                   onClick={() => { setShowMeDropdown(prev => !prev); setShowNotifications(false); }}
                   className="flex flex-col items-center justify-center px-1 py-1 hover:opacity-90 transition-opacity"
                   title="Profile Menu"
                 >
-                  <div className="w-6 h-6 rounded-full bg-brand-purple flex items-center justify-center text-white font-bold text-xs uppercase shadow-inner">
-                    {profile.name[0]}
+                  <div className="w-6 h-6 rounded-full bg-brand-purple flex items-center justify-center text-white font-bold text-xs uppercase shadow-inner overflow-hidden shrink-0">
+                    {profile.avatarUrl ? (
+                      <img src={profile.avatarUrl} alt="Me" className="w-full h-full object-cover" />
+                    ) : (
+                      profile.name[0]
+                    )}
                   </div>
                   <span className="hidden sm:inline-flex items-center gap-0.5 text-[8px] font-bold text-zinc-500 mt-0.5 uppercase tracking-wide">
                     Me
@@ -526,12 +551,25 @@ export default function ClientLayout({ children }: ClientLayoutProps) {
                     
                     {/* User profile header */}
                     <div className="flex items-center space-x-3 border-b border-card-border/50 pb-3 mb-3">
-                      <div className="w-9 h-9 rounded-full bg-brand-purple flex items-center justify-center text-white font-black text-sm uppercase">
-                        {profile.name[0]}
+                      <div className="w-9 h-9 rounded-full bg-brand-purple flex items-center justify-center text-white font-black text-sm uppercase overflow-hidden shrink-0">
+                        {profile.avatarUrl ? (
+                          <img src={profile.avatarUrl} alt="Me" className="w-full h-full object-cover" />
+                        ) : (
+                          profile.name[0]
+                        )}
                       </div>
                       <div className="truncate flex-1">
-                        <h4 className="font-extrabold text-zinc-900 dark:text-white truncate">{profile.name}</h4>
-                        <p className="text-[10px] text-zinc-505 truncate mt-0.5 leading-normal">{profile.headline || 'Creator Account'}</p>
+                        <h4 className="font-extrabold text-zinc-900 dark:text-white truncate flex items-center">
+                          {profile.name}
+                          {profile.isVerified && (
+                            <span className="inline-flex items-center justify-center bg-blue-600 dark:bg-blue-500 text-white rounded-full w-3.5 h-3.5 ml-1.5 shrink-0 shadow-sm" title="Verified Creator">
+                              <svg className="w-2 h-2" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={4}>
+                                <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+                              </svg>
+                            </span>
+                          )}
+                        </h4>
+                        <p className="text-[10px] text-zinc-555 truncate mt-0.5 leading-normal">{profile.headline || 'Creator Account'}</p>
                       </div>
                     </div>
 
@@ -594,7 +632,44 @@ export default function ClientLayout({ children }: ClientLayoutProps) {
                     <div className="px-2 py-1">
                       <h5 className="text-[10px] font-bold text-zinc-400 dark:text-zinc-500 uppercase tracking-wider mb-2">Simulate Creator</h5>
                       <div className="space-y-1">
-                        {MOCK_NETWORK_USERS.slice(0, 3).map(user => {
+                        {/* Custom Registered User (If Active) */}
+                        {(() => {
+                          const activeId = networkDb.getActiveUserId();
+                          const activeUser = networkDb.getActiveUser();
+                          const isCustom = activeId.startsWith('custom-user-');
+                          if (isCustom) {
+                            return (
+                              <button
+                                onClick={() => {
+                                  networkDb.setActiveUserId(activeUser.id);
+                                  setShowMeDropdown(false);
+                                  window.location.reload();
+                                }}
+                                className="w-full flex items-center justify-between p-1.5 rounded-lg text-left text-[11px] bg-brand-purple/10 text-brand-purple border border-brand-purple/20"
+                              >
+                                <div className="truncate flex-1 pr-2">
+                                  <p className="font-bold truncate flex items-center">
+                                    {activeUser.name} (You)
+                                    {activeUser.isVerified && (
+                                      <span className="inline-flex items-center justify-center bg-blue-600 dark:bg-blue-500 text-white rounded-full w-3 h-3 ml-1 shrink-0 shadow-sm" title="Verified Creator">
+                                        <svg className="w-1.5 h-1.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={4}>
+                                          <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+                                        </svg>
+                                      </span>
+                                    )}
+                                  </p>
+                                  <p className="text-[9px] text-zinc-455 dark:text-zinc-500 truncate">{activeUser.headline.split('|')[0]}</p>
+                                </div>
+                                <span className="text-[9px] font-extrabold px-1.5 py-0.5 rounded bg-brand-purple/10 text-brand-purple shrink-0">
+                                  {activeUser.profileScore}
+                                </span>
+                              </button>
+                            );
+                          }
+                          return null;
+                        })()}
+
+                        {MOCK_NETWORK_USERS.slice(0, 5).map(user => {
                           const isActive = user.id === networkDb.getActiveUserId();
                           return (
                             <button
@@ -611,7 +686,16 @@ export default function ClientLayout({ children }: ClientLayoutProps) {
                               }`}
                             >
                               <div className="truncate flex-1 pr-2">
-                                <p className="font-bold truncate">{user.name}</p>
+                                <p className="font-bold truncate flex items-center">
+                                  {user.name}
+                                  {user.isVerified && (
+                                    <span className="inline-flex items-center justify-center bg-blue-600 dark:bg-blue-500 text-white rounded-full w-3 h-3 ml-1 shrink-0 shadow-sm" title="Verified Creator">
+                                      <svg className="w-1.5 h-1.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={4}>
+                                        <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+                                      </svg>
+                                    </span>
+                                  )}
+                                </p>
                                 <p className="text-[9px] text-zinc-450 dark:text-zinc-500 truncate">{user.headline.split('|')[0]}</p>
                               </div>
                               <span className="text-[9px] font-extrabold px-1.5 py-0.5 rounded bg-brand-purple/10 text-brand-purple shrink-0">

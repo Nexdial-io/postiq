@@ -1,16 +1,18 @@
-﻿"use client";
+"use client";
 
 import React, { useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { Sparkles, Mail, Lock, User, Zap } from 'lucide-react';
+import { mockDb } from '@/lib/mockDb';
+import { networkDb } from '@/lib/db';
 
 export default function RegisterPage() {
   const router = useRouter();
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [role, setRole] = useState<'creator' | 'jobseeker' | 'agency'>('creator');
+  const [role, setRole] = useState<'creator' | 'jobseeker'>('creator');
   const [loading, setLoading] = useState(false);
 
   const handleRegisterSubmit = (e: React.FormEvent) => {
@@ -19,6 +21,56 @@ export default function RegisterPage() {
     
     setLoading(true);
     setTimeout(() => {
+      // Create a new simulated active user from register name!
+      const newUserId = `custom-user-${Date.now()}`;
+      
+      // Save profile overrides in db.ts
+      networkDb.updateUser(newUserId, {
+        id: newUserId,
+        name: name,
+        headline: role === 'creator' 
+          ? "SaaS Creator | Building PostIQ | Sharing growth ideas" 
+          : "Active Job Seeker | Open to Frontend & Product Roles",
+        avatarUrl: "",
+        bannerUrl: "gradient:bg-gradient-to-r from-emerald-400 via-teal-500 to-indigo-500",
+        profileScore: 70,
+        contentScore: 70,
+        recruiterScore: 70,
+        seoScore: 70,
+        about: `Hello, I'm ${name}. I registered on PostIQ to grow my LinkedIn presence!`,
+        skills: role === 'creator' ? ["Content Strategy", "Personal Branding"] : ["TypeScript", "React"]
+      });
+
+      // Set active user id
+      networkDb.setActiveUserId(newUserId);
+
+      // Initialize mockDb profile for this user
+      mockDb.saveProfile({
+        name: name,
+        headline: role === 'creator' 
+          ? "SaaS Creator | Building PostIQ | Sharing growth ideas" 
+          : "Active Job Seeker | Open to Frontend & Product Roles",
+        about: `Hello, I'm ${name}. I registered on PostIQ to grow my LinkedIn presence!`,
+        experience: [
+          {
+            role: role === 'creator' ? "Independent Creator" : "Software Engineer",
+            company: "Independent",
+            duration: "2024 - Present",
+            description: "Growing personal brand and engineering skills on PostIQ."
+          }
+        ],
+        skills: role === 'creator' ? ["Content Strategy", "Personal Branding"] : ["TypeScript", "React"],
+        certifications: ["PostIQ Certified User"],
+        avatarUrl: "",
+        bannerUrl: "gradient:bg-gradient-to-r from-emerald-400 via-teal-500 to-indigo-500",
+        score: 70
+      });
+
+      // Dispatch profile update
+      if (typeof window !== 'undefined') {
+        window.dispatchEvent(new Event('liq-profile-updated'));
+      }
+
       setLoading(false);
       router.push('/dashboard');
     }, 1200);
@@ -45,7 +97,7 @@ export default function RegisterPage() {
         </div>
 
         {/* Account Role Selector */}
-        <div className="grid grid-cols-3 gap-2 mb-4 text-center font-bold">
+        <div className="grid grid-cols-2 gap-2 mb-4 text-center font-bold">
           <button 
             type="button"
             onClick={() => setRole('creator')}
@@ -67,17 +119,6 @@ export default function RegisterPage() {
             }`}
           >
             Job Seeker
-          </button>
-          <button 
-            type="button"
-            onClick={() => setRole('agency')}
-            className={`p-2 rounded-xl border text-[10px] uppercase transition-all ${
-              role === 'agency' 
-                ? 'border-brand-purple bg-brand-purple/10 text-brand-purple' 
-                : 'border-card-border hover:bg-black/5 dark:hover:bg-white/5 text-zinc-400'
-            }`}
-          >
-            Agency
           </button>
         </div>
 

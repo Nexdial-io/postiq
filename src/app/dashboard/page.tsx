@@ -28,8 +28,64 @@ import {
   Plus
 } from 'lucide-react';
 import { mockDb, PostAnalysis, UserProfile } from '@/lib/mockDb';
+import { networkDb } from '@/lib/db';
 import { analyzePostContent } from '@/lib/scoringEngine';
 import confetti from 'canvas-confetti';
+import { Mail, Phone, Check, Copy, X, Share } from 'lucide-react';
+
+const GithubIcon = ({ className, size = 16 }: { className?: string; size?: number }) => (
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    width={size}
+    height={size}
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    strokeWidth="2"
+    strokeLinecap="round"
+    strokeLinejoin="round"
+    className={className}
+  >
+    <path d="M15 22v-4a4.8 4.8 0 0 0-1-3.5c3 0 6-2 6-5.5.08-1.25-.27-2.48-1-3.5.28-1.15.28-2.35 0-3.5 0 0-1 0-3 1.5-2.64-.5-5.36-.5-8 0C6 2 5 2 5 2c-.3 1.15-.3 2.35 0 3.5A5.403 5.403 0 0 0 4 9c0 3.5 3 5.5 6 5.5-.39.49-.68 1.05-.85 1.65-.17.6-.22 1.23-.15 1.85v4" />
+    <path d="M9 18c-4.51 2-5-2-7-2" />
+  </svg>
+);
+
+const TwitterIcon = ({ className, size = 16 }: { className?: string; size?: number }) => (
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    width={size}
+    height={size}
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    strokeWidth="2"
+    strokeLinecap="round"
+    strokeLinejoin="round"
+    className={className}
+  >
+    <path d="M22 4s-.7 2.1-2 3.4c1.6 10-9.4 17.3-18 11.6 2.2.1 4.4-.6 6-2C3 15.5.5 9.6 3 5c2.2 2.6 5.6 4.1 9 4-.9-4.2 4-6.6 7-3.8 1.1 0 3-1.2 3-1.2z" />
+  </svg>
+);
+
+const getBannerStyleOrClass = (bannerUrl: string | undefined) => {
+  if (!bannerUrl) {
+    return {
+      className: "bg-gradient-to-r from-[#71B7FB]/30 via-brand-purple/20 to-brand-indigo/30",
+      style: {}
+    };
+  }
+  if (bannerUrl.startsWith('gradient:')) {
+    return {
+      className: bannerUrl.replace('gradient:', ''),
+      style: {}
+    };
+  }
+  return {
+    className: "",
+    style: { backgroundImage: `url(${bannerUrl})`, backgroundSize: 'cover', backgroundPosition: 'center' }
+  };
+};
 
 export default function Dashboard() {
   const [profile, setProfile] = useState<UserProfile | null>(null);
@@ -45,10 +101,32 @@ export default function Dashboard() {
   const [likedPosts, setLikedPosts] = useState<Record<string, boolean>>({});
   const [expandedPosts, setExpandedPosts] = useState<Record<string, boolean>>({});
 
+  // Contact and Share Dialog States
+  const [showContactModal, setShowContactModal] = useState(false);
+  const [sharingPost, setSharingPost] = useState<PostAnalysis | null>(null);
+  const [copiedLink, setCopiedLink] = useState(false);
+  const [sentMessageTo, setSentMessageTo] = useState<Record<string, boolean>>({});
+  const [connections, setConnections] = useState<any[]>([]);
+
+  // Comment thread states
+  const [commentingPostId, setCommentingPostId] = useState<string | null>(null);
+  const [newCommentText, setNewCommentText] = useState('');
+
   useEffect(() => {
-    setProfile(mockDb.getProfile());
+    const loadProfileData = () => {
+      const activeId = networkDb.getActiveUserId();
+      const currentProfile = mockDb.getProfile();
+      setProfile(currentProfile);
+      setConnections(networkDb.getConnections(activeId));
+    };
+    loadProfileData();
     setHistory(mockDb.getAnalyses());
     setActivePlan(mockDb.getSubscription().plan);
+
+    window.addEventListener('liq-profile-updated', loadProfileData);
+    return () => {
+      window.removeEventListener('liq-profile-updated', loadProfileData);
+    };
   }, []);
 
   const handleDeleteHistory = (id: string, e: React.MouseEvent) => {
@@ -56,6 +134,85 @@ export default function Dashboard() {
     e.preventDefault();
     mockDb.deleteAnalysis(id);
     setHistory(mockDb.getAnalyses());
+  };
+
+  const handleAddComment = (postId: string) => {
+    if (!newCommentText.trim() || !profile) return;
+    
+    const newComment = {
+      id: `comment-${Date.now()}`,
+      authorName: profile.name,
+      authorHeadline: profile.headline,
+      authorAvatarUrl: profile.avatarUrl,
+      authorIsVerified: profile.isVerified,
+      content: newCommentText,
+      timestamp: "Just now",
+      likes: 0
+    };
+
+    const updatedHistory = history.map(post => {
+      if (post.id === postId) {
+        const currentComments = post.comments || [];
+        const updatedComments = [newComment, ...currentComments];
+        return {
+          ...post,
+          comments: updatedComments,
+          metrics: {
+            ...post.metrics,
+            comments: updatedComments.length
+          }
+        };
+      }
+      return post;
+    });
+
+    setHistory(updatedHistory);
+    setNewCommentText('');
+    localStorage.setItem("liq_analyses", JSON.stringify(updatedHistory));
+  };
+
+  const handleRepost = (postToRepost: PostAnalysis) => {
+    if (!profile) return;
+    
+    const repostedAnalysis: PostAnalysis = {
+      id: `repost-${Date.now()}`,
+      content: `♻️ Reposted from ${postToRepost.id.startsWith('repost-') ? 'original author' : (profile?.name || 'Creator')}:\n\n${postToRepost.content}`,
+      score: postToRepost.score,
+      breakdown: { ...postToRepost.breakdown },
+      metrics: {
+        likes: 0,
+        comments: 0,
+        shares: 0,
+        reach: 0,
+        virality: 'Low'
+      },
+      suggestions: postToRepost.suggestions,
+      timestamp: new Date().toISOString(),
+      comments: []
+    };
+
+    mockDb.saveAnalysis(repostedAnalysis);
+    setHistory(mockDb.getAnalyses());
+    setSharingPost(null);
+    
+    confetti({
+      particleCount: 50,
+      spread: 30,
+      origin: { y: 0.6 }
+    });
+  };
+
+  const handleCopyShareLink = (postId: string) => {
+    navigator.clipboard.writeText(`https://postiq.ai/posts/${postId}`);
+    setCopiedLink(true);
+    setTimeout(() => setCopiedLink(false), 2000);
+  };
+
+  const handleSendDirectMessage = (userId: string) => {
+    setSentMessageTo(prev => ({ ...prev, [userId]: true }));
+    setTimeout(() => {
+      setSentMessageTo(prev => ({ ...prev, [userId]: false }));
+    }, 3000);
   };
 
   const handleDraftChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
@@ -159,21 +316,53 @@ export default function Dashboard() {
         {/* Profile Card — compact */}
         <div className="glass-panel rounded-xl overflow-hidden border border-card-border/70">
           {/* Banner */}
-          <div className="h-10 bg-zinc-300 dark:bg-zinc-700"></div>
+          {(() => {
+            const banner = getBannerStyleOrClass(profile?.bannerUrl);
+            return (
+              <div 
+                className={`h-11 w-full relative ${banner.className}`} 
+                style={banner.style}
+              />
+            );
+          })()}
 
           {/* Avatar overlap */}
           <div className="flex justify-center -mt-6 relative z-10">
-            <div className="w-12 h-12 rounded-full border-2 border-card-bg bg-brand-purple flex items-center justify-center text-white text-lg font-black shadow-md uppercase">
-              {profile?.name ? profile.name[0] : 'A'}
+            <div className="w-12 h-12 rounded-full border-2 border-card-bg bg-brand-purple flex items-center justify-center text-white text-lg font-black shadow-md uppercase overflow-hidden shrink-0">
+              {profile?.avatarUrl ? (
+                <img src={profile.avatarUrl} alt="Avatar" className="w-full h-full object-cover" />
+              ) : (
+                profile?.name ? profile.name[0] : 'A'
+              )}
             </div>
           </div>
 
           <div className="px-4 pt-2 pb-3 space-y-2 text-center">
             <div className="border-b border-card-border/50 pb-2">
-              <h3 className="font-extrabold text-xs text-zinc-900 dark:text-white leading-snug hover:underline cursor-pointer">{profile?.name || 'Alex Rivera'}</h3>
+              <h3 className="font-extrabold text-xs text-zinc-900 dark:text-white leading-snug hover:underline cursor-pointer flex items-center justify-center gap-1">
+                {profile?.name || 'Alex Rivera'}
+                {profile?.isVerified && (
+                  <span className="inline-flex items-center justify-center bg-blue-600 dark:bg-blue-500 text-white rounded-full w-3.5 h-3.5 shrink-0 shadow-sm" title="Verified Creator">
+                    <svg className="w-2 h-2" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={4}>
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+                    </svg>
+                  </span>
+                )}
+              </h3>
               <p className="text-[10px] text-zinc-500 dark:text-zinc-400 font-medium mt-0.5 leading-normal max-w-[190px] mx-auto line-clamp-2">
                 {profile?.headline || 'SaaS Growth Specialist'}
               </p>
+            </div>
+            
+            {/* Contact Info link */}
+            <div className="pt-1.5 pb-0.5 border-b border-card-border/50 text-center">
+              <button 
+                onClick={() => setShowContactModal(true)}
+                className="text-[10px] text-brand-purple hover:underline font-bold flex items-center justify-center gap-1 mx-auto"
+              >
+                <Globe size={11} className="stroke-[2.2px]" />
+                Contact Info
+              </button>
             </div>
 
             {/* Metrics */}
@@ -304,8 +493,12 @@ export default function Dashboard() {
           
           {/* Top row composer trigger */}
           <div className="flex items-center space-x-3">
-            <div className="w-9 h-9 rounded-full bg-brand-purple flex items-center justify-center text-white font-bold text-sm shadow-inner uppercase shrink-0">
-              {profile?.name ? profile.name[0] : 'A'}
+            <div className="w-9 h-9 rounded-full bg-brand-purple flex items-center justify-center text-white font-bold text-sm shadow-inner uppercase shrink-0 overflow-hidden">
+              {profile?.avatarUrl ? (
+                <img src={profile.avatarUrl} alt="Avatar" className="w-full h-full object-cover" />
+              ) : (
+                profile?.name ? profile.name[0] : 'A'
+              )}
             </div>
             
             {!isDrafting ? (
@@ -484,13 +677,24 @@ export default function Dashboard() {
 
                   {/* Header Row */}
                   <div className="flex items-center space-x-3">
-                    <div className="w-10 h-10 rounded-full bg-brand-purple flex items-center justify-center text-white font-black text-sm uppercase shadow-inner shrink-0">
-                      {profile?.name ? profile.name[0] : 'A'}
+                    <div className="w-10 h-10 rounded-full bg-brand-purple flex items-center justify-center text-white font-black text-sm uppercase shadow-inner shrink-0 overflow-hidden">
+                      {profile?.avatarUrl ? (
+                        <img src={profile.avatarUrl} alt="Avatar" className="w-full h-full object-cover" />
+                      ) : (
+                        profile?.name ? profile.name[0] : 'A'
+                      )}
                     </div>
                     
                     <div className="truncate flex-1">
                       <h4 className="text-xs font-extrabold text-zinc-900 dark:text-white truncate flex items-center gap-1">
                         {profile?.name || 'Alex Rivera'}
+                        {profile?.isVerified && (
+                          <span className="inline-flex items-center justify-center bg-blue-600 dark:bg-blue-500 text-white rounded-full w-3.5 h-3.5 shrink-0 shadow-sm" title="Verified Creator">
+                            <svg className="w-2 h-2" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={4}>
+                              <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+                            </svg>
+                          </span>
+                        )}
                         <Award size={12} className="text-brand-purple fill-brand-purple/10" />
                       </h4>
                       <p className="text-[9px] text-zinc-550 dark:text-zinc-400 font-medium truncate leading-normal max-w-[80%]">
@@ -523,11 +727,11 @@ export default function Dashboard() {
                       {isLiked ? 'Liked by you and ' : ''}
                       {post.metrics.likes + (isLiked ? 1 : 0)} creators
                     </span>
-                    <span>{post.metrics.comments} comments • {post.metrics.shares} shares</span>
+                    <span>{(post.comments || []).length} comments • {post.metrics.shares} shares</span>
                   </div>
 
                   {/* Action row buttons */}
-                  <div className="flex justify-around items-center pt-1 text-xs font-bold text-zinc-550 dark:text-zinc-400">
+                  <div className="flex justify-around items-center pt-1 text-xs font-bold text-zinc-555 dark:text-zinc-400">
                     <button
                       onClick={() => handleLikeToggle(post.id)}
                       className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg hover:bg-black/5 dark:hover:bg-white/5 transition-all ${
@@ -539,8 +743,10 @@ export default function Dashboard() {
                     </button>
 
                     <button
-                      onClick={() => handleExpandToggle(post.id)}
-                      className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg hover:bg-black/5 dark:hover:bg-white/5 transition-all"
+                      onClick={() => setCommentingPostId(commentingPostId === post.id ? null : post.id)}
+                      className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg hover:bg-black/5 dark:hover:bg-white/5 transition-all ${
+                        commentingPostId === post.id ? 'text-brand-purple' : ''
+                      }`}
                     >
                       <MessageSquare size={14} />
                       <span>Comment</span>
@@ -548,13 +754,80 @@ export default function Dashboard() {
 
                     <button
                       className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg hover:bg-black/5 dark:hover:bg-white/5 transition-all"
-                      onClick={() => handleExpandToggle(post.id)}
+                      onClick={() => setSharingPost(post)}
                     >
                       <Share2 size={14} />
                       <span>Share</span>
                     </button>
                   </div>
 
+                  {/* Collapsible Comment Thread Block */}
+                  {commentingPostId === post.id && (
+                    <div className="border-t border-card-border/40 pt-4 mt-3 space-y-4 animate-in fade-in slide-in-from-top-2 duration-200">
+                      {/* Input row */}
+                      <div className="flex gap-2.5 items-start">
+                        <div className="w-8 h-8 rounded-full bg-brand-purple flex items-center justify-center text-white font-bold text-xs uppercase overflow-hidden shrink-0">
+                          {profile?.avatarUrl ? (
+                            <img src={profile.avatarUrl} alt="Avatar" className="w-full h-full object-cover" />
+                          ) : (
+                            profile?.name ? profile.name[0] : 'A'
+                          )}
+                        </div>
+                        <div className="flex-1 flex gap-2">
+                          <input
+                            type="text"
+                            placeholder="Add a comment on this draft evaluation..."
+                            value={newCommentText}
+                            onChange={(e) => setNewCommentText(e.target.value)}
+                            onKeyDown={(e) => {
+                              if (e.key === 'Enter') handleAddComment(post.id);
+                            }}
+                            className="flex-grow bg-[#f8f9fa] dark:bg-[#141b22] border border-card-border rounded-xl px-3 py-2 text-xs focus:outline-none focus:border-brand-purple transition-all"
+                          />
+                          <button
+                            onClick={() => handleAddComment(post.id)}
+                            disabled={!newCommentText.trim()}
+                            className="px-3.5 py-2 rounded-xl bg-brand-purple text-white hover:opacity-90 disabled:opacity-50 text-[10px] font-black transition-all shadow-sm shrink-0"
+                          >
+                            Comment
+                          </button>
+                        </div>
+                      </div>
+
+                      {/* Comments Listing */}
+                      <div className="space-y-3 pt-1">
+                        {(post.comments || []).map((comment) => (
+                          <div key={comment.id} className="flex gap-2.5 items-start text-xs font-semibold">
+                            <div className="w-7 h-7 rounded-full bg-brand-indigo flex items-center justify-center text-white font-black text-[10px] uppercase overflow-hidden shrink-0">
+                              {comment.authorAvatarUrl ? (
+                                <img src={comment.authorAvatarUrl} alt={comment.authorName} className="w-full h-full object-cover" />
+                              ) : (
+                                comment.authorName[0]
+                              )}
+                            </div>
+                            
+                            <div className="flex-1 bg-black/[0.015] dark:bg-white/[0.015] p-2.5 rounded-2xl border border-card-border/50">
+                              <div className="flex justify-between items-center">
+                                <span className="font-extrabold text-zinc-900 dark:text-white text-[11px] flex items-center gap-1.5">
+                                  {comment.authorName}
+                                  {comment.authorIsVerified && (
+                                    <span className="inline-flex items-center justify-center bg-blue-600 dark:bg-blue-500 text-white rounded-full w-3 h-3 shrink-0 shadow-sm" title="Verified Creator">
+                                      <svg className="w-1.5 h-1.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={4}>
+                                        <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+                                      </svg>
+                                    </span>
+                                  )}
+                                </span>
+                                <span className="text-[9px] text-zinc-500 font-medium">{comment.timestamp}</span>
+                              </div>
+                              <p className="text-[9px] text-zinc-500 mt-0.5 truncate leading-none font-medium max-w-[220px]">{comment.authorHeadline}</p>
+                              <p className="text-zinc-700 dark:text-zinc-300 font-medium mt-2 leading-relaxed break-words">{comment.content}</p>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  )}
                 </div>
               );
             })
@@ -628,6 +901,328 @@ export default function Dashboard() {
 
       </div>
 
+      {/* CONTACT INFO GLASSMORPHISM MODAL */}
+      {showContactModal && profile && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4">
+          <div className="w-full max-w-md glass-panel border border-card-border bg-card-bg rounded-3xl shadow-2xl overflow-hidden animate-in zoom-in-95 duration-250">
+            {/* Header */}
+            <div className="flex items-center justify-between border-b border-card-border p-5">
+              <div className="flex items-center gap-2">
+                <Globe size={16} className="text-brand-purple" />
+                <h3 className="font-black text-sm text-zinc-900 dark:text-white">Contact Info</h3>
+              </div>
+              <button 
+                onClick={() => setShowContactModal(false)}
+                className="p-1 rounded-lg border border-card-border text-zinc-450 hover:text-zinc-700 dark:hover:text-white hover:bg-black/5 dark:hover:bg-white/5 transition-all"
+              >
+                <X size={14} />
+              </button>
+            </div>
+
+            {/* Profile Brief */}
+            <div className="p-5 border-b border-card-border/50 bg-black/[0.015] dark:bg-white/[0.015] flex items-center gap-3">
+              <div className="w-10 h-10 rounded-full bg-brand-purple flex items-center justify-center text-white font-bold text-sm uppercase overflow-hidden shrink-0">
+                {profile.avatarUrl ? (
+                  <img src={profile.avatarUrl} alt="Avatar" className="w-full h-full object-cover" />
+                ) : (
+                  profile.name[0]
+                )}
+              </div>
+              <div className="truncate flex-1">
+                <h4 className="font-extrabold text-xs text-zinc-900 dark:text-white flex items-center gap-1">
+                  {profile.name}
+                  {profile.isVerified && (
+                    <span className="inline-flex items-center justify-center bg-blue-600 dark:bg-blue-500 text-white rounded-full w-3.5 h-3.5 shrink-0 shadow-sm" title="Verified Creator">
+                      <svg className="w-2 h-2" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={4}>
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+                      </svg>
+                    </span>
+                  )}
+                </h4>
+                <p className="text-[10px] text-zinc-550 dark:text-zinc-400 font-semibold truncate leading-none mt-1">{profile.headline}</p>
+              </div>
+            </div>
+
+            {/* Links Directory */}
+            <div className="p-5 space-y-4 text-xs font-semibold">
+              {/* Website */}
+              <div className="flex items-start gap-3">
+                <Globe className="text-brand-purple shrink-0 mt-0.5" size={15} />
+                <div className="flex-1 min-w-0">
+                  <span className="text-[10px] text-zinc-400 dark:text-zinc-505 uppercase tracking-wider block">Website</span>
+                  {profile.contactInfo?.website ? (
+                    <div className="flex items-center justify-between gap-2 mt-0.5">
+                      <a 
+                        href={profile.contactInfo.website} 
+                        target="_blank" 
+                        rel="noopener noreferrer" 
+                        className="text-brand-purple hover:underline truncate"
+                      >
+                        {profile.contactInfo.website}
+                      </a>
+                      <button 
+                        onClick={() => navigator.clipboard.writeText(profile.contactInfo?.website || '')}
+                        className="p-1 rounded hover:bg-black/5 dark:hover:bg-white/5 text-zinc-450"
+                        title="Copy"
+                      >
+                        <Copy size={11} />
+                      </button>
+                    </div>
+                  ) : (
+                    <span className="text-zinc-505 italic font-medium mt-0.5 block">Not specified</span>
+                  )}
+                </div>
+              </div>
+
+              {/* GitHub */}
+              <div className="flex items-start gap-3">
+                <GithubIcon className="text-brand-indigo shrink-0 mt-0.5" size={15} />
+                <div className="flex-1 min-w-0">
+                  <span className="text-[10px] text-zinc-400 dark:text-zinc-550 uppercase tracking-wider block">GitHub Profile</span>
+                  {profile.contactInfo?.github ? (
+                    <div className="flex items-center justify-between gap-2 mt-0.5">
+                      <a 
+                        href={profile.contactInfo.github} 
+                        target="_blank" 
+                        rel="noopener noreferrer" 
+                        className="text-brand-indigo hover:underline truncate"
+                      >
+                        {profile.contactInfo.github}
+                      </a>
+                      <button 
+                        onClick={() => navigator.clipboard.writeText(profile.contactInfo?.github || '')}
+                        className="p-1 rounded hover:bg-black/5 dark:hover:bg-white/5 text-zinc-450"
+                        title="Copy"
+                      >
+                        <Copy size={11} />
+                      </button>
+                    </div>
+                  ) : (
+                    <span className="text-zinc-505 italic font-medium mt-0.5 block">Not specified</span>
+                  )}
+                </div>
+              </div>
+
+              {/* Twitter */}
+              <div className="flex items-start gap-3">
+                <TwitterIcon className="text-[#1da1f2] shrink-0 mt-0.5" size={15} />
+                <div className="flex-1 min-w-0">
+                  <span className="text-[10px] text-zinc-400 dark:text-zinc-550 uppercase tracking-wider block">Twitter / X</span>
+                  {profile.contactInfo?.twitter ? (
+                    <div className="flex items-center justify-between gap-2 mt-0.5">
+                      <a 
+                        href={profile.contactInfo.twitter} 
+                        target="_blank" 
+                        rel="noopener noreferrer" 
+                        className="text-[#1da1f2] hover:underline truncate"
+                      >
+                        {profile.contactInfo.twitter}
+                      </a>
+                      <button 
+                        onClick={() => navigator.clipboard.writeText(profile.contactInfo?.twitter || '')}
+                        className="p-1 rounded hover:bg-black/5 dark:hover:bg-white/5 text-zinc-450"
+                        title="Copy"
+                      >
+                        <Copy size={11} />
+                      </button>
+                    </div>
+                  ) : (
+                    <span className="text-zinc-505 italic font-medium mt-0.5 block">Not specified</span>
+                  )}
+                </div>
+              </div>
+
+              {/* Email */}
+              <div className="flex items-start gap-3">
+                <Mail className="text-brand-emerald shrink-0 mt-0.5" size={15} />
+                <div className="flex-1 min-w-0">
+                  <span className="text-[10px] text-zinc-400 dark:text-zinc-550 uppercase tracking-wider block">Email Address</span>
+                  {profile.contactInfo?.email ? (
+                    <div className="flex items-center justify-between gap-2 mt-0.5">
+                      <a 
+                        href={`mailto:${profile.contactInfo.email}`} 
+                        className="text-brand-emerald hover:underline truncate"
+                      >
+                        {profile.contactInfo.email}
+                      </a>
+                      <button 
+                        onClick={() => navigator.clipboard.writeText(profile.contactInfo?.email || '')}
+                        className="p-1 rounded hover:bg-black/5 dark:hover:bg-white/5 text-zinc-450"
+                        title="Copy"
+                      >
+                        <Copy size={11} />
+                      </button>
+                    </div>
+                  ) : (
+                    <span className="text-zinc-550 italic font-medium mt-0.5 block">Not specified</span>
+                  )}
+                </div>
+              </div>
+
+              {/* Phone */}
+              <div className="flex items-start gap-3">
+                <Phone className="text-brand-amber shrink-0 mt-0.5" size={15} />
+                <div className="flex-1 min-w-0">
+                  <span className="text-[10px] text-zinc-400 dark:text-zinc-550 uppercase tracking-wider block">Phone Number</span>
+                  {profile.contactInfo?.phone ? (
+                    <div className="flex items-center justify-between gap-2 mt-0.5">
+                      <span className="text-zinc-800 dark:text-zinc-350 truncate">{profile.contactInfo.phone}</span>
+                      <button 
+                        onClick={() => navigator.clipboard.writeText(profile.contactInfo?.phone || '')}
+                        className="p-1 rounded hover:bg-black/5 dark:hover:bg-white/5 text-zinc-450"
+                        title="Copy"
+                      >
+                        <Copy size={11} />
+                      </button>
+                    </div>
+                  ) : (
+                    <span className="text-zinc-505 italic font-medium mt-0.5 block">Not specified</span>
+                  )}
+                </div>
+              </div>
+            </div>
+
+            {/* Footer */}
+            <div className="p-4 bg-black/5 dark:bg-black/20 border-t border-card-border flex justify-end">
+              <button 
+                onClick={() => setShowContactModal(false)}
+                className="px-4 py-2 rounded-xl bg-brand-purple text-white text-[10px] font-black hover:opacity-95 shadow-md shadow-brand-purple/10"
+              >
+                Close Info
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* SHARE DIALOG MODAL */}
+      {sharingPost && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4">
+          <div className="w-full max-w-lg glass-panel border border-card-border bg-card-bg rounded-3xl shadow-2xl overflow-hidden animate-in zoom-in-95 duration-250">
+            {/* Header */}
+            <div className="flex items-center justify-between border-b border-card-border p-5">
+              <div className="flex items-center gap-2">
+                <Share size={16} className="text-brand-purple" />
+                <h3 className="font-black text-sm text-zinc-900 dark:text-white">Share Post Evaluation</h3>
+              </div>
+              <button 
+                onClick={() => { setSharingPost(null); setCopiedLink(false); }}
+                className="p-1 rounded-lg border border-card-border text-zinc-450 hover:text-zinc-700 dark:hover:text-white hover:bg-black/5 dark:hover:bg-white/5 transition-all"
+              >
+                <X size={14} />
+              </button>
+            </div>
+
+            {/* Post excerpt */}
+            <div className="p-4 bg-black/[0.015] dark:bg-white/[0.015] border-b border-card-border/50 text-xs font-semibold text-zinc-500 dark:text-zinc-400">
+              <p className="line-clamp-2 italic leading-relaxed">"{sharingPost.content}"</p>
+            </div>
+
+            {/* Options */}
+            <div className="p-5 space-y-5 text-xs font-semibold">
+              <div className="space-y-1.5">
+                <span className="text-[10px] text-zinc-400 dark:text-zinc-500 uppercase tracking-wider block">Direct Post Link</span>
+                <div className="flex gap-2">
+                  <input 
+                    type="text" 
+                    readOnly 
+                    value={`https://postiq.ai/posts/${sharingPost.id}`} 
+                    className="flex-grow bg-[#f8f9fa] dark:bg-[#141b22] border border-card-border rounded-xl px-3 py-2 text-xs focus:outline-none font-mono text-brand-purple"
+                  />
+                  <button 
+                    onClick={() => handleCopyShareLink(sharingPost.id)}
+                    className="px-4 py-2 rounded-xl bg-brand-purple text-white font-bold hover:opacity-90 flex items-center justify-center gap-1.5 shadow-sm min-w-[100px]"
+                  >
+                    {copiedLink ? <Check size={12} /> : <Copy size={12} />}
+                    {copiedLink ? 'Copied!' : 'Copy Link'}
+                  </button>
+                </div>
+              </div>
+
+              <div className="grid grid-cols-2 gap-4">
+                <button
+                  onClick={() => handleRepost(sharingPost)}
+                  className="flex items-center justify-center gap-2 p-3 rounded-2xl border border-card-border hover:border-brand-purple hover:bg-brand-purple/[0.01] transition-all group"
+                >
+                  <Share2 className="text-brand-purple group-hover:scale-105 transition-transform" size={16} />
+                  <div className="text-left">
+                    <p className="font-extrabold text-zinc-800 dark:text-zinc-200">Repost Instantly</p>
+                    <p className="text-[9px] text-zinc-500 font-medium mt-0.5">Publish back to your feed</p>
+                  </div>
+                </button>
+
+                <a
+                  href={`https://twitter.com/intent/tweet?text=${encodeURIComponent(`Check out my evaluated post score of ${sharingPost.score}/100 on PostIQ! 🚀\n\n"${sharingPost.content.slice(0, 100)}..."`)}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-center justify-center gap-2 p-3 rounded-2xl border border-card-border hover:border-[#1da1f2] hover:bg-[#1da1f2]/[0.01] transition-all group"
+                >
+                  <TwitterIcon className="text-[#1da1f2] group-hover:scale-105 transition-transform" size={16} />
+                  <div className="text-left">
+                    <p className="font-extrabold text-zinc-800 dark:text-zinc-200">Share to Twitter</p>
+                    <p className="text-[9px] text-zinc-500 font-medium mt-0.5">Post to your X feed</p>
+                  </div>
+                </a>
+              </div>
+
+              <div className="space-y-2 pt-1 border-t border-card-border/50">
+                <span className="text-[10px] text-zinc-400 dark:text-zinc-500 uppercase tracking-wider block">Send to Simulated Connections</span>
+                {connections.length === 0 ? (
+                  <p className="text-[10px] text-zinc-500 italic font-semibold">You have no connections to send to yet. Add connections in the Creator Network!</p>
+                ) : (
+                  <div className="max-h-36 overflow-y-auto space-y-1.5 scrollbar-hide">
+                    {connections.map((user) => (
+                      <div key={user.id} className="flex justify-between items-center p-2 rounded-xl hover:bg-black/5 dark:hover:bg-white/5 transition-all">
+                        <div className="flex items-center gap-2.5 min-w-0 pr-3">
+                          <div className="w-7 h-7 rounded-full bg-brand-purple flex items-center justify-center text-white font-bold text-[10px] uppercase overflow-hidden shrink-0">
+                            {user.avatarUrl ? (
+                              <img src={user.avatarUrl} alt={user.name} className="w-full h-full object-cover" />
+                            ) : (
+                              user.name[0]
+                            )}
+                          </div>
+                          <div className="truncate">
+                            <p className="font-bold truncate text-[11px] text-zinc-800 dark:text-zinc-200">{user.name}</p>
+                            <p className="text-[9px] text-zinc-500 truncate font-semibold leading-none mt-0.5">{user.headline.split('|')[0]}</p>
+                          </div>
+                        </div>
+                        <button
+                          onClick={() => handleSendDirectMessage(user.id)}
+                          className={`px-3 py-1 rounded-lg font-black text-[9px] transition-all shrink-0 ${
+                            sentMessageTo[user.id] 
+                              ? 'bg-brand-emerald/10 text-brand-emerald border border-brand-emerald/20 cursor-default' 
+                              : 'border border-card-border text-zinc-650 dark:text-zinc-350 hover:bg-brand-purple hover:text-white hover:border-transparent'
+                          }`}
+                        >
+                          {sentMessageTo[user.id] ? (
+                            <span className="flex items-center gap-0.5">
+                              <Check size={8} />
+                              Sent!
+                            </span>
+                          ) : (
+                            'Send'
+                          )}
+                        </button>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
+
+            </div>
+
+            {/* Footer */}
+            <div className="p-4 bg-black/5 dark:bg-black/20 border-t border-card-border flex justify-end">
+              <button 
+                onClick={() => { setSharingPost(null); setCopiedLink(false); }}
+                className="px-4 py-2 rounded-xl bg-brand-purple text-white text-[10px] font-black hover:opacity-95 shadow-md shadow-brand-purple/10"
+              >
+                Done
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

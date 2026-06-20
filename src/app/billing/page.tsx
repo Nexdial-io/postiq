@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import React, { useState, useEffect, Suspense } from 'react';
 import { useSearchParams } from 'next/navigation';
@@ -22,7 +22,7 @@ function BillingContent() {
   const searchParams = useSearchParams();
   const [subscription, setSubscription] = useState({ plan: 'Free', status: 'Active', expires: 'Never' });
   const [isAnnual, setIsAnnual] = useState(false);
-  const [selectedPlan, setSelectedPlan] = useState<'Free' | 'Pro' | 'Agency' | null>(null);
+  const [selectedPlan, setSelectedPlan] = useState<'Free' | 'Pro' | null>(null);
   
   // Checkout coupon fields
   const [couponCode, setCouponCode] = useState("");
@@ -38,7 +38,6 @@ function BillingContent() {
     // Check if redirecting from landing page upgrade click
     const planParam = searchParams.get('plan');
     if (planParam === 'pro') setSelectedPlan('Pro');
-    if (planParam === 'agency') setSelectedPlan('Agency');
   }, [searchParams]);
 
   const handleApplyCoupon = () => {
@@ -107,18 +106,6 @@ function BillingContent() {
         "Competitor gap & opportunity notifications",
         "50+ hooks & rewriter tones generator"
       ]
-    },
-    {
-      name: "Agency",
-      price: isAnnual ? 79 : 99,
-      desc: "For content networks, brands & growth consultants.",
-      features: [
-        "Everything in Pro tier plan",
-        "Multiple client workspaces",
-        "Branded exports (PDF, CSV, PPT)",
-        "Dedicated account strategist review",
-        "Autopilot post suggestions calendar"
-      ]
     }
   ];
 
@@ -170,7 +157,7 @@ function BillingContent() {
             </div>
 
             {/* Pricing list */}
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 max-w-2xl">
               {pricingTiers.map((tier) => {
                 const isCurrent = subscription.plan === tier.name;
                 const cost = isAnnual ? tier.price * 12 : tier.price;

@@ -369,7 +369,7 @@ export default function Home() {
           </div>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 items-stretch">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-stretch max-w-4xl mx-auto">
           {/* Free Plan */}
           <div className="glass-panel rounded-2xl p-8 flex flex-col justify-between border-card-border relative">
             <div className="space-y-6">
@@ -423,32 +423,6 @@ export default function Home() {
               className="mt-8 w-full py-3 rounded-xl bg-gradient-to-r from-brand-purple to-brand-indigo text-white text-center text-sm font-bold shadow-md shadow-brand-purple/20 hover:opacity-95 transition-all"
             >
               Get Pro Now
-            </Link>
-          </div>
-
-          {/* Agency Plan */}
-          <div className="glass-panel rounded-2xl p-8 flex flex-col justify-between border-card-border relative">
-            <div className="space-y-6">
-              <div>
-                <h4 className="font-bold text-xl">Agency</h4>
-                <p className="text-xs text-zinc-500 mt-1">For brands, agencies & networks</p>
-              </div>
-              <div className="flex items-baseline">
-                <span className="text-4xl font-extrabold">${isAnnual ? 79 : 99}</span>
-                <span className="text-zinc-500 text-xs ml-1">/ month</span>
-              </div>
-              <ul className="space-y-3 text-sm text-zinc-600 dark:text-zinc-400">
-                <li className="flex items-center gap-2"><Check size={14} className="text-brand-emerald" /> Multiple client workspaces</li>
-                <li className="flex items-center gap-2"><Check size={14} className="text-brand-emerald" /> Export PDF/DOCX/PPT reports</li>
-                <li className="flex items-center gap-2"><Check size={14} className="text-brand-emerald" /> Multi-user team dashboards</li>
-                <li className="flex items-center gap-2"><Check size={14} className="text-brand-emerald" /> Automated autopilot suggestions</li>
-              </ul>
-            </div>
-            <Link
-              href="/billing?plan=agency"
-              className="mt-8 w-full py-3 rounded-xl border border-card-border text-center text-sm font-semibold hover:bg-black/5 dark:hover:bg-white/5 transition-all"
-            >
-              Get Agency Now
             </Link>
           </div>
         </div>

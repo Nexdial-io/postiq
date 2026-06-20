@@ -1,5 +1,5 @@
 // Client-side local storage mock database to persist workspace data.
-import { networkDb } from './db';
+import { networkDb, ContactInfo } from './db';
 
 export interface UserProfile {
   name: string;
@@ -14,7 +14,21 @@ export interface UserProfile {
   skills: string[];
   certifications: string[];
   avatarUrl?: string;
+  bannerUrl?: string;
   score: number;
+  isVerified?: boolean;
+  contactInfo?: ContactInfo;
+}
+
+export interface PostComment {
+  id: string;
+  authorName: string;
+  authorHeadline: string;
+  authorAvatarUrl?: string;
+  authorIsVerified?: boolean;
+  content: string;
+  timestamp: string;
+  likes: number;
 }
 
 export interface PostAnalysis {
@@ -40,6 +54,7 @@ export interface PostAnalysis {
   };
   suggestions: string[];
   timestamp: string;
+  comments?: PostComment[];
 }
 
 export interface Competitor {
@@ -134,6 +149,37 @@ const DEFAULT_CALENDAR: CalendarEvent[] = [
   }
 ];
 
+const MOCK_CREATOR_COMMENTS = [
+  {
+    authorName: "Sarah Chen",
+    authorHeadline: "Lead PM @ Google | AI Architect",
+    authorIsVerified: true,
+    content: "This is pure gold! The way you structured the hook is highly engaging. Definitely saving this for reference.",
+    timestamp: "2 hours ago"
+  },
+  {
+    authorName: "Marcus Vance",
+    authorHeadline: "SaaS Growth Advisor | B2B PLG Lead",
+    authorIsVerified: false,
+    content: "Excellent formatting. The single-sentence spacing makes this incredibly easy to scan on mobile devices.",
+    timestamp: "3 hours ago"
+  },
+  {
+    authorName: "Devin Patel",
+    authorHeadline: "Dev Advocate @ Next.js | AI Engineer",
+    authorIsVerified: false,
+    content: "Spot on! Adding data points in the first 3 lines increases authority indexing significantly.",
+    timestamp: "5 hours ago"
+  },
+  {
+    authorName: "Elena Rostova",
+    authorHeadline: "Recruiting Director | Sourcing Executive Talent",
+    authorIsVerified: false,
+    content: "From a recruiter's perspective, this level of clarity in communication is exactly what stands out in a candidate's profile.",
+    timestamp: "1 day ago"
+  }
+];
+
 // Helper safe storage
 const getStorageItem = (key: string, fallback: any) => {
   if (typeof window === 'undefined') return fallback;
@@ -173,7 +219,11 @@ const getFallbackProfileForUser = (userId: string): UserProfile => {
     ],
     skills: user.skills,
     certifications: userId === 'user-alex' ? DEFAULT_PROFILE.certifications : ["PostIQ Certified Creator", "LinkedIn Growth Strategist"],
-    score: user.profileScore
+    avatarUrl: user.avatarUrl,
+    bannerUrl: user.bannerUrl,
+    score: user.profileScore,
+    isVerified: user.isVerified,
+    contactInfo: user.contactInfo
   };
 };
 
@@ -191,14 +241,70 @@ export const mockDb = {
     networkDb.updateUser(activeId, {
       name: profile.name,
       headline: profile.headline,
-      profileScore: profile.score
+      avatarUrl: profile.avatarUrl,
+      bannerUrl: profile.bannerUrl,
+      profileScore: profile.score,
+      isVerified: profile.isVerified,
+      contactInfo: profile.contactInfo
     });
+
+    if (typeof window !== 'undefined') {
+      window.dispatchEvent(new Event('liq-profile-updated'));
+    }
   },
 
-  getAnalyses: (): PostAnalysis[] => getStorageItem("liq_analyses", []),
+  getAnalyses: (): PostAnalysis[] => {
+    const list = getStorageItem("liq_analyses", []);
+    let updated = false;
+    const mapped = list.map((post: PostAnalysis) => {
+      if (!post.comments || post.comments.length === 0) {
+        updated = true;
+        const seedVal = post.id.split('-').pop() || "0";
+        const numSeed = Number(seedVal) || 0;
+        const seedIndex1 = numSeed % MOCK_CREATOR_COMMENTS.length;
+        const seedIndex2 = (numSeed + 1) % MOCK_CREATOR_COMMENTS.length;
+        const postComments = [
+          {
+            id: `c-seed-1-${post.id}`,
+            ...MOCK_CREATOR_COMMENTS[seedIndex1],
+            likes: (numSeed % 12) + 3
+          },
+          {
+            id: `c-seed-2-${post.id}`,
+            ...MOCK_CREATOR_COMMENTS[seedIndex2],
+            likes: (numSeed % 5) + 1
+          }
+        ];
+        return {
+          ...post,
+          comments: postComments
+        };
+      }
+      return post;
+    });
+    if (updated) {
+      setStorageItem("liq_analyses", mapped);
+    }
+    return mapped;
+  },
   saveAnalysis: (analysis: PostAnalysis): void => {
     const analyses = mockDb.getAnalyses();
-    setStorageItem("liq_analyses", [analysis, ...analyses].slice(0, 50));
+    // Default comments if new analysis is added
+    const withComments = {
+      ...analysis,
+      comments: analysis.comments || [
+        {
+          id: `c-seed-1-${analysis.id}`,
+          authorName: "Sarah Chen",
+          authorHeadline: "Lead PM @ Google | AI Architect",
+          authorIsVerified: true,
+          content: "Really strong hook structure! The readability index on this is fantastic.",
+          timestamp: "Just now",
+          likes: 2
+        }
+      ]
+    };
+    setStorageItem("liq_analyses", [withComments, ...analyses].slice(0, 50));
   },
   deleteAnalysis: (id: string): void => {
     const analyses = mockDb.getAnalyses();
@@ -227,8 +333,8 @@ export const mockDb = {
     setStorageItem("liq_calendar", list.filter((e: CalendarEvent) => e.id !== id));
   },
 
-  getSubscription: (): { plan: 'Free' | 'Pro' | 'Agency'; status: string; expires: string } => 
+  getSubscription: (): { plan: 'Free' | 'Pro'; status: string; expires: string } => 
     getStorageItem("liq_sub", { plan: 'Free', status: 'Active', expires: 'Never' }),
-  saveSubscription: (plan: 'Free' | 'Pro' | 'Agency', status: string, expires: string): void => 
+  saveSubscription: (plan: 'Free' | 'Pro', status: string, expires: string): void => 
     setStorageItem("liq_sub", { plan, status, expires })
 };

@@ -41,20 +41,6 @@ export default function PricingPage() {
         "Historical exports (CSV)"
       ],
       popular: true
-    },
-    {
-      name: "Agency",
-      price: isAnnual ? 79 : 99,
-      desc: "For brands, agencies, growth networks, and teams managing clients.",
-      features: [
-        "Everything in Pro tier plan",
-        "Multiple client workspaces (up to 10)",
-        "Branded reports exports (PDF, CSV, PPT)",
-        "Dedicated account strategist review",
-        "Autopilot post suggestions calendar",
-        "Team members seats (up to 5)",
-        "API access keys"
-      ]
     }
   ];
 
@@ -62,7 +48,7 @@ export default function PricingPage() {
     { q: "Can I change plans at any time?", a: "Yes, you can upgrade, downgrade, or cancel your subscription plan at any time. If you upgrade, the price change is prorated." },
     { q: "What is your refund policy?", a: "We offer a 14-day refund policy for all new subscriptions. Simply contact support within 14 days and we will issue a full refund." },
     { q: "How does the annual discount work?", a: "By choosing annual billing, you are billed for 12 months upfront. This saves you 20% compared to paying monthly." },
-    { q: "Can I export my profile audits?", a: "Yes, Pro users can export data in CSV format, and Agency users can export formatted PDF and PowerPoint presentations." }
+    { q: "Can I export my profile audits?", a: "Yes, Pro users can export data in CSV format." }
   ];
 
   return (
@@ -101,7 +87,7 @@ export default function PricingPage() {
       </section>
 
       {/* Pricing Cards Grid */}
-      <section className="w-full max-w-6xl px-4 py-8 grid grid-cols-1 md:grid-cols-3 gap-8 items-stretch">
+      <section className="w-full max-w-4xl px-4 py-8 grid grid-cols-1 md:grid-cols-2 gap-8 items-stretch">
         {plans.map((plan, idx) => {
           const cost = isAnnual ? plan.price * 12 : plan.price;
           return (

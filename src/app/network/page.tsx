@@ -17,7 +17,43 @@ import {
   ShieldAlert,
   Zap
 } from 'lucide-react';
+import { Mail, Phone, Copy, Globe } from 'lucide-react';
 import { networkDb, NetworkUser, MOCK_NETWORK_USERS } from '@/lib/db';
+
+const GithubIcon = ({ className, size = 16 }: { className?: string; size?: number }) => (
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    width={size}
+    height={size}
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    strokeWidth="2"
+    strokeLinecap="round"
+    strokeLinejoin="round"
+    className={className}
+  >
+    <path d="M15 22v-4a4.8 4.8 0 0 0-1-3.5c3 0 6-2 6-5.5.08-1.25-.27-2.48-1-3.5.28-1.15.28-2.35 0-3.5 0 0-1 0-3 1.5-2.64-.5-5.36-.5-8 0C6 2 5 2 5 2c-.3 1.15-.3 2.35 0 3.5A5.403 5.403 0 0 0 4 9c0 3.5 3 5.5 6 5.5-.39.49-.68 1.05-.85 1.65-.17.6-.22 1.23-.15 1.85v4" />
+    <path d="M9 18c-4.51 2-5-2-7-2" />
+  </svg>
+);
+
+const TwitterIcon = ({ className, size = 16 }: { className?: string; size?: number }) => (
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    width={size}
+    height={size}
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    strokeWidth="2"
+    strokeLinecap="round"
+    strokeLinejoin="round"
+    className={className}
+  >
+    <path d="M22 4s-.7 2.1-2 3.4c1.6 10-9.4 17.3-18 11.6 2.2.1 4.4-.6 6-2C3 15.5.5 9.6 3 5c2.2 2.6 5.6 4.1 9 4-.9-4.2 4-6.6 7-3.8 1.1 0 3-1.2 3-1.2z" />
+  </svg>
+);
 import { 
   ResponsiveContainer, 
   RadarChart, 
@@ -46,6 +82,8 @@ export default function NetworkPage() {
   // Comparative modal state
   const [compareTarget, setCompareTarget] = useState<NetworkUser | null>(null);
   const [chartMounted, setChartMounted] = useState(false);
+  const [selectedContactUser, setSelectedContactUser] = useState<NetworkUser | null>(null);
+  const [copiedLink, setCopiedLink] = useState(false);
 
   useEffect(() => {
     setChartMounted(true);
@@ -55,6 +93,42 @@ export default function NetworkPage() {
   const loadNetworkData = () => {
     const user = networkDb.getActiveUser();
     setActiveUser(user);
+
+    // Seed 3 incoming invitations if they are a new registered user with no connections/invites yet
+    const currentRelations = networkDb.getRelations();
+    const hasAnyRelations = currentRelations.some(r => r.senderId === user.id || r.receiverId === user.id);
+    
+    if (user.id.startsWith('custom-user-') && !hasAnyRelations) {
+      const dummyPool = MOCK_NETWORK_USERS.filter(u => u.id.startsWith('dummy-user-'));
+      if (dummyPool.length >= 3) {
+        const seededRelations = [
+          ...currentRelations,
+          {
+            id: `rel-seed-1`,
+            senderId: dummyPool[0].id,
+            receiverId: user.id,
+            status: 'pending' as const,
+            timestamp: "2 hours ago"
+          },
+          {
+            id: `rel-seed-2`,
+            senderId: dummyPool[1].id,
+            receiverId: user.id,
+            status: 'pending' as const,
+            timestamp: "5 hours ago"
+          },
+          {
+            id: `rel-seed-3`,
+            senderId: dummyPool[2].id,
+            receiverId: user.id,
+            status: 'pending' as const,
+            timestamp: "1 day ago"
+          }
+        ];
+        networkDb.saveRelations(seededRelations);
+      }
+    }
+
     setConnections(networkDb.getConnections(user.id));
     setPendingRequests(networkDb.getPendingRequests(user.id));
     setDiscoverCreators(networkDb.getDiscoverCreators(user.id));
@@ -256,12 +330,23 @@ export default function NetworkPage() {
                     className="glass-panel border border-card-border/75 rounded-2xl p-4 md:p-5 bg-card-bg flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 hover:border-brand-purple/20 transition-all duration-300 group"
                   >
                     <div className="flex items-center space-x-4 flex-grow min-w-0">
-                      <div className="w-12 h-12 rounded-2xl bg-brand-purple flex items-center justify-center text-white font-black text-lg uppercase shadow-inner shrink-0">
-                        {creator.name[0]}
+                      <div className="w-12 h-12 rounded-2xl bg-brand-purple flex items-center justify-center text-white font-black text-lg uppercase shadow-inner shrink-0 overflow-hidden">
+                        {creator.avatarUrl ? (
+                          <img src={creator.avatarUrl} alt={creator.name} className="w-full h-full object-cover" />
+                        ) : (
+                          creator.name[0]
+                        )}
                       </div>
                       <div className="min-w-0 space-y-1">
                         <h4 className="font-extrabold text-sm text-zinc-900 dark:text-white truncate flex items-center gap-1.5">
                           {creator.name}
+                          {creator.isVerified && (
+                            <span className="inline-flex items-center justify-center bg-blue-600 dark:bg-blue-500 text-white rounded-full w-3.5 h-3.5 shrink-0 shadow-sm" title="Verified Creator">
+                              <svg className="w-2 h-2" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={4}>
+                                <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+                              </svg>
+                            </span>
+                          )}
                           <span className="text-[10px] font-black px-1.5 py-0.5 rounded bg-brand-purple/10 text-brand-purple">
                             {creator.profileScore}%
                           </span>
@@ -273,6 +358,14 @@ export default function NetworkPage() {
                     </div>
 
                     <div className="flex items-center gap-2 w-full sm:w-auto shrink-0 mt-2 sm:mt-0">
+                      <button 
+                        onClick={() => setSelectedContactUser(creator)}
+                        className="flex-1 sm:flex-initial inline-flex items-center justify-center gap-1.5 px-3 py-2 rounded-xl border border-card-border hover:border-brand-purple hover:text-brand-purple text-[10px] font-black text-zinc-650 dark:text-zinc-350 transition-all"
+                      >
+                        <Globe size={12} className="text-brand-purple" />
+                        Contact Info
+                      </button>
+
                       <button 
                         onClick={() => setCompareTarget(creator)}
                         className="flex-1 sm:flex-initial inline-flex items-center justify-center gap-1.5 px-3 py-2 rounded-xl border border-card-border hover:border-brand-purple hover:text-brand-purple text-[10px] font-black text-zinc-650 dark:text-zinc-350 transition-all"
@@ -323,12 +416,23 @@ export default function NetworkPage() {
                     className="glass-panel border border-card-border/75 rounded-2xl p-4 md:p-5 bg-card-bg flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 hover:border-brand-purple/20 transition-all duration-300"
                   >
                     <div className="flex items-center space-x-4 flex-grow min-w-0">
-                      <div className="w-12 h-12 rounded-2xl bg-brand-purple flex items-center justify-center text-white font-black text-lg uppercase shadow-inner shrink-0">
-                        {creator.name[0]}
+                      <div className="w-12 h-12 rounded-2xl bg-brand-purple flex items-center justify-center text-white font-black text-lg uppercase shadow-inner shrink-0 overflow-hidden">
+                        {creator.avatarUrl ? (
+                          <img src={creator.avatarUrl} alt={creator.name} className="w-full h-full object-cover" />
+                        ) : (
+                          creator.name[0]
+                        )}
                       </div>
                       <div className="min-w-0 space-y-1">
                         <h4 className="font-extrabold text-sm text-zinc-900 dark:text-white truncate flex items-center gap-1.5">
                           {creator.name}
+                          {creator.isVerified && (
+                            <span className="inline-flex items-center justify-center bg-blue-600 dark:bg-blue-500 text-white rounded-full w-3.5 h-3.5 shrink-0 shadow-sm" title="Verified Creator">
+                              <svg className="w-2 h-2" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={4}>
+                                <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+                              </svg>
+                            </span>
+                          )}
                           <span className="text-[10px] font-black px-1.5 py-0.5 rounded bg-brand-purple/10 text-brand-purple">
                             {creator.profileScore}%
                           </span>
@@ -340,6 +444,13 @@ export default function NetworkPage() {
                     </div>
 
                     <div className="flex items-center gap-2 w-full sm:w-auto shrink-0 mt-2 sm:mt-0">
+                      <button 
+                        onClick={() => setSelectedContactUser(creator)}
+                        className="flex-1 sm:flex-initial inline-flex items-center justify-center gap-1 px-3 py-2 rounded-xl border border-card-border hover:border-brand-purple hover:text-brand-purple text-[10px] font-black text-zinc-650 dark:text-zinc-350 transition-all"
+                      >
+                        <Globe size={11} className="text-brand-purple" />
+                        Contact
+                      </button>
                       <button 
                         onClick={() => handleAcceptRequest(creator.id)}
                         className="flex-1 sm:flex-initial inline-flex items-center justify-center gap-1 px-4.5 py-2 rounded-xl bg-brand-purple text-white text-[10px] font-black hover:opacity-95 transition-all shadow-md shadow-brand-purple/15"
@@ -383,12 +494,23 @@ export default function NetworkPage() {
                       className="glass-panel border border-card-border/75 rounded-2xl p-4 md:p-5 bg-card-bg flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 hover:border-brand-purple/20 transition-all duration-300"
                     >
                       <div className="flex items-center space-x-4 flex-grow min-w-0">
-                        <div className="w-12 h-12 rounded-2xl bg-brand-purple flex items-center justify-center text-white font-black text-lg uppercase shadow-inner shrink-0">
-                          {creator.name[0]}
+                        <div className="w-12 h-12 rounded-2xl bg-brand-purple flex items-center justify-center text-white font-black text-lg uppercase shadow-inner shrink-0 overflow-hidden">
+                          {creator.avatarUrl ? (
+                            <img src={creator.avatarUrl} alt={creator.name} className="w-full h-full object-cover" />
+                          ) : (
+                            creator.name[0]
+                          )}
                         </div>
                         <div className="min-w-0 space-y-1">
                           <h4 className="font-extrabold text-sm text-zinc-900 dark:text-white truncate flex items-center gap-1.5">
                             {creator.name}
+                            {creator.isVerified && (
+                              <span className="inline-flex items-center justify-center bg-blue-600 dark:bg-blue-500 text-white rounded-full w-3.5 h-3.5 shrink-0 shadow-sm" title="Verified Creator">
+                                <svg className="w-2 h-2" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={4}>
+                                  <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+                                </svg>
+                              </span>
+                            )}
                             <span className="text-[10px] font-black px-1.5 py-0.5 rounded bg-brand-purple/10 text-brand-purple">
                               {creator.profileScore}%
                             </span>
@@ -399,7 +521,14 @@ export default function NetworkPage() {
                         </div>
                       </div>
 
-                      <div className="w-full sm:w-auto shrink-0 mt-2 sm:mt-0">
+                      <div className="w-full sm:w-auto shrink-0 mt-2 sm:mt-0 flex gap-2 justify-end">
+                        <button
+                          onClick={() => setSelectedContactUser(creator)}
+                          className="p-2 rounded-xl border border-card-border hover:border-brand-purple hover:text-brand-purple text-zinc-450 dark:text-zinc-355 transition-all"
+                          title="Contact Info"
+                        >
+                          <Globe size={13} />
+                        </button>
                         {isSent ? (
                           <span className="w-full sm:w-auto inline-flex items-center justify-center gap-1 px-4 py-2 rounded-xl bg-zinc-100 dark:bg-zinc-800 text-zinc-500 border border-card-border text-[10px] font-black cursor-default">
                             <Check size={11} />
@@ -462,24 +591,50 @@ export default function NetworkPage() {
               <div className="grid grid-cols-2 gap-4">
                 {/* You Card */}
                 <div className="p-4 rounded-2xl border border-brand-purple/20 bg-brand-purple/[0.02] flex items-center gap-3">
-                  <div className="w-10 h-10 rounded-xl bg-brand-purple flex items-center justify-center text-white font-black text-base uppercase shrink-0">
-                    {activeUser.name[0]}
+                  <div className="w-10 h-10 rounded-xl bg-brand-purple flex items-center justify-center text-white font-black text-base uppercase shrink-0 overflow-hidden">
+                    {activeUser.avatarUrl ? (
+                      <img src={activeUser.avatarUrl} alt="You" className="w-full h-full object-cover" />
+                    ) : (
+                      activeUser.name[0]
+                    )}
                   </div>
                   <div className="truncate">
                     <span className="text-[9px] uppercase font-black text-brand-purple tracking-wider">You</span>
-                    <h4 className="font-extrabold text-xs text-zinc-900 dark:text-white truncate">{activeUser.name}</h4>
+                    <h4 className="font-extrabold text-xs text-zinc-900 dark:text-white truncate flex items-center gap-1">
+                      {activeUser.name}
+                      {activeUser.isVerified && (
+                        <span className="inline-flex items-center justify-center bg-blue-600 dark:bg-blue-500 text-white rounded-full w-3 h-3 shrink-0 shadow-sm" title="Verified Creator">
+                          <svg className="w-1.5 h-1.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={4}>
+                            <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+                          </svg>
+                        </span>
+                      )}
+                    </h4>
                     <p className="text-[10px] text-zinc-500 font-semibold truncate leading-none mt-1">Score: {activeUser.profileScore}%</p>
                   </div>
                 </div>
 
                 {/* Target Creator Card */}
                 <div className="p-4 rounded-2xl border border-brand-emerald/20 bg-brand-emerald/[0.02] flex items-center gap-3">
-                  <div className="w-10 h-10 rounded-xl bg-brand-emerald flex items-center justify-center text-white font-black text-base uppercase shrink-0">
-                    {compareTarget.name[0]}
+                  <div className="w-10 h-10 rounded-xl bg-brand-emerald flex items-center justify-center text-white font-black text-base uppercase shrink-0 overflow-hidden">
+                    {compareTarget.avatarUrl ? (
+                      <img src={compareTarget.avatarUrl} alt={compareTarget.name} className="w-full h-full object-cover" />
+                    ) : (
+                      compareTarget.name[0]
+                    )}
                   </div>
                   <div className="truncate">
                     <span className="text-[9px] uppercase font-black text-brand-emerald tracking-wider">Connection</span>
-                    <h4 className="font-extrabold text-xs text-zinc-900 dark:text-white truncate">{compareTarget.name}</h4>
+                    <h4 className="font-extrabold text-xs text-zinc-900 dark:text-white truncate flex items-center gap-1">
+                      {compareTarget.name}
+                      {compareTarget.isVerified && (
+                        <span className="inline-flex items-center justify-center bg-blue-600 dark:bg-blue-500 text-white rounded-full w-3 h-3 shrink-0 shadow-sm" title="Verified Creator">
+                          <svg className="w-1.5 h-1.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={4}>
+                            <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+                          </svg>
+                        </span>
+                      )}
+                    </h4>
                     <p className="text-[10px] text-zinc-500 font-semibold truncate leading-none mt-1">Score: {compareTarget.profileScore}%</p>
                   </div>
                 </div>
@@ -575,6 +730,201 @@ export default function NetworkPage() {
         </div>
       )}
 
-    </div>
-  );
-}
+
+      {/* CONTACT INFO GLASSMORPHISM MODAL */}
+      {selectedContactUser && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4">
+          <div className="w-full max-w-md glass-panel border border-card-border bg-card-bg rounded-3xl shadow-2xl overflow-hidden animate-in zoom-in-95 duration-250">
+            {/* Header */}
+            <div className="flex items-center justify-between border-b border-card-border p-5">
+              <div className="flex items-center gap-2">
+                <Globe size={16} className="text-brand-purple" />
+                <h3 className="font-black text-sm text-zinc-900 dark:text-white">Contact Info</h3>
+              </div>
+              <button 
+                onClick={() => setSelectedContactUser(null)}
+                className="p-1 rounded-lg border border-card-border text-zinc-450 hover:text-zinc-700 dark:hover:text-white hover:bg-black/5 dark:hover:bg-white/5 transition-all"
+              >
+                <X size={14} />
+              </button>
+            </div>
+
+            {/* Profile Brief */}
+            <div className="p-5 border-b border-card-border/50 bg-black/[0.015] dark:bg-white/[0.015] flex items-center gap-3">
+              <div className="w-10 h-10 rounded-full bg-brand-purple flex items-center justify-center text-white font-bold text-sm uppercase overflow-hidden shrink-0">
+                {selectedContactUser.avatarUrl ? (
+                  <img src={selectedContactUser.avatarUrl} alt="Avatar" className="w-full h-full object-cover" />
+                ) : (
+                  selectedContactUser.name[0]
+                )}
+              </div>
+              <div className="truncate flex-1">
+                <h4 className="font-extrabold text-xs text-zinc-900 dark:text-white flex items-center gap-1">
+                  {selectedContactUser.name}
+                  {selectedContactUser.isVerified && (
+                    <span className="inline-flex items-center justify-center bg-blue-600 dark:bg-blue-500 text-white rounded-full w-3.5 h-3.5 shrink-0 shadow-sm" title="Verified Creator">
+                      <svg className="w-2 h-2" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={4}>
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+                      </svg>
+                    </span>
+                  )}
+                </h4>
+                <p className="text-[10px] text-zinc-500 font-semibold truncate leading-none mt-1">{selectedContactUser.headline}</p>
+              </div>
+            </div>
+
+            {/* Links Directory */}
+            <div className="p-5 space-y-4 text-xs font-semibold">
+              {/* Website */}
+              <div className="flex items-start gap-3">
+                <Globe className="text-brand-purple shrink-0 mt-0.5" size={15} />
+                <div className="flex-1 min-w-0">
+                  <span className="text-[10px] text-zinc-400 dark:text-zinc-505 uppercase tracking-wider block">Website</span>
+                  {selectedContactUser.contactInfo?.website ? (
+                    <div className="flex items-center justify-between gap-2 mt-0.5">
+                      <a 
+                        href={selectedContactUser.contactInfo.website} 
+                        target="_blank" 
+                        rel="noopener noreferrer" 
+                        className="text-brand-purple hover:underline truncate"
+                      >
+                        {selectedContactUser.contactInfo.website}
+                      </a>
+                      <button 
+                        onClick={() => navigator.clipboard.writeText(selectedContactUser.contactInfo?.website || '')}
+                        className="p-1 rounded hover:bg-black/5 dark:hover:bg-white/5 text-zinc-450"
+                        title="Copy"
+                      >
+                        <Copy size={11} />
+                      </button>
+                    </div>
+                  ) : (
+                    <span className="text-zinc-505 italic font-medium mt-0.5 block">Not specified</span>
+                  )}
+                </div>
+              </div>
+
+              {/* GitHub */}
+              <div className="flex items-start gap-3">
+                <GithubIcon className="text-brand-indigo shrink-0 mt-0.5" size={15} />
+                <div className="flex-1 min-w-0">
+                  <span className="text-[10px] text-zinc-400 dark:text-zinc-550 uppercase tracking-wider block">GitHub Profile</span>
+                  {selectedContactUser.contactInfo?.github ? (
+                    <div className="flex items-center justify-between gap-2 mt-0.5">
+                      <a 
+                        href={selectedContactUser.contactInfo.github} 
+                        target="_blank" 
+                        rel="noopener noreferrer" 
+                        className="text-brand-indigo hover:underline truncate"
+                      >
+                        {selectedContactUser.contactInfo.github}
+                      </a>
+                      <button 
+                        onClick={() => navigator.clipboard.writeText(selectedContactUser.contactInfo?.github || '')}
+                        className="p-1 rounded hover:bg-black/5 dark:hover:bg-white/5 text-zinc-450"
+                        title="Copy"
+                      >
+                        <Copy size={11} />
+                      </button>
+                    </div>
+                  ) : (
+                    <span className="text-zinc-550 italic font-medium mt-0.5 block">Not specified</span>
+                  )}
+                </div>
+              </div>
+
+              {/* Twitter */}
+              <div className="flex items-start gap-3">
+                <TwitterIcon className="text-[#1da1f2] shrink-0 mt-0.5" size={15} />
+                <div className="flex-1 min-w-0">
+                  <span className="text-[10px] text-zinc-400 dark:text-zinc-550 uppercase tracking-wider block">Twitter / X</span>
+                  {selectedContactUser.contactInfo?.twitter ? (
+                    <div className="flex items-center justify-between gap-2 mt-0.5">
+                      <a 
+                        href={selectedContactUser.contactInfo.twitter} 
+                        target="_blank" 
+                        rel="noopener noreferrer" 
+                        className="text-[#1da1f2] hover:underline truncate"
+                      >
+                        {selectedContactUser.contactInfo.twitter}
+                      </a>
+                      <button 
+                        onClick={() => navigator.clipboard.writeText(selectedContactUser.contactInfo?.twitter || '')}
+                        className="p-1 rounded hover:bg-black/5 dark:hover:bg-white/5 text-zinc-455"
+                        title="Copy"
+                      >
+                        <Copy size={11} />
+                      </button>
+                    </div>
+                  ) : (
+                    <span className="text-zinc-550 italic font-medium mt-0.5 block">Not specified</span>
+                  )}
+                </div>
+              </div>
+
+              {/* Email */}
+              <div className="flex items-start gap-3">
+                <Mail className="text-brand-emerald shrink-0 mt-0.5" size={15} />
+                <div className="flex-1 min-w-0">
+                  <span className="text-[10px] text-zinc-400 dark:text-zinc-550 uppercase tracking-wider block">Email Address</span>
+                  {selectedContactUser.contactInfo?.email ? (
+                    <div className="flex items-center justify-between gap-2 mt-0.5">
+                      <a 
+                        href={`mailto:${selectedContactUser.contactInfo.email}`} 
+                        className="text-brand-emerald hover:underline truncate"
+                      >
+                        {selectedContactUser.contactInfo.email}
+                      </a>
+                      <button 
+                        onClick={() => navigator.clipboard.writeText(selectedContactUser.contactInfo?.email || '')}
+                        className="p-1 rounded hover:bg-black/5 dark:hover:bg-white/5 text-zinc-450"
+                        title="Copy"
+                      >
+                        <Copy size={11} />
+                      </button>
+                    </div>
+                  ) : (
+                    <span className="text-zinc-550 italic font-medium mt-0.5 block">Not specified</span>
+                  )}
+                </div>
+              </div>
+
+              {/* Phone */}
+              <div className="flex items-start gap-3">
+                <Phone className="text-brand-amber shrink-0 mt-0.5" size={15} />
+                <div className="flex-1 min-w-0">
+                  <span className="text-[10px] text-zinc-400 dark:text-zinc-550 uppercase tracking-wider block">Phone Number</span>
+                  {selectedContactUser.contactInfo?.phone ? (
+                    <div className="flex items-center justify-between gap-2 mt-0.5">
+                      <span className="text-zinc-800 dark:text-zinc-350 truncate">{selectedContactUser.contactInfo.phone}</span>
+                      <button 
+                        onClick={() => navigator.clipboard.writeText(selectedContactUser.contactInfo?.phone || '')}
+                        className="p-1 rounded hover:bg-black/5 dark:hover:bg-white/5 text-zinc-450"
+                        title="Copy"
+                      >
+                        <Copy size={11} />
+                      </button>
+                    </div>
+                  ) : (
+                    <span className="text-zinc-505 italic font-medium mt-0.5 block">Not specified</span>
+                  )}
+                </div>
+              </div>
+            </div>
+
+            {/* Footer */}
+            <div className="p-4 bg-black/5 dark:bg-black/20 border-t border-card-border flex justify-end">
+              <button 
+                onClick={() => setSelectedContactUser(null)}
+                className="px-4 py-2 rounded-xl bg-brand-purple text-white text-[10px] font-black hover:opacity-95 shadow-md shadow-brand-purple/10"
+              >
+                Close Info
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+ 
+     </div>
+   );
+ }

@@ -79,6 +79,18 @@ function AnalyzerContent() {
   const [originalContent, setOriginalContent] = useState("");
   const [originalScore, setOriginalScore] = useState(0);
   const [toolkitSuccessMessage, setToolkitSuccessMessage] = useState("");
+  const [profile, setProfile] = useState<any>(null);
+
+  useEffect(() => {
+    const loadProfileData = () => {
+      setProfile(mockDb.getProfile());
+    };
+    loadProfileData();
+    window.addEventListener('liq-profile-updated', loadProfileData);
+    return () => {
+      window.removeEventListener('liq-profile-updated', loadProfileData);
+    };
+  }, []);
 
   const handleCopyDraft = () => {
     if (!content.trim()) return;
@@ -677,16 +689,29 @@ function AnalyzerContent() {
                 <div className="bg-white dark:bg-[#1d2226] border border-zinc-200 dark:border-zinc-800 rounded-xl p-4 text-zinc-900 dark:text-[#e0e0e0] font-sans">
                   {/* Header */}
                   <div className="flex items-center space-x-3 mb-3">
-                    <div className="w-9 h-9 rounded-full bg-brand-purple flex items-center justify-center text-white font-bold text-sm shadow-inner uppercase">
-                      A
+                    <div className="w-9 h-9 rounded-full bg-brand-purple flex items-center justify-center text-white font-bold text-sm shadow-inner uppercase overflow-hidden shrink-0">
+                      {profile?.avatarUrl ? (
+                        <img src={profile.avatarUrl} alt="Avatar" className="w-full h-full object-cover" />
+                      ) : (
+                        profile?.name ? profile.name[0] : 'A'
+                      )}
                     </div>
                     <div className="min-w-0 flex-1">
                       <div className="flex items-center gap-1">
-                        <span className="font-bold text-xs text-zinc-900 dark:text-white hover:text-blue-600 dark:hover:text-blue-400 hover:underline cursor-pointer">Alex Rivera</span>
+                        <span className="font-bold text-xs text-zinc-900 dark:text-white hover:text-blue-600 dark:hover:text-blue-400 hover:underline cursor-pointer flex items-center gap-1">
+                          {profile?.name || 'Alex Rivera'}
+                          {profile?.isVerified && (
+                            <span className="inline-flex items-center justify-center bg-blue-600 dark:bg-blue-500 text-white rounded-full w-3 h-3 shrink-0 shadow-sm" title="Verified Creator">
+                              <svg className="w-1.5 h-1.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={4}>
+                                <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+                              </svg>
+                            </span>
+                          )}
+                        </span>
                         <span className="text-[10px] text-zinc-400 dark:text-zinc-500 font-semibold">• 1st</span>
                       </div>
                       <span className="text-[9px] text-zinc-500 dark:text-zinc-400 block truncate leading-tight">
-                        Lead Product Manager @ FinTech Leader | Launching AI Growth Engines
+                        {profile?.headline || 'Lead Product Manager @ FinTech Leader | Launching AI Growth Engines'}
                       </span>
                       <span className="text-[9px] text-zinc-400 dark:text-zinc-500 block leading-tight mt-0.5">1h • Edited • 🌐</span>
                     </div>

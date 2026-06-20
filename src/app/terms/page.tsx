@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import React from 'react';
 import { Shield, Clock, FileText } from 'lucide-react';
@@ -45,7 +45,7 @@ export default function TermsOfServicePage() {
               2. Accounts & Subscriptions
             </h2>
             <p>
-              You must provide accurate, complete registration credentials. You are responsible for safeguarding your login keys. Subscriptions (Pro, Agency plans) grant access to advanced AI capabilities and higher processing limits:
+              You must provide accurate, complete registration credentials. You are responsible for safeguarding your login keys. Subscriptions (Pro plans) grant access to advanced AI capabilities and higher processing limits:
             </p>
             <ul className="list-disc pl-5 space-y-1.5 text-xs text-zinc-500 font-medium">
               <li>Billing occurs on a recurring cycle (monthly or annual).</li>

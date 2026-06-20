@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import React, { useState } from 'react';
 import { 
@@ -24,7 +24,7 @@ export default function HelpPage() {
       faqs: [
         { q: "How do I connect my LinkedIn profile?", a: "To analyze your profile, you can either paste your LinkedIn public URL, import a manual PDF export of your profile, or enter your experience details manually in the Profile Intelligence hub." },
         { q: "Is PostIQ affiliated with LinkedIn?", a: "No, PostIQ is an independent creator intelligence platform. We are not officially affiliated with or endorsed by LinkedIn Corporation." },
-        { q: "Can I manage team member workspaces?", a: "Yes, our Agency plan supports creating up to 10 distinct client workspaces and inviting up to 5 team members to collaborate." }
+        { q: "Can I upgrade or downgrade anytime?", a: "Yes, you can manage and adjust your active subscription plan level dynamically inside your account billing panel." }
       ]
     },
     {
@@ -32,7 +32,7 @@ export default function HelpPage() {
       icon: CreditCard,
       color: "text-brand-emerald bg-brand-emerald/10",
       faqs: [
-        { q: "How do I upgrade to Pro or Agency?", a: "Visit the Billing & Plans settings, choose either monthly or annual billing, and click 'Subscribe'. Checkout is securely handled by Stripe." },
+        { q: "How do I upgrade to Pro?", a: "Visit the Billing & Plans settings page, select the monthly or annual billing option, and click 'Subscribe' to unlock unlimited features." },
         { q: "Can I cancel my subscription anytime?", a: "Yes, you can cancel recurring renewals at any time from the billing page. You will retain premium access until the end of your billing cycle." },
         { q: "Are there any hidden API fees?", a: "No, all post analysis, hook generation, and keyword auditing costs are covered by your subscription fee. There are no additional per-use token charges." }
       ]

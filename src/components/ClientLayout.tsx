@@ -32,6 +32,7 @@ import {
   FileText
 } from 'lucide-react';
 import { mockDb } from '@/lib/mockDb';
+import { networkDb, MOCK_NETWORK_USERS } from '@/lib/db';
 
 interface ClientLayoutProps {
   children: React.ReactNode;
@@ -47,8 +48,12 @@ export default function ClientLayout({ children }: ClientLayoutProps) {
   const [profile, setProfile] = useState<any>(() => {
     if (typeof window !== 'undefined') {
       try {
-        const item = localStorage.getItem("liq_profile");
-        return item ? JSON.parse(item) : { name: "Alex Rivera", headline: "Senior Product Manager" };
+        const activeUser = networkDb.getActiveUser();
+        return {
+          name: activeUser.name,
+          headline: activeUser.headline,
+          score: activeUser.profileScore
+        };
       } catch (e) {
         return { name: "Alex Rivera", headline: "Senior Product Manager" };
       }
@@ -79,7 +84,16 @@ export default function ClientLayout({ children }: ClientLayoutProps) {
     }
     
     // Load profile
-    setProfile(mockDb.getProfile());
+    try {
+      const activeUser = networkDb.getActiveUser();
+      setProfile({
+        name: activeUser.name,
+        headline: activeUser.headline,
+        score: activeUser.profileScore
+      });
+    } catch (e) {
+      setProfile(mockDb.getProfile());
+    }
     
     // Keyboard shortcut for command search (Ctrl+K)
     const handleKeyDown = (e: KeyboardEvent) => {
@@ -108,6 +122,7 @@ export default function ClientLayout({ children }: ClientLayoutProps) {
     { name: 'Dashboard', path: '/dashboard', icon: LayoutDashboard },
     { name: 'AI Post Analyzer', path: '/analyzer', icon: Sparkles },
     { name: 'Profile Intelligence', path: '/profile-intelligence', icon: UserCheck },
+    { name: 'Creator Network', path: '/network', icon: Users },
     { name: 'Hook & Rewrite Studio', path: '/hooks', icon: PenTool },
     { name: 'Hashtag Intelligence', path: '/hashtags', icon: Hash },
     { name: 'Content Calendar', path: '/calendar', icon: Calendar },
@@ -122,6 +137,7 @@ export default function ClientLayout({ children }: ClientLayoutProps) {
     { name: 'Home', path: '/dashboard', icon: LayoutDashboard },
     { name: 'Analyzer', path: '/analyzer', icon: Sparkles },
     { name: 'Profile Intel', path: '/profile-intelligence', icon: UserCheck },
+    { name: 'Network', path: '/network', icon: Users },
     { name: 'Hook Studio', path: '/hooks', icon: PenTool },
     { name: 'Calendar', path: '/calendar', icon: Calendar },
     { name: 'Trends', path: '/trends', icon: TrendingUp },
@@ -132,6 +148,7 @@ export default function ClientLayout({ children }: ClientLayoutProps) {
     '/dashboard',
     '/analyzer',
     '/profile-intelligence',
+    '/network',
     '/hooks',
     '/hashtags',
     '/calendar',
@@ -571,6 +588,39 @@ export default function ClientLayout({ children }: ClientLayoutProps) {
                           <div className="w-[12px] h-[12px]" />
                         )}
                       </button>
+                    </div>
+
+                    <div className="h-px bg-card-border/50 my-2.5"></div>
+                    <div className="px-2 py-1">
+                      <h5 className="text-[10px] font-bold text-zinc-400 dark:text-zinc-500 uppercase tracking-wider mb-2">Simulate Creator</h5>
+                      <div className="space-y-1">
+                        {MOCK_NETWORK_USERS.slice(0, 3).map(user => {
+                          const isActive = user.id === networkDb.getActiveUserId();
+                          return (
+                            <button
+                              key={user.id}
+                              onClick={() => {
+                                networkDb.setActiveUserId(user.id);
+                                setShowMeDropdown(false);
+                                window.location.reload();
+                              }}
+                              className={`w-full flex items-center justify-between p-1.5 rounded-lg text-left text-[11px] transition-all ${
+                                isActive 
+                                  ? 'bg-brand-purple/10 text-brand-purple dark:text-brand-purple border border-brand-purple/20' 
+                                  : 'hover:bg-black/5 dark:hover:bg-white/5 text-zinc-700 dark:text-zinc-350 border border-transparent'
+                              }`}
+                            >
+                              <div className="truncate flex-1 pr-2">
+                                <p className="font-bold truncate">{user.name}</p>
+                                <p className="text-[9px] text-zinc-450 dark:text-zinc-500 truncate">{user.headline.split('|')[0]}</p>
+                              </div>
+                              <span className="text-[9px] font-extrabold px-1.5 py-0.5 rounded bg-brand-purple/10 text-brand-purple shrink-0">
+                                {user.profileScore}
+                              </span>
+                            </button>
+                          );
+                        })}
+                      </div>
                     </div>
 
                     <div className="h-px bg-card-border/50 my-2.5"></div>

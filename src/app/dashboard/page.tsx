@@ -310,8 +310,8 @@ export default function Dashboard() {
   return (
     <div className="grid grid-cols-1 lg:grid-cols-4 gap-6 items-start">
       
-      {/* 📂 Column 1: Profile Card + Widgets — sticky, all visible without scroll */}
-      <div className="lg:col-span-1 sticky top-[60px] max-h-[calc(100vh-68px)] overflow-y-auto space-y-3 pb-2 scrollbar-hide">
+      {/* 📂 Column 1: Profile Card + Widgets — sticky on large screens, natural scroll on mobile */}
+      <div className="lg:col-span-1 lg:sticky lg:top-[60px] lg:max-h-[calc(100vh-68px)] lg:overflow-y-auto space-y-3 pb-2 scrollbar-hide">
 
         {/* Profile Card — compact */}
         <div className="glass-panel rounded-xl overflow-hidden border border-card-border/70">
@@ -837,8 +837,8 @@ export default function Dashboard() {
 
       </div>
 
-      {/* ⚡ Column 3: News & creator tips — sticky right column */}
-      <div className="lg:col-span-1 sticky top-[60px] max-h-[calc(100vh-68px)] overflow-y-auto space-y-3 pb-2 scrollbar-hide">
+      {/* ⚡ Column 3: News & creator tips — sticky right column on large screens, natural scroll on mobile */}
+      <div className="lg:col-span-1 lg:sticky lg:top-[60px] lg:max-h-[calc(100vh-68px)] lg:overflow-y-auto space-y-3 pb-2 scrollbar-hide">
         
         {/* Creator opportunities / Trending news */}
         <div className="glass-panel rounded-2xl p-4 md:p-5 border border-card-border/70 space-y-4">

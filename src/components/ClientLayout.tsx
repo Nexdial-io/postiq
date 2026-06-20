@@ -456,10 +456,10 @@ export default function ClientLayout({ children }: ClientLayoutProps) {
             {/* Integrated Search Box */}
             <button
               onClick={() => setShowSearchModal(true)}
-              className="flex items-center space-x-2 px-3 py-1.5 rounded bg-[#eef3f8] dark:bg-[#383f47] border border-transparent hover:bg-[#e6ecf2] dark:hover:bg-[#434c56] text-zinc-550 dark:text-zinc-400 text-xs w-[200px] transition-all text-left"
+              className="flex items-center justify-center sm:justify-start space-x-2 p-1.5 sm:px-3 sm:py-1.5 rounded bg-[#eef3f8] dark:bg-[#383f47] border border-transparent hover:bg-[#e6ecf2] dark:hover:bg-[#434c56] text-zinc-550 dark:text-zinc-400 text-xs w-9 h-9 sm:w-[200px] sm:h-auto transition-all text-left"
             >
               <Search size={13} className="text-zinc-500 dark:text-zinc-400 shrink-0" />
-              <span className="flex-grow text-zinc-500 dark:text-zinc-400 truncate">Search tools...</span>
+              <span className="hidden sm:inline-block flex-grow text-zinc-500 dark:text-zinc-400 truncate">Search tools...</span>
               <kbd className="hidden md:inline-flex h-4 items-center gap-0.5 rounded border border-card-border bg-black/5 dark:bg-white/10 px-1 font-mono text-[9px] text-zinc-505 shrink-0">
                 ctrl k
               </kbd>
@@ -467,7 +467,7 @@ export default function ClientLayout({ children }: ClientLayoutProps) {
           </div>
 
           {/* Center: Stacked Nav Links */}
-          <nav className="flex items-center h-full">
+          <nav className="hidden md:flex items-center h-full">
             {topNavItems.map((item) => {
               const Icon = item.icon;
               const isActive = pathname === item.path;
@@ -726,7 +726,7 @@ export default function ClientLayout({ children }: ClientLayoutProps) {
       </header>
 
       {/* Main Workspace Frame — pinned to same 1128px content width as header */}
-      <main className="flex-grow pt-6 pb-12">
+      <main className="flex-grow pt-6 pb-20 md:pb-12">
         <div className="max-w-[1128px] mx-auto px-4 space-y-8 animate-in fade-in duration-500">
           {children}
         </div>
@@ -778,6 +778,30 @@ export default function ClientLayout({ children }: ClientLayoutProps) {
             </div>
           </div>
         </div>
+      )}
+
+      {/* Mobile Bottom Navigation Bar — only visible on mobile/tablet below md */}
+      {!isPublicPage && (
+        <nav className="md:hidden fixed bottom-0 left-0 right-0 z-40 bg-card-bg/90 backdrop-blur-md border-t border-card-border h-16 flex items-center justify-around px-2 shadow-[0_-4px_12px_rgba(0,0,0,0.05)] select-none">
+          {topNavItems.slice(0, 5).map((item) => {
+            const Icon = item.icon;
+            const isActive = pathname === item.path;
+            return (
+              <Link
+                key={item.name}
+                href={item.path}
+                className={`flex flex-col items-center justify-center flex-1 h-full py-1 text-center transition-colors ${
+                  isActive 
+                    ? 'text-brand-purple' 
+                    : 'text-zinc-555 dark:text-zinc-400 hover:text-brand-purple dark:hover:text-white'
+                }`}
+              >
+                <Icon size={18} className="stroke-[2.2px] mb-0.5" />
+                <span className="text-[9px] font-bold tracking-tight">{item.name}</span>
+              </Link>
+            );
+          })}
+        </nav>
       )}
     </div>
   );

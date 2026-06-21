@@ -178,7 +178,7 @@ export const MOCK_NETWORK_USERS: NetworkUser[] = [
     id: "user-datta",
     name: "Datta Sable",
     headline: "Founder @ Nexdial & PostIQ | Lead Architect | SaaS Growth Strategist",
-    avatarUrl: "",
+    avatarUrl: "/author.png",
     bannerUrl: "gradient:bg-gradient-to-r from-purple-800 via-indigo-900 to-black",
     profileScore: 99,
     contentScore: 98,

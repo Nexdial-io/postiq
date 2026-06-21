@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import React from 'react';
 import Link from 'next/link';
@@ -98,10 +98,8 @@ export default function AboutPage() {
 
               {/* Creator Mock Avatar */}
               <div className="flex flex-col items-center text-center space-y-3">
-                <div className="w-24 h-24 rounded-full bg-gradient-to-tr from-brand-purple to-brand-indigo p-1 shadow-xl shadow-brand-purple/25">
-                  <div className="w-full h-full rounded-full bg-[#0a081c] flex items-center justify-center text-3xl font-black text-white">
-                    DS
-                  </div>
+                <div className="w-24 h-24 rounded-full bg-gradient-to-tr from-brand-purple to-brand-indigo p-1 shadow-xl shadow-brand-purple/25 overflow-hidden flex items-center justify-center">
+                  <img src="/author.png" alt="Datta Sable" className="w-full h-full rounded-full object-cover" />
                 </div>
                 <div>
                   <h4 className="font-extrabold text-lg text-zinc-900 dark:text-white">Datta Sable</h4>

@@ -132,7 +132,7 @@ function HookStudioContent() {
         score: 88, curiosity: 88, authority: 96, emotion: 85,
         why: "Targets founders and VCs through shared operational challenges.",
         how: "Leverage startup-specific vocabulary ('startups', 'bottleneck', 'seed').",
-        impact: "+18% SSI authority score"
+        impact: "+18% Est. SSI Authority Score"
       },
       fear: {
         hook: `If you don't integrate AI into your ${key} workflow this week, your competitors will bypass you entirely:`,

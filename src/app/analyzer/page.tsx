@@ -1122,7 +1122,7 @@ function AnalyzerContent() {
                       <div className="p-2 rounded-xl border border-card-border bg-[#f8f9fa] dark:bg-[#141b22] flex items-center gap-1.5">
                         <ThumbsUp size={11} className="text-blue-500 shrink-0" />
                         <div>
-                          <span className="text-[7.5px] font-bold text-zinc-500 block leading-none">Likes</span>
+                          <span className="text-[7.5px] font-bold text-zinc-500 block leading-none">Est. Likes</span>
                           <strong className="text-[11px] font-black text-zinc-800 dark:text-zinc-200">{analysis.metrics.likes.toLocaleString()}</strong>
                         </div>
                       </div>
@@ -1130,7 +1130,7 @@ function AnalyzerContent() {
                       <div className="p-2 rounded-xl border border-card-border bg-[#f8f9fa] dark:bg-[#141b22] flex items-center gap-1.5">
                         <MessageSquare size={11} className="text-teal-500 shrink-0" />
                         <div>
-                          <span className="text-[7.5px] font-bold text-zinc-500 block leading-none">Comments</span>
+                          <span className="text-[7.5px] font-bold text-zinc-500 block leading-none">Est. Comments</span>
                           <strong className="text-[11px] font-black text-zinc-800 dark:text-zinc-200">{analysis.metrics.comments.toLocaleString()}</strong>
                         </div>
                       </div>
@@ -1138,7 +1138,7 @@ function AnalyzerContent() {
                       <div className="p-2 rounded-xl border border-card-border bg-[#f8f9fa] dark:bg-[#141b22] flex items-center gap-1.5">
                         <Share2 size={11} className="text-brand-purple shrink-0" />
                         <div>
-                          <span className="text-[7.5px] font-bold text-zinc-500 block leading-none">Shares</span>
+                          <span className="text-[7.5px] font-bold text-zinc-500 block leading-none">Est. Shares</span>
                           <strong className="text-[11px] font-black text-zinc-800 dark:text-zinc-200">{analysis.metrics.shares.toLocaleString()}</strong>
                         </div>
                       </div>
@@ -1146,7 +1146,7 @@ function AnalyzerContent() {
                       <div className="p-2 rounded-xl border border-card-border bg-[#f8f9fa] dark:bg-[#141b22] flex items-center gap-1.5">
                         <Eye size={11} className="text-brand-emerald shrink-0" />
                         <div>
-                          <span className="text-[7.5px] font-bold text-zinc-500 block leading-none">Reach</span>
+                          <span className="text-[7.5px] font-bold text-zinc-500 block leading-none">Est. Reach</span>
                           <strong className="text-[11px] font-black text-zinc-800 dark:text-zinc-200">{analysis.metrics.reach.toLocaleString()}</strong>
                         </div>
                       </div>

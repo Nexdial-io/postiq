@@ -597,7 +597,7 @@ export default function NetworkPage() {
               </div>
               <div>
                 <strong className="text-brand-emerald uppercase tracking-wide block mb-0.5">Impact?</strong>
-                <span className="text-brand-emerald font-black block">+15% Social Selling SSI Index.</span>
+                <span className="text-brand-emerald font-black block">+15% Est. Social Selling Index (SSI)</span>
               </div>
             </div>
           </div>

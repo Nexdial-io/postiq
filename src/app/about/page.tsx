@@ -11,7 +11,8 @@ import {
   Heart, 
   Code2, 
   User, 
-  Target 
+  Target,
+  CheckCircle2
 } from 'lucide-react';
 
 export default function AboutPage() {
@@ -37,46 +38,73 @@ export default function AboutPage() {
       {/* Main Grid Content */}
       <section className="w-full max-w-6xl px-4 py-8 grid grid-cols-1 lg:grid-cols-3 gap-10 items-stretch">
         
-        {/* Story & Philosophy Section (2/3 Width) */}
+        {/* Story & Trust Section (2/3 Width) */}
         <div className="lg:col-span-2 space-y-8 flex flex-col justify-between">
           <div className="glass-panel rounded-3xl p-6 md:p-8 space-y-6">
             <h2 className="text-2xl font-bold flex items-center gap-2 border-b border-card-border/50 pb-4">
-              <Cpu size={22} className="text-brand-purple" />
-              The Platform Philosophy
+              <Sparkles size={22} className="text-brand-purple" />
+              Our Story
             </h2>
             
-            <p className="text-sm text-zinc-600 dark:text-zinc-400 leading-relaxed font-medium">
-              Most LinkedIn growth strategies rely on guesswork. Creators write blindly, hoping a hook works, while job seekers construct headlines hoping they match recruiter searches.
-            </p>
-            
-            <p className="text-sm text-zinc-600 dark:text-zinc-400 leading-relaxed font-medium">
-              PostIQ shifts the paradigm by introducing **data-driven creator intelligence**. We evaluate posts against proven psychological virality models, analyze emotional sentiment, structure readability, and calculate real-time recruiter attraction index scores.
-            </p>
+            <div className="space-y-4 text-sm text-zinc-600 dark:text-zinc-400 leading-relaxed font-semibold">
+              <p>
+                Like many creators and professionals, I spent years experimenting on LinkedIn. Some posts performed well. Most didn't.
+              </p>
+              <p>
+                The frustrating part wasn't creating content—it was not knowing why something worked or failed. I realized that LinkedIn growth often depends on guesswork.
+              </p>
+              <p>
+                Creators publish without understanding whether their hook is strong enough. Job seekers optimize profiles without knowing if recruiters can actually discover them. Founders invest time building personal brands without clear feedback on what's working.
+              </p>
+              <p className="font-bold text-zinc-950 dark:text-zinc-50">
+                That's why I built PostIQ.
+              </p>
+              <p>
+                The goal wasn't to create another AI writer. The goal was to build an intelligence platform that helps people make better decisions before they publish.
+              </p>
+              <p>
+                Today, PostIQ combines content analysis, profile optimization, trend discovery, content planning, and personal branding insights into a single platform designed to help professionals grow with confidence.
+              </p>
+              <p className="border-t border-card-border/40 pt-4 font-bold text-brand-purple">
+                We're just getting started, and every feature is built around one mission: Help people stop guessing and start growing.
+              </p>
+            </div>
+          </div>
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-4">
-              <div className="p-4 rounded-2xl border border-card-border bg-black/[0.01] dark:bg-white/[0.01] space-y-2">
-                <h4 className="font-bold text-xs uppercase tracking-wider text-brand-purple">Predictive Scoring</h4>
-                <p className="text-xs text-zinc-500 font-medium">Evaluate hook power, CTA efficiency, structural layout, and get reach estimations before hitting publish.</p>
-              </div>
-              <div className="p-4 rounded-2xl border border-card-border bg-black/[0.01] dark:bg-white/[0.01] space-y-2">
-                <h4 className="font-bold text-xs uppercase tracking-wider text-brand-emerald">ATS & Keyword Auditing</h4>
-                <p className="text-xs text-zinc-500 font-medium">Ensure your professional bio, experience achievements, and headline are fully optimized for hiring managers.</p>
-              </div>
+          {/* What Makes PostIQ Different? */}
+          <div className="glass-panel rounded-3xl p-6 md:p-8 space-y-6">
+            <h2 className="text-2xl font-bold flex items-center gap-2 border-b border-card-border/50 pb-4">
+              <CheckCircle2 size={22} className="text-brand-emerald" />
+              What Makes PostIQ Different?
+            </h2>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              {[
+                "Explainable scoring systems",
+                "Actionable optimization recommendations",
+                "Profile and content intelligence in one platform",
+                "Designed for creators, founders, consultants, and job seekers",
+                "Built independently and continuously improved through user feedback"
+              ].map((item, idx) => (
+                <div key={idx} className="flex items-start gap-2.5">
+                  <span className="text-brand-emerald font-extrabold text-sm shrink-0">✓</span>
+                  <span className="text-xs text-zinc-600 dark:text-zinc-400 font-semibold leading-relaxed">{item}</span>
+                </div>
+              ))}
             </div>
           </div>
 
           {/* Quick Stats Banner */}
-          <div className="glass-panel rounded-3xl p-6 bg-gradient-to-r from-brand-purple/5 to-brand-indigo/5 border-brand-purple/10 flex justify-around items-center text-center gap-4 py-8">
+          <div className="glass-panel rounded-3xl p-6 bg-gradient-to-r from-brand-purple/5 to-brand-indigo/5 border-brand-purple/10 flex flex-col sm:flex-row justify-around items-center text-center gap-6 py-8">
             <div>
-              <span className="text-3xl font-extrabold text-brand-purple block">98%</span>
-              <span className="text-[10px] text-zinc-500 font-bold uppercase tracking-wider">Analysis Accuracy</span>
+              <span className="text-3xl font-extrabold text-brand-purple block">1,000s</span>
+              <span className="text-[10px] text-zinc-500 font-bold uppercase tracking-wider">Content Signals Analyzed</span>
             </div>
-            <div className="w-px h-10 bg-card-border"></div>
+            <div className="hidden sm:block w-px h-10 bg-card-border"></div>
             <div>
-              <span className="text-3xl font-extrabold text-brand-indigo block">50k+</span>
-              <span className="text-[10px] text-zinc-500 font-bold uppercase tracking-wider">Hooks Generated</span>
+              <span className="text-3xl font-extrabold text-brand-indigo block">50+</span>
+              <span className="text-[10px] text-zinc-500 font-bold uppercase tracking-wider">Hook Frameworks Available</span>
             </div>
-            <div className="w-px h-10 bg-card-border"></div>
+            <div className="hidden sm:block w-px h-10 bg-card-border"></div>
             <div>
               <span className="text-3xl font-extrabold text-brand-emerald block">4.9/5</span>
               <span className="text-[10px] text-zinc-500 font-bold uppercase tracking-wider">Creator Rating</span>
@@ -93,33 +121,48 @@ export default function AboutPage() {
             <div className="space-y-6 relative z-10">
               <div className="flex items-center gap-2 border-b border-card-border/50 pb-4">
                 <User size={20} className="text-brand-purple" />
-                <h3 className="font-bold text-base">Meet the Architect</h3>
+                <h3 className="font-bold text-base">Meet the Founder</h3>
               </div>
 
-              {/* Creator Mock Avatar */}
+              {/* Creator Avatar */}
               <div className="flex flex-col items-center text-center space-y-3">
                 <div className="w-24 h-24 rounded-full bg-gradient-to-tr from-brand-purple to-brand-indigo p-1 shadow-xl shadow-brand-purple/25 overflow-hidden flex items-center justify-center">
                   <img src="/author.png" alt="Datta Sable" className="w-full h-full rounded-full object-cover" />
                 </div>
                 <div>
                   <h4 className="font-extrabold text-lg text-zinc-900 dark:text-white">Datta Sable</h4>
-                  <span className="text-xs text-brand-purple font-bold">Creator & Lead Architect</span>
+                  <span className="text-xs text-brand-purple font-bold">Founder & Lead Architect</span>
                 </div>
               </div>
 
-              <p className="text-xs text-zinc-500 dark:text-zinc-400 leading-relaxed font-medium text-center">
-                Datta Sable is a full-stack engineer and AI specialist passionate about building high-fidelity creator tools and SaaS products.
-              </p>
-
-              <div className="space-y-2 text-xs font-semibold">
-                <div className="flex justify-between p-2.5 rounded-xl border border-card-border bg-black/[0.02] dark:bg-white/[0.01]">
-                  <span className="text-zinc-500">Role:</span>
-                  <span>Founder / Engineer</span>
+              <div className="text-xs text-zinc-600 dark:text-zinc-400 leading-relaxed font-semibold space-y-3">
+                <p>
+                  Full-stack engineer, AI builder, and SaaS creator focused on developing intelligent products that help professionals grow their online presence, improve career visibility, and make data-driven content decisions.
+                </p>
+                <div className="pt-2 border-t border-card-border/40">
+                  <span className="text-[10px] font-bold text-zinc-400 dark:text-zinc-500 uppercase tracking-wider block mb-2">Specializations:</span>
+                  <ul className="space-y-1.5 list-none font-semibold">
+                    <li className="flex items-center gap-1.5">
+                      <span className="w-1 h-1 rounded-full bg-brand-purple shrink-0"></span>
+                      <span>AI-powered SaaS platforms</span>
+                    </li>
+                    <li className="flex items-center gap-1.5">
+                      <span className="w-1 h-1 rounded-full bg-brand-purple shrink-0"></span>
+                      <span>Creator intelligence systems</span>
+                    </li>
+                    <li className="flex items-center gap-1.5">
+                      <span className="w-1 h-1 rounded-full bg-brand-purple shrink-0"></span>
+                      <span>Full-stack product engineering</span>
+                    </li>
+                    <li className="flex items-center gap-1.5">
+                      <span className="w-1 h-1 rounded-full bg-brand-purple shrink-0"></span>
+                      <span>Automation and AI agent workflows</span>
+                    </li>
+                  </ul>
                 </div>
-                <div className="flex justify-between p-2.5 rounded-xl border border-card-border bg-black/[0.02] dark:bg-white/[0.01]">
-                  <span className="text-zinc-500">Core Focus:</span>
-                  <span>AI Agent Integrations</span>
-                </div>
+                <p className="italic text-zinc-500 dark:text-zinc-400 text-center font-medium pt-2 border-t border-card-border/40">
+                  "Building products that combine practical AI with real-world business outcomes."
+                </p>
               </div>
             </div>
 
@@ -153,6 +196,19 @@ export default function AboutPage() {
           </div>
         </div>
 
+      </section>
+
+      {/* Mission Section */}
+      <section className="w-full max-w-5xl px-4 py-8 text-center relative z-10">
+        <div className="glass-panel rounded-3xl p-8 bg-gradient-to-r from-brand-emerald/[0.02] to-brand-purple/[0.02] border-card-border/70 max-w-3xl mx-auto space-y-4">
+          <h2 className="text-2xl font-extrabold text-zinc-900 dark:text-white flex items-center justify-center gap-2">
+            <Target className="text-brand-purple" size={24} />
+            Our Mission
+          </h2>
+          <p className="text-base text-zinc-700 dark:text-zinc-300 font-semibold max-w-2xl mx-auto leading-relaxed">
+            To make professional growth on LinkedIn more predictable, measurable, and accessible through intelligent analytics and AI-powered guidance.
+          </p>
+        </div>
       </section>
 
       {/* Philosophy Call-out */}

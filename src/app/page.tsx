@@ -177,8 +177,8 @@ export default function Home() {
                 <div className="w-8 h-8 rounded-full bg-brand-emerald/10 text-brand-emerald flex items-center justify-center shrink-0">
                   <Check size={16} />
                 </div>
-                <h4 className="font-bold text-xs text-zinc-900 dark:text-zinc-100 leading-snug">{item.title}</h4>
-                <p className="text-[10px] text-zinc-600 dark:text-zinc-400 font-semibold leading-normal">{item.desc}</p>
+                <h4 className="font-bold text-xs text-zinc-900 leading-snug">{item.title}</h4>
+                <p className="text-[10px] text-zinc-600 leading-normal">{item.desc}</p>
               </div>
             ))}
           </div>

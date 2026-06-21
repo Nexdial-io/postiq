@@ -140,17 +140,17 @@ export default function Home() {
           </div>
 
           <div className="pt-8 border-t border-card-border/40 max-w-md mx-auto flex flex-col items-center gap-2">
-            <span className="text-[10px] text-zinc-450 font-extrabold uppercase tracking-wider">Early-Stage Traction</span>
-            <div className="flex flex-wrap items-center justify-center gap-4 text-xs font-bold text-zinc-550 dark:text-zinc-400 mt-0.5">
+            <span className="text-[10px] text-zinc-500 dark:text-zinc-400 font-extrabold uppercase tracking-wider">Early-Stage Traction</span>
+            <div className="flex flex-wrap items-center justify-center gap-4 text-xs font-bold text-zinc-600 dark:text-zinc-300 mt-0.5">
               <div className="flex items-center gap-1.5">
                 <span className="w-2 h-2 rounded-full bg-brand-emerald animate-pulse"></span>
                 <span>500+ Posts Analyzed</span>
               </div>
-              <span className="text-zinc-450 font-normal">|</span>
+              <span className="text-zinc-400 dark:text-zinc-500 font-normal">|</span>
               <div className="flex items-center gap-1.5">
                 <span>100+ Profiles Optimized</span>
               </div>
-              <span className="text-zinc-450 font-normal">|</span>
+              <span className="text-zinc-400 dark:text-zinc-500 font-normal">|</span>
               <div>
                 <span className="text-brand-purple">Built for Creators</span>
               </div>
@@ -177,8 +177,8 @@ export default function Home() {
                 <div className="w-8 h-8 rounded-full bg-brand-emerald/10 text-brand-emerald flex items-center justify-center shrink-0">
                   <Check size={16} />
                 </div>
-                <h4 className="font-bold text-xs text-zinc-950 dark:text-zinc-550 leading-snug">{item.title}</h4>
-                <p className="text-[10px] text-zinc-500 font-semibold leading-normal">{item.desc}</p>
+                <h4 className="font-bold text-xs text-zinc-900 dark:text-zinc-100 leading-snug">{item.title}</h4>
+                <p className="text-[10px] text-zinc-600 dark:text-zinc-400 font-semibold leading-normal">{item.desc}</p>
               </div>
             ))}
           </div>
@@ -202,8 +202,8 @@ export default function Home() {
           ].map((item, idx) => (
             <div key={idx} className="glass-panel rounded-2xl p-6 border border-card-border flex flex-col space-y-4 relative">
               <span className="w-8 h-8 rounded-full bg-brand-purple text-white flex items-center justify-center font-extrabold text-xs shrink-0">{item.step}</span>
-              <h3 className="font-bold text-base text-zinc-950 dark:text-zinc-550">{item.title}</h3>
-              <p className="text-xs text-zinc-500 leading-relaxed font-semibold">{item.desc}</p>
+              <h3 className="font-bold text-base text-zinc-900 dark:text-zinc-100">{item.title}</h3>
+              <p className="text-xs text-zinc-600 dark:text-zinc-400 leading-relaxed font-semibold">{item.desc}</p>
             </div>
           ))}
         </div>
@@ -398,7 +398,7 @@ export default function Home() {
             <h2 className="text-3xl font-extrabold tracking-tight">
               Track Your Entire LinkedIn Presence
             </h2>
-            <p className="text-sm text-zinc-550 dark:text-zinc-400 font-semibold">
+            <p className="text-sm text-zinc-600 dark:text-zinc-400 font-semibold">
               PostIQ is not just an AI writing tool. It is your **LinkedIn Growth Operating System** that monitors, scores, and optimizes every dimension of your personal brand.
             </p>
           </div>
@@ -412,7 +412,7 @@ export default function Home() {
               { name: "Overall Brand Score", score: 84, color: "text-brand-purple bg-gradient-to-r from-brand-purple to-brand-indigo bg-clip-text", bg: "bg-brand-purple/10 border-brand-purple/30", highlight: true }
             ].map((card, idx) => (
               <div key={idx} className={`rounded-2xl p-5 border text-center transition-all ${card.highlight ? 'border-brand-purple/30 bg-brand-purple/[0.04] scale-105 shadow-md shadow-brand-purple/5' : 'border-card-border bg-black/[0.01] dark:bg-white/[0.01]'} hover:border-brand-purple/30`}>
-                <span className="text-[10px] uppercase font-bold text-zinc-450 block tracking-wider mb-3">{card.name}</span>
+                <span className="text-[10px] uppercase font-bold text-zinc-500 dark:text-zinc-400 block tracking-wider mb-3">{card.name}</span>
                 <div className="flex justify-center items-baseline gap-1 my-2">
                   <span className={`text-4xl font-extrabold tracking-tight ${card.color}`}>{card.score}</span>
                   <span className="text-zinc-400 text-xs font-semibold">/100</span>
@@ -440,7 +440,7 @@ export default function Home() {
               <span className="w-5 h-5 rounded-full bg-brand-rose/10 text-brand-rose flex items-center justify-center text-xs shrink-0 font-bold">❌</span>
               Without PostIQ
             </h4>
-            <ul className="space-y-4 text-xs font-semibold text-zinc-500">
+            <ul className="space-y-4 text-xs font-semibold text-zinc-600 dark:text-zinc-400">
               <li className="flex items-start gap-3">
                 <span className="text-brand-rose mt-0.5 shrink-0">❌</span>
                 <span>Guess what to post without knowing readability, hook power, or engagement potential.</span>
@@ -466,7 +466,7 @@ export default function Home() {
               <span className="w-5 h-5 rounded-full bg-brand-emerald/10 text-brand-emerald flex items-center justify-center text-xs shrink-0 font-bold">✓</span>
               With PostIQ
             </h4>
-            <ul className="space-y-4 text-xs font-semibold text-zinc-650 dark:text-zinc-355">
+            <ul className="space-y-4 text-xs font-semibold text-zinc-600 dark:text-zinc-300">
               <li className="flex items-start gap-3">
                 <span className="text-brand-emerald mt-0.5 shrink-0">✓</span>
                 <span>Predict draft performance scores and scan sentences against 14 readability metrics before publishing.</span>
@@ -523,7 +523,7 @@ export default function Home() {
           <h2 className="text-2xl md:text-3xl font-extrabold text-zinc-900 dark:text-white font-sans">
             Explore the Growth Engine
           </h2>
-          <p className="text-zinc-550 dark:text-zinc-400 max-w-xl mx-auto text-xs font-semibold">
+          <p className="text-zinc-600 dark:text-zinc-400 max-w-xl mx-auto text-xs font-semibold">
             Take a closer look at the advanced creator intelligence workspace screens designed to accelerate your reach.
           </p>
         </div>

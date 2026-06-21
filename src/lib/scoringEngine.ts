@@ -15,7 +15,18 @@ export function analyzePostContent(content: string): PostAnalysis {
       breakdown: { hook: 0, readability: 10, authority: 0, emotional: 0, formatting: 10, cta: 0, hashtags: 0, trend: 0 },
       metrics: { likes: 0, comments: 0, shares: 0, reach: 0, virality: 'Low' },
       suggestions: ["Content is too short to evaluate. Please write a post of at least 15-20 words."],
-      timestamp: new Date().toISOString()
+      timestamp: new Date().toISOString(),
+      scrollStopperScore: 0,
+      hookExplanations: {
+        curiosity: false,
+        statistic: false,
+        contrarian: false,
+        question: false,
+        recommendation: "Please write a longer post."
+      },
+      potentialIssues: ["Content is too short"],
+      missingElements: ["Story", "Social Proof", "Statistic", "Customer Insight"],
+      audienceMatch: { founders: 30, creators: 30, recruiters: 30 }
     };
   }
 
@@ -39,6 +50,30 @@ export function analyzePostContent(content: string): PostAnalysis {
   if (firstLine.length > 120) hookScore -= 20;
   if (firstLine.length < 20) hookScore -= 10;
   hookScore = Math.min(100, Math.max(0, hookScore));
+
+  // Heuristic Hook Detections
+  const curiosityKeywords = ['secret', 'unpopular', 'lessons', 'hidden', 'reveal', 'behind the scenes', 'how to', 'how i', 'how we', 'one shift', 'changes everything', 'blueprint', 'framework', 'loop', 'system', 'mistake'];
+  const hasCuriosity = curiosityKeywords.some(k => firstTwoLines.includes(k));
+  
+  const hasStatistic = /\d+/.test(firstTwoLines);
+  
+  const contrarianKeywords = ['unpopular opinion', 'stop doing', 'everyone is wrong', 'wrong about', 'mistake', 'truth about', 'never', 'fail', 'hate', 'waste of time', 'holding you back', 'failing'];
+  const hasContrarian = contrarianKeywords.some(k => firstTwoLines.includes(k));
+  
+  const hasQuestion = firstLine.includes('?') || secondLine.includes('?');
+  
+  let hookRecommendation = "";
+  if (!hasStatistic) {
+    hookRecommendation = "Add a number-based claim or statistic (e.g. '90% of SaaS startups fail').";
+  } else if (!hasCuriosity) {
+    hookRecommendation = "Add a curiosity gap or teaser to make the reader click 'see more'.";
+  } else if (!hasContrarian) {
+    hookRecommendation = "Introduce a contrarian angle to disrupt the user's feed scanning.";
+  } else if (!hasQuestion) {
+    hookRecommendation = "Try adding a question to invoke direct reader engagement.";
+  } else {
+    hookRecommendation = "Hook looks highly optimized! Monitor reach in live updates.";
+  }
 
   // 2. Readability (15% weight, max 100 subscore)
   let readabilityScore = 70;
@@ -235,6 +270,140 @@ export function analyzePostContent(content: string): PostAnalysis {
   else if (score >= 70) virality = 'High';
   else if (score >= 50) virality = 'Medium';
 
+  // Potential Issues Heuristics
+  const potentialIssues: string[] = [];
+  if (hookScore < 65 && firstLine.length < 35 && !hasStatistic && !hasQuestion) {
+    potentialIssues.push("Generic opening");
+  }
+  const earlyProductKeywords = ['product', 'software', 'app', 'our platform', 'saas', 'tool', 'client', 'checkout', 'api', 'dashboard'];
+  if (earlyProductKeywords.some(k => firstTwoLines.includes(k))) {
+    potentialIssues.push("Product mention too early");
+  }
+  if (emotionalScore < 55) {
+    potentialIssues.push("Weak emotional trigger");
+  }
+  if (ctaScore < 55) {
+    potentialIssues.push("Broad CTA");
+  }
+
+  // Missing Elements Heuristics
+  const missingElements: string[] = [];
+  
+  // 1. Story
+  const storyKeywords = ['journey', 'years ago', 'i spent', 'i was', 'rock bottom', 'failed', 'crashed', 'struggle', 'burnout', 'passion', 'honest'];
+  const hasStory = storyKeywords.some(k => cleanContent.toLowerCase().includes(k));
+  if (!hasStory) {
+    missingElements.push("Story");
+  }
+  
+  // 2. Social Proof (accurate check based on user request)
+  const socialProofKeywords = [
+    'case study', 'testimonial', 'customer quote', 'client review', 'proof of concept',
+    'recommendation letter', 'client says', 'customer says'
+  ];
+  let hasSocialProof = socialProofKeywords.some(k => cleanContent.toLowerCase().includes(k));
+  if (!hasSocialProof) {
+    // Regex matching numbers with growth/revenue terms or symbols
+    const metricRegex = /\b\d+(?:[\d,.]*(?:k|m|%|\+))?\s*(?:mrr|arr|usd|gbp|eur|\$|users|clients|followers|customers|subscribers|revenue|growth|views|impressions|reposts|shares|conversion|saved|earned|boosted)\b/i;
+    const dollarRegex = /\$\d+(?:[\d,.]*(?:k|m)?)?\b/i;
+    if (metricRegex.test(cleanContent) || dollarRegex.test(cleanContent)) {
+      hasSocialProof = true;
+    }
+  }
+  if (!hasSocialProof) {
+    missingElements.push("Social Proof");
+  }
+  
+  // 3. Statistic
+  const hasStatisticElement = /\d+/.test(cleanContent);
+  if (!hasStatisticElement) {
+    missingElements.push("Statistic");
+  }
+  
+  // 4. Customer Insight (accurate check based on user request)
+  const insightKeywords = [
+    'pain point', 'frustration', 'struggle to', 'hard to', 'never know if',
+    'don\'t know how', 'tired of', 'frustrated with', 'waste hours', 'waste time',
+    'waste money', 'biggest challenge', 'biggest mistake'
+  ];
+  let hasCustomerInsight = insightKeywords.some(k => cleanContent.toLowerCase().includes(k));
+  if (!hasCustomerInsight) {
+    const insightRegex = /\b(?:creators|founders|recruiters|managers|developers|users|people|clients|customers|professionals)\b[^.?!]{0,100}?\b(?:spend|struggle|fail|worry|skip|look|want|need|forget|miss|ignore|value|waste|care|seek)\b/i;
+    if (insightRegex.test(cleanContent)) {
+      hasCustomerInsight = true;
+    }
+  }
+  if (!hasCustomerInsight) {
+    missingElements.push("Customer Insight");
+  }
+
+  // Audience Fit Heuristics
+  const foundersKeywords = ['founder', 'saas', 'startup', 'vc', 'valuation', 'funding', 'business', 'mrr', 'arr', 'revenue', 'scale', 'growth', 'product strategy'];
+  const creatorsKeywords = ['creator', 'content', 'post', 'link', 'engagement', 'audience', 'linkedin', 'brand', 'personal', 'publish', 'hook', 'writing'];
+  const recruitersKeywords = ['recruiter', 'job', 'career', 'candidate', 'resume', 'hiring', 'hire', 'scrum', 'ats', 'talent', 'certified', 'certifications', 'skills'];
+  
+  let foundersScore = 40;
+  foundersKeywords.forEach(k => { if (cleanContent.toLowerCase().includes(k)) foundersScore += 12; });
+  let creatorsScore = 35;
+  creatorsKeywords.forEach(k => { if (cleanContent.toLowerCase().includes(k)) creatorsScore += 12; });
+  let recruitersScore = 30;
+  recruitersKeywords.forEach(k => { if (cleanContent.toLowerCase().includes(k)) recruitersScore += 12; });
+
+  const foundersMatch = Math.min(98, Math.max(20, foundersScore));
+  const creatorsMatch = Math.min(98, Math.max(20, creatorsScore));
+  const recruitersMatch = Math.min(98, Math.max(20, recruitersScore));
+
+  // Personal Brand Signals calculation
+  const hasExpClaim = /(?:i built|years? experience|years? of building|i spent|led team|i've spent)/i.test(cleanContent);
+  const hasMetrics = /\b\d+(?:%|k|m|\+)?\b/.test(cleanContent);
+  const hasFramework = /(?:framework|system|playbook|blueprint|loop|method|workflow)/i.test(cleanContent);
+  
+  let pbAuthority = 50;
+  if (hasExpClaim) pbAuthority += 15;
+  if (hasMetrics) pbAuthority += 15;
+  if (authorityScore >= 70) pbAuthority += 20;
+  pbAuthority = Math.min(100, Math.max(0, pbAuthority));
+
+  let pbExpertise = 45;
+  if (hasFramework) pbExpertise += 15;
+  if (trendScore >= 60) pbExpertise += 20;
+  const industryTerms = ['plg', 'saas', 'llm', 'react', 'fintech', 'api', 'optimization', 'strategy', 'b2b', 'product', 'marketing', 'conversion'];
+  let industryTermsMatch = 0;
+  industryTerms.forEach(t => { if (cleanContent.toLowerCase().includes(t)) industryTermsMatch++; });
+  pbExpertise += Math.min(20, industryTermsMatch * 7);
+  pbExpertise = Math.min(100, Math.max(0, pbExpertise));
+
+  let pbUniqueness = 50;
+  if (hasContrarian) pbUniqueness += 20;
+  if (emojiCount >= 1 && emojiCount <= 4) pbUniqueness += 15;
+  if (readabilityScore >= 80) pbUniqueness += 15;
+  pbUniqueness = Math.min(100, Math.max(0, pbUniqueness));
+
+  let pbTrust = 40;
+  if (hasSocialProof) pbTrust += 25;
+  if (hasStatisticElement) pbTrust += 20;
+  if (hasStory) pbTrust += 15;
+  pbTrust = Math.min(100, Math.max(0, pbTrust));
+
+  const personalBrandScore = Math.round((pbAuthority * 0.3) + (pbExpertise * 0.3) + (pbUniqueness * 0.2) + (pbTrust * 0.2));
+
+  // Transparency report criteria check
+  const sentenceLengthCheck = averageWordLength <= 5.8;
+  const paragraphBreaksCheck = !hasDenseParagraphs;
+  const punchyFormattingCheck = words.length <= 250;
+
+  const frameworkNameCheck = hasFramework;
+  const metricsProvidedCheck = hasMetrics;
+  const experienceClaimCheck = hasExpClaim;
+
+  const emotionalWordsCheck = emotionalMatches > 0;
+  const moderateEmojisCheck = emojiCount >= 1 && emojiCount <= 6;
+  const authenticToneCheck = /(?:journey|struggle|failed|burnout|passion|honest|story)/i.test(cleanContent);
+
+  const lowFrictionPromptCheck = /(?:comment|drop a|select|choose|reply with|option|repost)/i.test(lastTwoLines);
+  const engagementQuestionCheck = lastTwoLines.includes('?');
+  const explicitNextStepCheck = /(?:dm me|link|get the|subscribe|check out|read the)/i.test(lastTwoLines);
+
   return {
     id: Math.random().toString(36).substring(7),
     content,
@@ -251,7 +420,57 @@ export function analyzePostContent(content: string): PostAnalysis {
     },
     metrics: { likes, comments, shares, reach, virality },
     suggestions,
-    timestamp: new Date().toISOString()
+    timestamp: new Date().toISOString(),
+    scrollStopperScore: hookScore,
+    hookExplanations: {
+      curiosity: hasCuriosity,
+      statistic: hasStatistic,
+      contrarian: hasContrarian,
+      question: hasQuestion,
+      recommendation: hookRecommendation
+    },
+    potentialIssues,
+    missingElements,
+    audienceMatch: {
+      founders: foundersMatch,
+      creators: creatorsMatch,
+      recruiters: recruitersMatch
+    },
+    personalBrandScore,
+    personalBrandSignals: {
+      authority: pbAuthority,
+      expertise: pbExpertise,
+      uniqueness: pbUniqueness,
+      trust: pbTrust
+    },
+    transparencyReport: {
+      hook: {
+        curiosity: hasCuriosity,
+        statistic: hasStatistic,
+        contrarian: hasContrarian,
+        question: hasQuestion
+      },
+      readability: {
+        sentenceLength: sentenceLengthCheck,
+        paragraphBreaks: paragraphBreaksCheck,
+        punchyFormatting: punchyFormattingCheck
+      },
+      authority: {
+        frameworkName: frameworkNameCheck,
+        metricsProvided: metricsProvidedCheck,
+        experienceClaim: experienceClaimCheck
+      },
+      emotional: {
+        emotionalWords: emotionalWordsCheck,
+        moderateEmojis: moderateEmojisCheck,
+        authenticTone: authenticToneCheck
+      },
+      cta: {
+        lowFrictionPrompt: lowFrictionPromptCheck,
+        engagementQuestion: engagementQuestionCheck,
+        explicitNextStep: explicitNextStepCheck
+      }
+    }
   };
 }
 
@@ -260,6 +479,8 @@ function cleanOldHooks(content: string): string {
 
   // List of all generated hooks to check at start
   const knownHooks = [
+    "90% of creators fail to grow on LinkedIn because they miss this simple system:",
+    "Most creators spend hours writing LinkedIn posts, but 90% fail to generate any real reach because they miss this simple system:",
     "If you are planning to target Microsoft Fabric Certifications (DP-600 / DP-700 / DP-800), read this first: 🧵",
     "90% of B2B SaaS startups fail at growth because they overlook this one simple system:",
     "Unpopular opinion: 90% of a Product Manager's success is determined before writing a single ticket.",
@@ -269,6 +490,7 @@ function cleanOldHooks(content: string): string {
     "Here is the hard truth about succeeding in product management and strategy in 2026:",
     "Here is the hard truth about succeeding in AI integration and dev workflows in 2026:",
     "Here is the hard truth about succeeding in career growth and personal branding in 2026:",
+    "Here is the hard truth about succeeding in LinkedIn growth and personal branding in 2026:",
     "Here is the hard truth about succeeding in this industry in 2026:",
     "I've spent 8+ years building products, and this is the biggest mistake I see teams make: 🧵",
     "90% of SaaS companies are failing at product strategy right now.",
@@ -297,6 +519,7 @@ function cleanOldCtas(content: string): string {
 
   // List of all generated CTAs to check at end
   const knownCtas = [
+    "What's the single biggest challenge you face when writing LinkedIn content? Let's discuss in the comments below! If you found this useful, feel free to Repost ♻️",
     "Are you preparing for DP-600, DP-700, or DP-800? Which strategy will you try first?\n\n💬 Drop your target certification in the comments and let's discuss!",
     "Are you preparing for DP-600, DP-700, or DP-800? Which strategy will you try first?\n💬 Drop your target certification in the comments and let's discuss!",
     "What's your #1 playbook for scaling B2B SaaS? Let's discuss in the comments below! If you found this useful, feel free to Repost ♻️",
@@ -320,7 +543,7 @@ function cleanOldCtas(content: string): string {
       }
       
       // Look for partial CTA match (e.g. if formatting changed it slightly)
-      const partialCta = cta.substring(0, 40);
+      const partialCta = cta.substring(0, 65);
       const lastIndex = cleaned.lastIndexOf(partialCta);
       if (lastIndex !== -1 && lastIndex > cleaned.length - 250) {
         cleaned = cleaned.substring(0, lastIndex).trim();
@@ -358,7 +581,9 @@ export function autoFixPost(content: string, type: 'hook' | 'cta' | 'format'): s
 
   // Extract core keywords from content to customize fallback templates
   let topicPhrase = "this industry";
-  if (lowerContent.includes("fabric") || lowerContent.includes("dp-600") || lowerContent.includes("power bi")) {
+  if (lowerContent.includes("linkedin") || lowerContent.includes("personal brand") || lowerContent.includes("creator") || lowerContent.includes("postiq") || lowerContent.includes("outreach") || lowerContent.includes("audience")) {
+    topicPhrase = "LinkedIn growth and personal branding";
+  } else if (lowerContent.includes("fabric") || lowerContent.includes("dp-600") || lowerContent.includes("power bi")) {
     topicPhrase = "Microsoft Fabric certifications & exams";
   } else if (lowerContent.includes("saas") || lowerContent.includes("growth") || lowerContent.includes("b2b")) {
     topicPhrase = "B2B SaaS growth models";
@@ -374,7 +599,9 @@ export function autoFixPost(content: string, type: 'hook' | 'cta' | 'format'): s
     let hook = "";
     
     // Check specific topics
-    if (lowerContent.includes("fabric") || lowerContent.includes("dp-600") || lowerContent.includes("dp-700") || lowerContent.includes("power bi")) {
+    if (lowerContent.includes("linkedin") || lowerContent.includes("personal brand") || lowerContent.includes("creator") || lowerContent.includes("postiq")) {
+      hook = "90% of creators fail to grow on LinkedIn because they miss this simple system:";
+    } else if (lowerContent.includes("fabric") || lowerContent.includes("dp-600") || lowerContent.includes("dp-700") || lowerContent.includes("power bi")) {
       hook = "If you are planning to target Microsoft Fabric Certifications (DP-600 / DP-700 / DP-800), read this first: 🧵";
     } else if (lowerContent.includes("saas") || lowerContent.includes("growth")) {
       hook = "90% of B2B SaaS startups fail at growth because they overlook this one simple system:";
@@ -403,7 +630,9 @@ export function autoFixPost(content: string, type: 'hook' | 'cta' | 'format'): s
   if (type === 'cta') {
     let cta = "";
     
-    if (lowerContent.includes("fabric") || lowerContent.includes("dp-600") || lowerContent.includes("dp-700") || lowerContent.includes("certification")) {
+    if (lowerContent.includes("linkedin") || lowerContent.includes("personal brand") || lowerContent.includes("creator") || lowerContent.includes("postiq")) {
+      cta = "What's the single biggest challenge you face when writing LinkedIn content? Let's discuss in the comments below! If you found this useful, feel free to Repost ♻️";
+    } else if (lowerContent.includes("fabric") || lowerContent.includes("dp-600") || lowerContent.includes("dp-700") || lowerContent.includes("certification")) {
       cta = "Are you preparing for DP-600, DP-700, or DP-800? Which strategy will you try first?\n\n💬 Drop your target certification in the comments and let's discuss!";
     } else if (lowerContent.includes("saas") || lowerContent.includes("growth") || lowerContent.includes("b2b")) {
       cta = "What's your #1 playbook for scaling B2B SaaS? Let's discuss in the comments below! If you found this useful, feel free to Repost ♻️";

@@ -15,9 +15,13 @@ import {
   Bookmark, 
   MessageSquare,
   ShieldAlert,
-  Zap
+  Zap,
+  Globe,
+  Copy,
+  Mail,
+  Phone,
+  AlertCircle
 } from 'lucide-react';
-import { Mail, Phone, Copy, Globe } from 'lucide-react';
 import { networkDb, NetworkUser, MOCK_NETWORK_USERS } from '@/lib/db';
 
 const GithubIcon = ({ className, size = 16 }: { className?: string; size?: number }) => (
@@ -54,6 +58,7 @@ const TwitterIcon = ({ className, size = 16 }: { className?: string; size?: numb
     <path d="M22 4s-.7 2.1-2 3.4c1.6 10-9.4 17.3-18 11.6 2.2.1 4.4-.6 6-2C3 15.5.5 9.6 3 5c2.2 2.6 5.6 4.1 9 4-.9-4.2 4-6.6 7-3.8 1.1 0 3-1.2 3-1.2z" />
   </svg>
 );
+
 import { 
   ResponsiveContainer, 
   RadarChart, 
@@ -62,12 +67,7 @@ import {
   PolarRadiusAxis, 
   Radar, 
   Legend, 
-  Tooltip,
-  BarChart,
-  Bar,
-  XAxis,
-  YAxis,
-  CartesianGrid 
+  Tooltip
 } from 'recharts';
 
 export default function NetworkPage() {
@@ -213,24 +213,24 @@ export default function NetworkPage() {
         {/* Network Metrics Cards */}
         <div className="grid grid-cols-3 gap-3 md:gap-4 w-full md:w-auto relative z-10 shrink-0">
           <div className="bg-black/20 backdrop-blur-md rounded-2xl p-4 border border-white/5 text-center flex flex-col justify-center min-w-[90px] md:min-w-[110px]">
-            <span className="text-[10px] uppercase font-black text-zinc-450 tracking-wider">Connected</span>
-            <span className="text-2xl font-black text-brand-purple mt-1">{connections.length}</span>
+            <span className="text-[10px] uppercase font-black text-zinc-455 tracking-wider">Connected</span>
+            <span className="text-2xl font-black text-[#71B7FB] mt-1">{connections.length}</span>
           </div>
           <div className="bg-black/20 backdrop-blur-md rounded-2xl p-4 border border-white/5 text-center flex flex-col justify-center min-w-[90px] md:min-w-[110px]">
-            <span className="text-[10px] uppercase font-black text-zinc-450 tracking-wider">Invites</span>
+            <span className="text-[10px] uppercase font-black text-zinc-455 tracking-wider">Invites</span>
             <span className="text-2xl font-black text-brand-emerald mt-1">{pendingRequests.length}</span>
           </div>
           <div className="bg-black/20 backdrop-blur-md rounded-2xl p-4 border border-white/5 text-center flex flex-col justify-center min-w-[90px] md:min-w-[110px]">
-            <span className="text-[10px] uppercase font-black text-zinc-450 tracking-wider">Avg Score</span>
+            <span className="text-[10px] uppercase font-black text-zinc-455 tracking-wider">Avg Score</span>
             <span className="text-2xl font-black text-brand-amber mt-1">{averageNetworkScore}%</span>
           </div>
         </div>
       </div>
 
-      {/* Main Grid: Control Panel + Lists */}
-      <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
+      {/* Main Grid: Tabs Sidebar, List Center, Network Health Right */}
+      <div className="grid grid-cols-1 lg:grid-cols-4 gap-6 items-start">
         
-        {/* Left Side: Filter Tabs (LinkedIn Sidebar style) */}
+        {/* Column 1: Filter Tabs & Sidebar Widgets */}
         <div className="lg:col-span-1 space-y-4">
           <div className="glass-panel border border-card-border/75 rounded-2xl p-4 bg-card-bg">
             <h3 className="font-extrabold text-xs text-zinc-400 uppercase tracking-wider mb-3 px-1">My Network</h3>
@@ -240,7 +240,7 @@ export default function NetworkPage() {
                 className={`w-full flex items-center justify-between px-3 py-2 rounded-xl text-xs font-bold transition-all text-left ${
                   activeTab === 'connections'
                     ? 'bg-brand-purple/10 text-brand-purple'
-                    : 'text-zinc-600 dark:text-zinc-400 hover:bg-black/5 dark:hover:bg-white/5'
+                    : 'text-zinc-650 dark:text-zinc-400 hover:bg-black/5 dark:hover:bg-white/5'
                 }`}
               >
                 <div className="flex items-center gap-2">
@@ -255,7 +255,7 @@ export default function NetworkPage() {
                 className={`w-full flex items-center justify-between px-3 py-2 rounded-xl text-xs font-bold transition-all text-left ${
                   activeTab === 'invites'
                     ? 'bg-brand-purple/10 text-brand-purple'
-                    : 'text-zinc-600 dark:text-zinc-400 hover:bg-black/5 dark:hover:bg-white/5'
+                    : 'text-zinc-650 dark:text-zinc-400 hover:bg-black/5 dark:hover:bg-white/5'
                 }`}
               >
                 <div className="flex items-center gap-2">
@@ -274,7 +274,7 @@ export default function NetworkPage() {
                 className={`w-full flex items-center justify-between px-3 py-2 rounded-xl text-xs font-bold transition-all text-left ${
                   activeTab === 'discover'
                     ? 'bg-brand-purple/10 text-brand-purple'
-                    : 'text-zinc-600 dark:text-zinc-400 hover:bg-black/5 dark:hover:bg-white/5'
+                    : 'text-zinc-650 dark:text-zinc-400 hover:bg-black/5 dark:hover:bg-white/5'
                 }`}
               >
                 <div className="flex items-center gap-2">
@@ -296,17 +296,16 @@ export default function NetworkPage() {
               <p className="text-[10px] text-zinc-500 leading-normal font-semibold">
                 Access verified creator benchmark datasets and track competitor analytics with direct dashboard synchronization.
               </p>
-              <button className="w-full mt-2 py-2 rounded-xl bg-brand-amber text-black hover:opacity-95 text-[10px] font-black transition-all shadow-md shadow-brand-amber/10">
+              <button className="w-full mt-2 py-2 rounded-xl bg-brand-amber text-black hover:opacity-95 text-[10px] font-black transition-all shadow-md shadow-brand-amber/15 cursor-pointer">
                 Upgrade to Pro
               </button>
             </div>
           </div>
         </div>
 
-        {/* Right Side: Tab Contents */}
-        <div className="lg:col-span-3 space-y-4">
+        {/* Column 2 & 3: Main directory lists */}
+        <div className="lg:col-span-2 space-y-4">
           
-          {/* Search bar inside tab container */}
           {(activeTab === 'connections' || activeTab === 'discover') && (
             <div className="relative w-full">
               <Search className="absolute left-3.5 top-3 text-zinc-400" size={15} />
@@ -360,7 +359,7 @@ export default function NetworkPage() {
                     <div className="flex items-center gap-2 w-full sm:w-auto shrink-0 mt-2 sm:mt-0">
                       <button 
                         onClick={() => setSelectedContactUser(creator)}
-                        className="flex-1 sm:flex-initial inline-flex items-center justify-center gap-1.5 px-3 py-2 rounded-xl border border-card-border hover:border-brand-purple hover:text-brand-purple text-[10px] font-black text-zinc-650 dark:text-zinc-350 transition-all"
+                        className="flex-1 sm:flex-initial inline-flex items-center justify-center gap-1.5 px-3 py-2 rounded-xl border border-card-border hover:border-brand-purple hover:text-brand-purple text-[10px] font-black text-zinc-650 dark:text-zinc-350 transition-all cursor-pointer"
                       >
                         <Globe size={12} className="text-brand-purple" />
                         Contact Info
@@ -368,7 +367,7 @@ export default function NetworkPage() {
 
                       <button 
                         onClick={() => setCompareTarget(creator)}
-                        className="flex-1 sm:flex-initial inline-flex items-center justify-center gap-1.5 px-3 py-2 rounded-xl border border-card-border hover:border-brand-purple hover:text-brand-purple text-[10px] font-black text-zinc-650 dark:text-zinc-350 transition-all"
+                        className="flex-1 sm:flex-initial inline-flex items-center justify-center gap-1.5 px-3 py-2 rounded-xl border border-card-border hover:border-brand-purple hover:text-brand-purple text-[10px] font-black text-zinc-650 dark:text-zinc-350 transition-all cursor-pointer"
                       >
                         <ArrowLeftRight size={12} />
                         Compare
@@ -376,7 +375,7 @@ export default function NetworkPage() {
                       
                       <button 
                         onClick={() => handleDisconnect(creator.id)}
-                        className="p-2 rounded-xl border border-transparent hover:border-brand-rose/25 text-zinc-400 hover:text-brand-rose transition-all"
+                        className="p-2 rounded-xl border border-transparent hover:border-brand-rose/25 text-zinc-400 hover:text-brand-rose transition-all cursor-pointer"
                         title="Disconnect"
                       >
                         <X size={14} />
@@ -396,7 +395,7 @@ export default function NetworkPage() {
                   {!searchQuery && (
                     <button 
                       onClick={() => setActiveTab('discover')}
-                      className="px-4 py-2 rounded-xl bg-brand-purple text-white text-[10px] font-black hover:opacity-95 transition-all shadow-md shadow-brand-purple/10"
+                      className="px-4 py-2 rounded-xl bg-brand-purple text-white text-[10px] font-black hover:opacity-95 transition-all shadow-md shadow-brand-purple/10 cursor-pointer"
                     >
                       Discover Creators
                     </button>
@@ -406,7 +405,7 @@ export default function NetworkPage() {
             </div>
           )}
 
-          {/* TAB 2: INCOMING REQUESTS */}
+          {/* TAB 2: PENDING INVITES */}
           {activeTab === 'invites' && (
             <div className="space-y-3">
               {pendingRequests.length > 0 ? (
@@ -446,21 +445,21 @@ export default function NetworkPage() {
                     <div className="flex items-center gap-2 w-full sm:w-auto shrink-0 mt-2 sm:mt-0">
                       <button 
                         onClick={() => setSelectedContactUser(creator)}
-                        className="flex-1 sm:flex-initial inline-flex items-center justify-center gap-1 px-3 py-2 rounded-xl border border-card-border hover:border-brand-purple hover:text-brand-purple text-[10px] font-black text-zinc-650 dark:text-zinc-350 transition-all"
+                        className="flex-1 sm:flex-initial inline-flex items-center justify-center gap-1 px-3 py-2 rounded-xl border border-card-border hover:border-brand-purple hover:text-brand-purple text-[10px] font-black text-zinc-650 dark:text-zinc-355 transition-all cursor-pointer"
                       >
                         <Globe size={11} className="text-brand-purple" />
                         Contact
                       </button>
                       <button 
                         onClick={() => handleAcceptRequest(creator.id)}
-                        className="flex-1 sm:flex-initial inline-flex items-center justify-center gap-1 px-4.5 py-2 rounded-xl bg-brand-purple text-white text-[10px] font-black hover:opacity-95 transition-all shadow-md shadow-brand-purple/15"
+                        className="flex-1 sm:flex-initial inline-flex items-center justify-center gap-1 px-4.5 py-2 rounded-xl bg-brand-purple text-white text-[10px] font-black hover:opacity-95 transition-all shadow-md shadow-brand-purple/15 cursor-pointer"
                       >
                         <Check size={12} />
                         Accept
                       </button>
                       <button 
                         onClick={() => handleDeclineRequest(creator.id)}
-                        className="flex-1 sm:flex-initial inline-flex items-center justify-center gap-1 px-4 py-2 rounded-xl border border-card-border text-zinc-650 dark:text-zinc-350 hover:bg-brand-rose/5 hover:border-brand-rose hover:text-brand-rose text-[10px] font-black transition-all"
+                        className="flex-1 sm:flex-initial inline-flex items-center justify-center gap-1 px-4 py-2 rounded-xl border border-card-border text-zinc-650 dark:text-zinc-350 hover:bg-brand-rose/5 hover:border-brand-rose hover:text-brand-rose text-[10px] font-black transition-all cursor-pointer"
                       >
                         <X size={12} />
                         Ignore
@@ -524,7 +523,7 @@ export default function NetworkPage() {
                       <div className="w-full sm:w-auto shrink-0 mt-2 sm:mt-0 flex gap-2 justify-end">
                         <button
                           onClick={() => setSelectedContactUser(creator)}
-                          className="p-2 rounded-xl border border-card-border hover:border-brand-purple hover:text-brand-purple text-zinc-450 dark:text-zinc-355 transition-all"
+                          className="p-2 rounded-xl border border-card-border hover:border-brand-purple hover:text-brand-purple text-zinc-450 dark:text-zinc-355 transition-all cursor-pointer"
                           title="Contact Info"
                         >
                           <Globe size={13} />
@@ -537,7 +536,7 @@ export default function NetworkPage() {
                         ) : (
                           <button 
                             onClick={() => handleSendRequest(creator.id)}
-                            className="w-full sm:w-auto inline-flex items-center justify-center gap-1 px-4.5 py-2 rounded-xl bg-brand-purple text-white text-[10px] font-black hover:opacity-95 transition-all shadow-md shadow-brand-purple/15"
+                            className="w-full sm:w-auto inline-flex items-center justify-center gap-1 px-4.5 py-2 rounded-xl bg-brand-purple text-white text-[10px] font-black hover:opacity-95 transition-all shadow-md shadow-brand-purple/15 cursor-pointer"
                           >
                             <UserPlus size={12} />
                             Connect
@@ -563,9 +562,120 @@ export default function NetworkPage() {
 
         </div>
 
+        {/* Column 4: Network Health Dashboard Column */}
+        <div className="lg:col-span-1 space-y-4">
+          
+          {/* Network Health Score Card */}
+          <div className="glass-panel border border-card-border/75 rounded-2xl p-5 bg-card-bg space-y-4 relative overflow-hidden">
+            <div className="absolute top-0 right-0 w-24 h-24 bg-brand-purple/5 rounded-full blur-xl pointer-events-none"></div>
+            
+            <h3 className="text-xs font-black uppercase tracking-wider text-zinc-550 border-b border-card-border/40 pb-2 flex items-center gap-1">
+              <Zap size={13} className="text-brand-purple" />
+              Network Health
+            </h3>
+
+            <div className="flex items-center gap-4">
+              <div className="relative w-16 h-16 rounded-full border-4 border-brand-purple/20 bg-brand-purple/5 flex items-center justify-center font-black text-brand-purple text-lg select-none">
+                74
+                <span className="text-[8px] text-zinc-550 absolute bottom-1.5">/100</span>
+              </div>
+              <div className="text-[10px] leading-normal font-semibold text-zinc-500">
+                <strong className="text-zinc-700 dark:text-zinc-300">Target Range Achieved.</strong>
+                Connect with recruiters or founders to push score past 85.
+              </div>
+            </div>
+
+            {/* Why/How/Impact */}
+            <div className="pt-3 border-t border-card-border/40 text-[9px] leading-relaxed font-semibold text-zinc-550 space-y-2">
+              <div>
+                <strong className="text-brand-purple uppercase tracking-wide block mb-0.5">Why?</strong>
+                Network score tracks your connection overlap with target hiring pools and creators.
+              </div>
+              <div>
+                <strong className="text-brand-indigo uppercase tracking-wide block mb-0.5">How?</strong>
+                Accept pending invites and expand your founder network in discover.
+              </div>
+              <div>
+                <strong className="text-brand-emerald uppercase tracking-wide block mb-0.5">Impact?</strong>
+                <span className="text-brand-emerald font-black block">+15% Social Selling SSI Index.</span>
+              </div>
+            </div>
+          </div>
+
+          {/* Audience Breakdown Widget */}
+          <div className="glass-panel border border-card-border/75 rounded-2xl p-5 bg-card-bg space-y-4">
+            <h3 className="text-xs font-black uppercase tracking-wider text-zinc-550 border-b border-card-border/40 pb-2">
+              Audience Breakdown
+            </h3>
+
+            <div className="space-y-2.5 text-xs font-semibold">
+              {[
+                { label: "Founders", count: 420, pct: 53, color: "bg-brand-purple" },
+                { label: "Product Managers", count: 150, pct: 20, color: "bg-[#71B7FB]" },
+                { label: "Marketers", count: 100, pct: 15, color: "bg-brand-rose" },
+                { label: "Recruiters", count: 60, pct: 12, color: "bg-brand-emerald" }
+              ].map((aud, i) => (
+                <div key={i} className="space-y-1">
+                  <div className="flex justify-between text-zinc-650 dark:text-zinc-400">
+                    <span>{aud.label}</span>
+                    <span className="text-zinc-900 dark:text-zinc-200 font-extrabold">{aud.count}</span>
+                  </div>
+                  <div className="h-1.5 w-full bg-zinc-200 dark:bg-zinc-800 rounded-full overflow-hidden">
+                    <div className={`h-full ${aud.color} rounded-full`} style={{ width: `${aud.pct}%` }} />
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* Missing Connections (Recommendations Outreach) */}
+          <div className="glass-panel border border-card-border/75 rounded-2xl p-5 bg-card-bg space-y-4">
+            <h3 className="text-xs font-black uppercase tracking-wider text-zinc-550 border-b border-card-border/40 pb-2">
+              Recommended Outreach
+            </h3>
+
+            <div className="space-y-2">
+              {[
+                { tag: "+15 Recruiters", desc: "For career placement search indexes." },
+                { tag: "+20 SaaS Founders", desc: "For early B2B product feedback loops." },
+                { tag: "+10 Product Directors", desc: "For regional PM leadership authority." }
+              ].map((rec, i) => (
+                <div key={i} className="p-2.5 rounded-xl border border-card-border bg-[#f8f9fa] dark:bg-[#141b22] space-y-0.5">
+                  <strong className="text-[10px] font-black text-brand-purple uppercase tracking-wide block">{rec.tag}</strong>
+                  <span className="text-[9px] text-zinc-500 font-bold block leading-snug">{rec.desc}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* Relationship Quality */}
+          <div className="glass-panel border border-card-border/75 rounded-2xl p-5 bg-card-bg space-y-4">
+            <h3 className="text-xs font-black uppercase tracking-wider text-zinc-550 border-b border-card-border/40 pb-2">
+              Relationship Quality
+            </h3>
+
+            <div className="space-y-2 text-xs font-semibold">
+              {[
+                { label: "Strong Connections", val: "40%", color: "bg-brand-emerald" },
+                { label: "Weak Connections", val: "45%", color: "bg-brand-purple" },
+                { label: "Dormant / Inactive", val: "15%", color: "bg-zinc-300 dark:bg-zinc-700" }
+              ].map((rel, i) => (
+                <div key={i} className="flex justify-between items-center">
+                  <div className="flex items-center gap-1.5">
+                    <span className={`w-2.5 h-2.5 rounded-full ${rel.color}`} />
+                    <span className="text-zinc-650 dark:text-zinc-400">{rel.label}</span>
+                  </div>
+                  <strong className="text-zinc-800 dark:text-zinc-200">{rel.val}</strong>
+                </div>
+              ))}
+            </div>
+          </div>
+
+        </div>
+
       </div>
 
-      {/* COMPARISON MODAL (RECHARTS INTEGRATION) */}
+      {/* COMPARISON MODAL */}
       {compareTarget && activeUser && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4">
           <div className="w-full max-w-3xl glass-panel border border-card-border bg-card-bg rounded-3xl shadow-2xl flex flex-col max-h-[90vh] overflow-hidden animate-in zoom-in-95 duration-250">
@@ -578,7 +688,7 @@ export default function NetworkPage() {
               </div>
               <button 
                 onClick={() => setCompareTarget(null)} 
-                className="p-1 rounded-lg border border-card-border text-zinc-450 hover:text-zinc-700 dark:hover:text-white hover:bg-black/5 dark:hover:bg-white/5 transition-all"
+                className="p-1 rounded-lg border border-card-border text-zinc-450 hover:text-zinc-700 dark:hover:text-white hover:bg-black/5 dark:hover:bg-white/5 transition-all cursor-pointer"
               >
                 <X size={15} />
               </button>
@@ -610,7 +720,7 @@ export default function NetworkPage() {
                         </span>
                       )}
                     </h4>
-                    <p className="text-[10px] text-zinc-500 font-semibold truncate leading-none mt-1">Score: {activeUser.profileScore}%</p>
+                    <p className="text-[10px] text-zinc-500 font-semibold truncate leading-none mt-1 font-bold">Score: {activeUser.profileScore}%</p>
                   </div>
                 </div>
 
@@ -635,7 +745,7 @@ export default function NetworkPage() {
                         </span>
                       )}
                     </h4>
-                    <p className="text-[10px] text-zinc-500 font-semibold truncate leading-none mt-1">Score: {compareTarget.profileScore}%</p>
+                    <p className="text-[10px] text-zinc-500 font-semibold truncate leading-none mt-1 font-bold">Score: {compareTarget.profileScore}%</p>
                   </div>
                 </div>
               </div>
@@ -694,13 +804,13 @@ export default function NetworkPage() {
                   <Sparkles size={14} className="text-brand-amber" />
                   Creator Collaboration Insights
                 </h4>
-                <ul className="space-y-2 text-[11px] leading-relaxed font-semibold text-zinc-650 dark:text-zinc-350">
+                <ul className="space-y-2 text-[11px] leading-relaxed font-semibold text-zinc-650 dark:text-zinc-350 font-bold">
                   <li className="flex items-start gap-2">
                     <span className="w-1.5 h-1.5 rounded-full bg-brand-purple mt-1.5 shrink-0"></span>
                     <span>
                       {activeUser.contentScore > compareTarget.contentScore 
                         ? `Your Content Creator Score (${activeUser.contentScore}) leads by ${activeUser.contentScore - compareTarget.contentScore} points. Marcus's PLG loops or Sarah's editorial structure could benefit from your engaging writing formats.`
-                        : `Your Content Creator Score (${activeUser.contentScore}) trailing ${compareTarget.name}'s (${compareTarget.contentScore}). Try referencing their formatting layouts or hooks to drive engagement.`}
+                        : `Your Content Creator Score (${activeUser.contentScore}) is trailing ${compareTarget.name}'s (${compareTarget.contentScore}). Try referencing their formatting layouts or hooks to drive engagement.`}
                     </span>
                   </li>
                   <li className="flex items-start gap-2">
@@ -720,7 +830,7 @@ export default function NetworkPage() {
             <div className="border-t border-card-border p-4 bg-black/5 dark:bg-black/20 flex justify-end gap-2 shrink-0">
               <button 
                 onClick={() => setCompareTarget(null)}
-                className="px-4 py-2 rounded-xl bg-brand-purple text-white text-[10px] font-black hover:opacity-95 transition-all shadow-md shadow-brand-purple/10"
+                className="px-4 py-2 rounded-xl bg-brand-purple text-white text-[10px] font-black hover:opacity-95 transition-all shadow-md shadow-brand-purple/10 cursor-pointer"
               >
                 Close Comparison
               </button>
@@ -743,7 +853,7 @@ export default function NetworkPage() {
               </div>
               <button 
                 onClick={() => setSelectedContactUser(null)}
-                className="p-1 rounded-lg border border-card-border text-zinc-450 hover:text-zinc-700 dark:hover:text-white hover:bg-black/5 dark:hover:bg-white/5 transition-all"
+                className="p-1 rounded-lg border border-card-border text-zinc-455 hover:text-zinc-700 dark:hover:text-white hover:bg-black/5 dark:hover:bg-white/5 transition-all cursor-pointer"
               >
                 <X size={14} />
               </button>
@@ -779,7 +889,7 @@ export default function NetworkPage() {
               <div className="flex items-start gap-3">
                 <Globe className="text-brand-purple shrink-0 mt-0.5" size={15} />
                 <div className="flex-1 min-w-0">
-                  <span className="text-[10px] text-zinc-400 dark:text-zinc-505 uppercase tracking-wider block">Website</span>
+                  <span className="text-[10px] text-zinc-400 dark:text-zinc-550 uppercase tracking-wider block">Website</span>
                   {selectedContactUser.contactInfo?.website ? (
                     <div className="flex items-center justify-between gap-2 mt-0.5">
                       <a 
@@ -792,7 +902,7 @@ export default function NetworkPage() {
                       </a>
                       <button 
                         onClick={() => navigator.clipboard.writeText(selectedContactUser.contactInfo?.website || '')}
-                        className="p-1 rounded hover:bg-black/5 dark:hover:bg-white/5 text-zinc-450"
+                        className="p-1 rounded hover:bg-black/5 dark:hover:bg-white/5 text-zinc-450 cursor-pointer"
                         title="Copy"
                       >
                         <Copy size={11} />
@@ -821,7 +931,7 @@ export default function NetworkPage() {
                       </a>
                       <button 
                         onClick={() => navigator.clipboard.writeText(selectedContactUser.contactInfo?.github || '')}
-                        className="p-1 rounded hover:bg-black/5 dark:hover:bg-white/5 text-zinc-450"
+                        className="p-1 rounded hover:bg-black/5 dark:hover:bg-white/5 text-zinc-450 cursor-pointer"
                         title="Copy"
                       >
                         <Copy size={11} />
@@ -850,7 +960,7 @@ export default function NetworkPage() {
                       </a>
                       <button 
                         onClick={() => navigator.clipboard.writeText(selectedContactUser.contactInfo?.twitter || '')}
-                        className="p-1 rounded hover:bg-black/5 dark:hover:bg-white/5 text-zinc-455"
+                        className="p-1 rounded hover:bg-black/5 dark:hover:bg-white/5 text-zinc-455 cursor-pointer"
                         title="Copy"
                       >
                         <Copy size={11} />
@@ -877,7 +987,7 @@ export default function NetworkPage() {
                       </a>
                       <button 
                         onClick={() => navigator.clipboard.writeText(selectedContactUser.contactInfo?.email || '')}
-                        className="p-1 rounded hover:bg-black/5 dark:hover:bg-white/5 text-zinc-450"
+                        className="p-1 rounded hover:bg-black/5 dark:hover:bg-white/5 text-zinc-450 cursor-pointer"
                         title="Copy"
                       >
                         <Copy size={11} />
@@ -896,10 +1006,10 @@ export default function NetworkPage() {
                   <span className="text-[10px] text-zinc-400 dark:text-zinc-550 uppercase tracking-wider block">Phone Number</span>
                   {selectedContactUser.contactInfo?.phone ? (
                     <div className="flex items-center justify-between gap-2 mt-0.5">
-                      <span className="text-zinc-800 dark:text-zinc-350 truncate">{selectedContactUser.contactInfo.phone}</span>
+                      <span className="text-zinc-800 dark:text-zinc-355 truncate">{selectedContactUser.contactInfo.phone}</span>
                       <button 
                         onClick={() => navigator.clipboard.writeText(selectedContactUser.contactInfo?.phone || '')}
-                        className="p-1 rounded hover:bg-black/5 dark:hover:bg-white/5 text-zinc-450"
+                        className="p-1 rounded hover:bg-black/5 dark:hover:bg-white/5 text-zinc-450 cursor-pointer"
                         title="Copy"
                       >
                         <Copy size={11} />
@@ -916,7 +1026,7 @@ export default function NetworkPage() {
             <div className="p-4 bg-black/5 dark:bg-black/20 border-t border-card-border flex justify-end">
               <button 
                 onClick={() => setSelectedContactUser(null)}
-                className="px-4 py-2 rounded-xl bg-brand-purple text-white text-[10px] font-black hover:opacity-95 shadow-md shadow-brand-purple/10"
+                className="px-4 py-2 rounded-xl bg-brand-purple text-white text-[10px] font-black hover:opacity-95 shadow-md shadow-brand-purple/10 cursor-pointer"
               >
                 Close Info
               </button>
@@ -927,4 +1037,4 @@ export default function NetworkPage() {
  
      </div>
    );
- }
+}

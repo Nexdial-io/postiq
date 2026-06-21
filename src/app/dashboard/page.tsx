@@ -25,7 +25,8 @@ import {
   MoreHorizontal,
   Globe,
   Award,
-  Plus
+  Plus,
+  ChevronRight
 } from 'lucide-react';
 import { mockDb, PostAnalysis, UserProfile } from '@/lib/mockDb';
 import { networkDb } from '@/lib/db';
@@ -91,6 +92,7 @@ export default function Dashboard() {
   const [profile, setProfile] = useState<UserProfile | null>(null);
   const [history, setHistory] = useState<PostAnalysis[]>([]);
   const [activePlan, setActivePlan] = useState('Free');
+  const [activeUser, setActiveUser] = useState<any>(null);
   
   // Start a Post Box expansion states
   const [isDrafting, setIsDrafting] = useState(false);
@@ -118,6 +120,7 @@ export default function Dashboard() {
       const currentProfile = mockDb.getProfile();
       setProfile(currentProfile);
       setConnections(networkDb.getConnections(activeId));
+      setActiveUser(networkDb.getActiveUser());
     };
     loadProfileData();
     setHistory(mockDb.getAnalyses());
@@ -488,6 +491,151 @@ export default function Dashboard() {
       {/* 📝 Column 2: Interactive Feed &Composer (Center - 50% width) */}
       <div className="lg:col-span-2 space-y-6">
         
+        {/* 🌟 NEW FEATURE: PERSONAL BRAND DASHBOARD */}
+        <div className="glass-panel rounded-2xl p-6 border border-brand-purple/20 bg-gradient-to-br from-brand-purple/[0.03] to-transparent space-y-6 relative overflow-hidden">
+          <div className="absolute top-0 right-0 w-40 h-40 bg-brand-purple/5 rounded-full blur-3xl pointer-events-none"></div>
+          
+          <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 border-b border-card-border/50 pb-4">
+            <div>
+              <h2 className="text-lg font-black tracking-tight flex items-center gap-1.5">
+                <Sparkles className="text-brand-purple" size={18} />
+                Personal Brand Intelligence Dashboard
+              </h2>
+              <p className="text-[10px] text-zinc-500 font-semibold mt-0.5">
+                Real-time visibility metrics and content recommendations.
+              </p>
+            </div>
+            <span className="text-[9px] font-black uppercase tracking-wider bg-brand-purple/10 text-brand-purple border border-brand-purple/20 px-2 py-0.5 rounded">
+              Active Sync
+            </span>
+          </div>
+
+          {(() => {
+            const contentScoreVal = activeUser?.contentScore || 82;
+            const profileScoreVal = activeUser?.profileScore || 91;
+            const networkScoreVal = activeUser?.recruiterScore || 74;
+            const trendScoreVal = activeUser?.seoScore || 88;
+            const brandScoreVal = Math.round((contentScoreVal + profileScoreVal + networkScoreVal + trendScoreVal) / 4);
+
+            return (
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-6 items-center">
+                {/* Circular brand score gauge */}
+                <div className="flex flex-col items-center justify-center p-4 border border-card-border/60 bg-black/5 dark:bg-black/10 rounded-2xl text-center space-y-2 shrink-0 select-none">
+                  <div className="relative w-24 h-24 flex items-center justify-center rounded-full border-[6px] border-brand-purple/20 bg-brand-purple/5 shadow-inner">
+                    <span className="text-3xl font-extrabold text-brand-purple">{brandScoreVal}</span>
+                    <span className="text-[10px] text-zinc-500 absolute bottom-3">/100</span>
+                  </div>
+                  <div>
+                    <span className="text-[10px] uppercase font-black text-zinc-500 tracking-wider">Overall Brand Score</span>
+                    <span className="text-[9px] text-brand-purple font-bold block mt-0.5">
+                      {brandScoreVal >= 85 ? "Authoritative Presence" : brandScoreVal >= 70 ? "Consistent Optimizer" : "Growth Required"}
+                    </span>
+                  </div>
+                </div>
+
+                {/* Subscores Grid */}
+                <div className="md:col-span-2 grid grid-cols-2 gap-3">
+                  {[
+                    { name: "Content Score", val: contentScoreVal, path: "/analyzer", color: "text-[#71B7FB] border-[#71B7FB]/20" },
+                    { name: "Profile Score", val: profileScoreVal, path: "/profile-intelligence", color: "text-brand-emerald border-brand-emerald/20" },
+                    { name: "Network Score", val: networkScoreVal, path: "/network", color: "text-brand-amber border-brand-amber/20" },
+                    { name: "Trend Score", val: trendScoreVal, path: "/trends", color: "text-brand-indigo border-brand-indigo/20" }
+                  ].map((sub, idx) => (
+                    <Link 
+                      href={sub.path} 
+                      key={idx}
+                      className="p-3 rounded-xl border border-card-border bg-[#f8f9fa] dark:bg-[#141b22] hover:border-brand-purple/40 hover:-translate-y-0.5 transition-all flex justify-between items-center group cursor-pointer"
+                    >
+                      <div>
+                        <span className="text-[10px] font-bold text-zinc-500 block group-hover:text-brand-purple transition-colors">{sub.name}</span>
+                        <strong className={`text-lg font-black ${sub.color.split(" ")[0]} mt-0.5 block`}>{sub.val}</strong>
+                      </div>
+                      <ChevronRight size={14} className="text-zinc-400 group-hover:text-brand-purple group-hover:translate-x-0.5 transition-all shrink-0" />
+                    </Link>
+                  ))}
+                </div>
+              </div>
+            );
+          })()}
+
+          {/* Weekly Action Plan */}
+          <div className="border-t border-card-border/50 pt-4 space-y-3">
+            <div className="flex justify-between items-center">
+              <h3 className="text-xs font-black uppercase tracking-wider text-zinc-500">Weekly Action Plan</h3>
+              <span className="text-[9px] text-zinc-400 font-bold">Priority ordered checklist</span>
+            </div>
+
+            <div className="space-y-2.5">
+              {[
+                { 
+                  prio: "Priority 1", 
+                  title: "Improve CTA Quality", 
+                  path: "/analyzer",
+                  why: "CTA quality directly drives comment rate and algorithmic feed visibility.",
+                  how: "Review hooks & optimize spacing using the Post Analyzer auto-fixes.",
+                  impact: "+12% engagement CTR"
+                },
+                { 
+                  prio: "Priority 2", 
+                  title: "Add metrics to About section", 
+                  path: "/profile-intelligence",
+                  why: "ATS models and recruiter filters index profile summaries containing quantified metrics.",
+                  how: "Use the AI Profile Rewrite Studio to insert key B2B SaaS accomplishments.",
+                  impact: "+18% search visibility"
+                },
+                { 
+                  prio: "Priority 3", 
+                  title: "Publish 2 trend-based posts", 
+                  path: "/trends",
+                  why: "Writing on trending topics (e.g. B2B AI Agents) triggers early-adoption reach loops.",
+                  how: "Generate a custom post directly from the Trends Discovery tab.",
+                  impact: "+30% reach boost"
+                },
+                { 
+                  prio: "Priority 4", 
+                  title: "Connect with 15 PM leaders", 
+                  path: "/network",
+                  why: "Connecting with peers increases the reach overlap score for your content.",
+                  how: "Review the recommended connection lists in the Creator Network tab.",
+                  impact: "+15% SSI index boost"
+                }
+              ].map((act, i) => (
+                <div key={i} className="group p-3 rounded-xl border border-card-border bg-[#f8f9fa] dark:bg-[#141b22] space-y-2 hover:border-brand-purple/20 transition-all">
+                  <div className="flex justify-between items-center">
+                    <div className="flex items-center gap-2">
+                      <span className="text-[8px] font-black uppercase bg-brand-purple/10 text-brand-purple px-1.5 py-0.5 rounded">{act.prio}</span>
+                      <Link href={act.path} className="text-xs font-bold text-zinc-800 dark:text-zinc-200 hover:text-brand-purple hover:underline transition-all">
+                        {act.title}
+                      </Link>
+                    </div>
+                    
+                    <Link href={act.path} className="text-[10px] font-bold text-brand-purple flex items-center gap-0.5 opacity-0 group-hover:opacity-100 transition-opacity">
+                      Take Action
+                      <ChevronRight size={10} />
+                    </Link>
+                  </div>
+
+                  {/* Why / How / Impact Explanatory Tooltips */}
+                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-2.5 pt-2 border-t border-card-border/40 text-[9px] leading-normal font-semibold text-zinc-550">
+                    <div>
+                      <strong className="text-brand-purple uppercase tracking-wide block mb-0.5">Why?</strong>
+                      <span className="block leading-relaxed">{act.why}</span>
+                    </div>
+                    <div>
+                      <strong className="text-brand-indigo uppercase tracking-wide block mb-0.5">How?</strong>
+                      <span className="block leading-relaxed">{act.how}</span>
+                    </div>
+                    <div>
+                      <strong className="text-brand-emerald uppercase tracking-wide block mb-0.5">Impact?</strong>
+                      <span className="text-brand-emerald font-black block">{act.impact}</span>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+
         {/* "Start a Post" composer card */}
         <div className="glass-panel rounded-2xl p-4 md:p-5 border border-card-border/70 space-y-4">
           

@@ -55,6 +55,36 @@ export interface PostAnalysis {
   suggestions: string[];
   timestamp: string;
   comments?: PostComment[];
+  scrollStopperScore?: number;
+  hookExplanations?: {
+    curiosity: boolean;
+    statistic: boolean;
+    contrarian: boolean;
+    question: boolean;
+    recommendation: string;
+  };
+  originalScore?: number;
+  potentialIssues?: string[];
+  missingElements?: string[];
+  audienceMatch?: {
+    founders: number;
+    creators: number;
+    recruiters: number;
+  };
+  personalBrandScore?: number;
+  personalBrandSignals?: {
+    authority: number;
+    expertise: number;
+    uniqueness: number;
+    trust: number;
+  };
+  transparencyReport?: {
+    hook: { curiosity: boolean; statistic: boolean; contrarian: boolean; question: boolean };
+    readability: { sentenceLength: boolean; paragraphBreaks: boolean; punchyFormatting: boolean };
+    authority: { frameworkName: boolean; metricsProvided: boolean; experienceClaim: boolean };
+    emotional: { emotionalWords: boolean; moderateEmojis: boolean; authenticTone: boolean };
+    cta: { lowFrictionPrompt: boolean; engagementQuestion: boolean; explicitNextStep: boolean };
+  };
 }
 
 export interface Competitor {

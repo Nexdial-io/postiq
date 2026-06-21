@@ -34,6 +34,25 @@
 
 ---
 
+## 📸 Screenshots
+
+### 🏠 Creator Intelligence Dashboard
+![Dashboard Preview](public/dashboard_preview.png)
+
+### 🤖 AI Post Analyzer
+![AI Post Analyzer Preview](public/analyzer_preview.png)
+
+### 👤 Profile Intelligence & ATS Auditor
+![Profile Intelligence Preview](public/profile_intel_preview.png)
+
+### ✍️ Hook & Rewrite Studio
+![Hook Studio Preview](public/hook_studio_preview.png)
+
+### 📈 Trends Discovery
+![Trends Preview](public/trends_preview.png)
+
+---
+
 ## ✨ Features
 
 | Module | Description |

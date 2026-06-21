@@ -238,10 +238,10 @@ export default function BlogHubPage() {
 
       {/* Filter Toolbar (Search & Categories) */}
       <section className="w-full max-w-6xl px-4 py-4 space-y-4">
-        <div className="flex flex-col md:flex-row gap-4 items-stretch md:items-center justify-between">
+        <div className="flex flex-col md:flex-row gap-4 items-start md:items-center justify-between border-b border-card-border/40 pb-4">
           
-          {/* Categories Tab Scroll */}
-          <div className="flex items-center gap-2 overflow-x-auto pb-2 md:pb-0 scrollbar-hide shrink-0 max-w-full md:max-w-[70%]">
+          {/* Categories Grid/Wrap */}
+          <div className="flex flex-wrap items-center gap-2 flex-1">
             {categories.map((cat, idx) => (
               <button
                 key={idx}
@@ -258,7 +258,7 @@ export default function BlogHubPage() {
           </div>
 
           {/* Search Input */}
-          <div className="relative flex-1 md:max-w-xs">
+          <div className="relative w-full md:w-64 shrink-0">
             <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 text-zinc-400" size={14} />
             <input
               type="text"

@@ -422,7 +422,7 @@ export default function SettingsPage() {
                         <label className="text-zinc-500 block mb-1">GitHub Profile Link</label>
                         <input
                           type="url"
-                          placeholder="https://github.com/dattasable"
+                          placeholder="https://github.com/sabledattatray"
                           value={github}
                           onChange={(e) => setGithub(e.target.value)}
                           className="w-full px-3.5 py-2 rounded-xl bg-[#f8f9fa] dark:bg-[#141b22] border border-card-border text-xs focus:outline-none focus:border-brand-purple transition-all"
@@ -433,7 +433,7 @@ export default function SettingsPage() {
                         <label className="text-zinc-500 block mb-1">Twitter / X URL</label>
                         <input
                           type="url"
-                          placeholder="https://x.com/dattasable"
+                          placeholder="https://x.com/sabledattatray"
                           value={twitter}
                           onChange={(e) => setTwitter(e.target.value)}
                           className="w-full px-3.5 py-2 rounded-xl bg-[#f8f9fa] dark:bg-[#141b22] border border-card-border text-xs focus:outline-none focus:border-brand-purple transition-all"

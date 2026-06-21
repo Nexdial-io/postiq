@@ -191,8 +191,8 @@ export const MOCK_NETWORK_USERS: NetworkUser[] = [
       email: "datta@nexdial.com",
       phone: "+91 98765 43210",
       website: "https://dattasable.com",
-      github: "https://github.com/dattasable",
-      twitter: "https://x.com/dattasable"
+      github: "https://github.com/sabledattatray",
+      twitter: "https://x.com/sabledattatray"
     }
   },
   {

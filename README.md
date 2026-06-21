@@ -321,6 +321,9 @@ This project is licensed under the **MIT License** — see [LICENSE](LICENSE) fo
 Designed & built by **[Datta Sable](https://dattasable.com)**
 
 [![Portfolio](https://img.shields.io/badge/Portfolio-dattasable.com-0a66c2?style=for-the-badge&logo=firefox&logoColor=white)](https://dattasable.com)
+[![LinkedIn](https://img.shields.io/badge/LinkedIn-dattasable-0a66c2?style=for-the-badge&logo=linkedin&logoColor=white)](https://www.linkedin.com/in/dattasable/)
+[![GitHub](https://img.shields.io/badge/GitHub-sabledattatray-181717?style=for-the-badge&logo=github&logoColor=white)](https://github.com/sabledattatray)
+[![Twitter](https://img.shields.io/badge/Twitter-sabledattatray-1DA1F2?style=for-the-badge&logo=twitter&logoColor=white)](https://x.com/sabledattatray)
 
 </div>
 

@@ -238,7 +238,7 @@ export default function BlogHubPage() {
 
       {/* Filter Toolbar (Search & Categories) */}
       <section className="w-full max-w-6xl px-4 py-4 space-y-4">
-        <div className="flex flex-col md:flex-row gap-4 items-start md:items-center justify-between border-b border-card-border/40 pb-4">
+        <div className="flex flex-col md:flex-row gap-4 items-start justify-between border-b border-card-border/40 pb-4">
           
           {/* Categories Grid/Wrap */}
           <div className="flex flex-wrap items-center gap-2 flex-1">
@@ -265,7 +265,7 @@ export default function BlogHubPage() {
               placeholder="Search articles..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full pl-9 pr-4 py-2 text-xs rounded-xl bg-white dark:bg-[#141b22] border border-card-border focus:outline-none focus:border-brand-purple transition-all font-semibold"
+              className="w-full pl-9 pr-4 py-1.5 text-xs rounded-xl bg-white dark:bg-[#141b22] border border-card-border focus:outline-none focus:border-brand-purple transition-all font-semibold"
             />
           </div>
         </div>

@@ -28,9 +28,9 @@
 
 ## 📖 Overview
 
-**PostIQ** is a full-stack creator intelligence web application that helps LinkedIn professionals grow faster using AI-driven analytics. It provides real-time post scoring, profile intelligence, hook generation, hashtag analysis, competitor auditing, content calendar planning, and trend discovery — all wrapped in a LinkedIn-inspired premium UI with full dark/light mode support.
+**PostIQ** is an independent, full-stack creator intelligence web application designed to help professionals structure and refine their drafts using AI-driven simulated analytics. It provides estimated post scoring, simulated profile intelligence, hook generation, hashtag analysis, competitor auditing, content calendar planning, and simulated trend discovery — all wrapped in a premium UI with full dark/light mode support.
 
-> ⚠️ **Disclaimer:** PostIQ is an independent platform and is **not affiliated with, endorsed by, or officially connected to LinkedIn Corporation or Microsoft** in any way. "LinkedIn" is a registered trademark of LinkedIn Corporation.
+> ⚠️ **Trademark & Advisory Disclaimer:** PostIQ is an independent advisory tool and is **not affiliated with, endorsed by, or officially connected to LinkedIn Corporation or Microsoft** in any way. "LinkedIn" is a registered trademark of LinkedIn Corporation. All scores, metrics (including virality scores, recruiter appeal index, simulated SSI, and engagement estimates), and suggestions are advisory simulations and estimates. They do not guarantee actual performance, reach, or profile outcomes on LinkedIn.
 
 ---
 
@@ -38,15 +38,15 @@
 
 | Module | Description |
 |---|---|
-| 🏠 **Dashboard** | Live feed composer with AI scoring, profile card, trending topics, creator metrics |
-| 🤖 **AI Post Analyzer** | Real-time post virality score with breakdown (hook, readability, emotional tone, formatting) |
-| 👤 **Profile Intelligence** | ATS compatibility score, SSI predictor, headline optimizer, recruiter visibility index |
-| ✍️ **Hook & Rewrite Studio** | AI hook generator with style presets, live readability scoring, and rewrite suggestions |
-| #️⃣ **Hashtag Intelligence** | Tag frequency analysis, niche relevance scoring, cluster grouping |
-| 📅 **Content Calendar** | Visual post scheduling heatmap with AI optimal time suggestions |
-| 👥 **Competitor Intel** | Profile comparison, engagement benchmarking, content strategy analysis |
-| 📈 **Trends Discovery** | Real-time LinkedIn topic trend monitoring with opportunity signals |
-| 📊 **Analytics & Reports** | Historical performance charts, growth trajectory, engagement rate tracking |
+| 🏠 **Dashboard** | Live feed composer with simulated AI scoring, profile preview, trending topics, and creator metrics |
+| 🤖 **AI Post Analyzer** | Real-time estimated post virality score with analytical breakdown (hook, readability, emotional tone, formatting) |
+| 👤 **Profile Intelligence** | Simulated ATS compatibility score, estimated SSI simulator, headline optimizer, and simulated recruiter visibility index |
+| ✍️ **Hook & Rewrite Studio** | AI hook generator with style presets, readability scoring, and rewrite suggestions |
+| #️⃣ **Hashtag Intelligence** | Tag frequency analysis, simulated relevance scoring, cluster grouping |
+| 📅 **Content Calendar** | Visual post scheduling heatmap with estimated optimal timing suggestions |
+| 👥 **Competitor Intel** | Profile comparison simulation, engagement benchmarking, and strategy analysis |
+| 📈 **Trends Discovery** | Topic trend monitoring simulation with opportunity signals |
+| 📊 **Analytics & Reports** | Simulated historical performance charts, growth trajectory, and engagement tracking |
 | 💳 **Billing & Plans** | Subscription management UI with plan comparison and payment history |
 | ⚙️ **Settings** | Profile configuration, notification preferences, API key management |
 
@@ -187,10 +187,10 @@ npm run start
 
 ## 🧠 How the Scoring Engine Works
 
-`src/lib/scoringEngine.ts` implements a deterministic content quality algorithm:
+`src/lib/scoringEngine.ts` implements a deterministic, heuristic-based advisory content quality algorithm to estimate draft performance:
 
 ```
-Post Score = weighted average of:
+Estimated Post Score = weighted average of:
   ├── Hook Strength       (25%) — First 10 words analyzed for curiosity, specificity, bold claim
   ├── Readability         (20%) — Sentence length, line breaks, avg word length
   ├── Emotional Resonance (20%) — Sentiment keywords, storytelling markers, vulnerability signals
@@ -200,7 +200,7 @@ Post Score = weighted average of:
   └── Trend Alignment     (5%)  — Topic freshness keywords
 ```
 
-Scores range from 0–100. Posts scoring **85+** trigger a confetti celebration animation.
+Heuristic scores range from 0–100. Drafts scoring **85+** trigger a confetti celebration animation in the UI. Note that these heuristic scores are for advisory/educational purposes only and do not connect to actual LinkedIn algorithms.
 
 ---
 
@@ -308,5 +308,5 @@ Designed & built by **[Datta Sable](https://dattasable.com)**
 ---
 
 <div align="center">
-  <sub>PostIQ is not affiliated with or endorsed by LinkedIn Corporation.</sub>
+  <sub>PostIQ is an independent tool and is not affiliated with, endorsed by, or sponsored by LinkedIn Corporation.</sub>
 </div>

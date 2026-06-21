@@ -1,7 +1,36 @@
-"use client";
-
 import React from 'react';
 import Link from 'next/link';
+import { Metadata } from 'next';
+
+export const metadata: Metadata = {
+  title: "About Datta Sable & PostIQ | LinkedIn Growth Platform",
+  description: "Learn about the story, mission, and independent development behind PostIQ — the AI-powered LinkedIn growth and creator intelligence platform.",
+  alternates: {
+    canonical: 'https://postiq.nexdial.io/about',
+  },
+  openGraph: {
+    title: "About Datta Sable & PostIQ | LinkedIn Growth Platform",
+    description: "Learn about the story, mission, and independent development behind PostIQ — the AI-powered LinkedIn growth and creator intelligence platform.",
+    url: "https://postiq.nexdial.io/about",
+    siteName: "PostIQ",
+    images: [
+      {
+        url: "/og-image.png",
+        width: 1200,
+        height: 630,
+        alt: "About Datta Sable & PostIQ",
+      },
+    ],
+    locale: "en_US",
+    type: "website",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "About Datta Sable & PostIQ | LinkedIn Growth Platform",
+    description: "Learn about the story, mission, and independent development behind PostIQ — the AI-powered LinkedIn growth and creator intelligence platform.",
+    images: ["/og-image.png"],
+  },
+};
 import { 
   Sparkles, 
   ArrowRight, 

@@ -16,16 +16,19 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
   metadataBase: new URL('https://postiq.nexdial.io'),
-  title: "PostIQ – AI-Powered Creator Intelligence for LinkedIn",
-  description: "PostIQ helps LinkedIn creators grow faster with AI post scoring, profile intelligence, hook generators, hashtag analytics, content calendar & competitor insights. Powered by AI at postiq.nexdial.io.",
+  title: "PostIQ - AI LinkedIn Growth Platform",
+  description: "Analyze LinkedIn posts, optimize profiles, discover trends, and grow your personal brand with AI-powered insights.",
+  alternates: {
+    canonical: 'https://postiq.nexdial.io',
+  },
   icons: {
     icon: "/postiq-icon.png",
     shortcut: "/postiq-icon.png",
     apple: "/postiq-icon.png",
   },
   openGraph: {
-    title: "PostIQ – AI-Powered Creator Intelligence for LinkedIn",
-    description: "PostIQ helps LinkedIn creators grow faster with AI post scoring, profile intelligence, hook generators, hashtag analytics, content calendar & competitor insights.",
+    title: "PostIQ - AI LinkedIn Growth Platform",
+    description: "Analyze LinkedIn posts, optimize profiles, discover trends, and grow your personal brand with AI-powered insights.",
     url: "https://postiq.nexdial.io",
     siteName: "PostIQ",
     images: [
@@ -33,7 +36,7 @@ export const metadata: Metadata = {
         url: "/og-image.png",
         width: 1200,
         height: 630,
-        alt: "PostIQ – AI-Powered Creator Intelligence for LinkedIn",
+        alt: "PostIQ - AI LinkedIn Growth Platform",
       },
     ],
     locale: "en_US",
@@ -41,8 +44,8 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "PostIQ – AI-Powered Creator Intelligence for LinkedIn",
-    description: "PostIQ helps LinkedIn creators grow faster with AI post scoring, profile intelligence, hook generators, hashtag analytics, content calendar & competitor insights.",
+    title: "PostIQ - AI LinkedIn Growth Platform",
+    description: "Analyze LinkedIn posts, optimize profiles, discover trends, and grow your personal brand with AI-powered insights.",
     images: ["/og-image.png"],
   },
 };

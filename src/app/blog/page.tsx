@@ -14,6 +14,7 @@ import {
   Award
 } from 'lucide-react';
 import Link from 'next/link';
+import { articlesData } from '@/lib/blogData';
 
 export default function BlogHubPage() {
   const [searchQuery, setSearchQuery] = useState('');
@@ -25,128 +26,26 @@ export default function BlogHubPage() {
   const categories = [
     "All",
     "LinkedIn Growth",
-    "Personal Branding",
-    "Content Strategy",
     "Profile Optimization",
-    "Creator Economy",
-    "AI & Marketing",
-    "SaaS Growth",
-    "Case Studies"
+    "Personal Branding",
+    "Creator Economy"
   ];
 
-  const articles = [
-    {
-      slug: "the-complete-linkedin-growth-playbook-2026",
-      title: "The Complete LinkedIn Growth Playbook for 2026",
-      desc: "Everything professionals, creators, founders, and job seekers need to know to build authority and grow visibility on LinkedIn. In this playbook, we'll break down the content patterns, engagement signals, and distribution factors that influence reach.",
-      author: "Datta Sable",
-      date: "June 20, 2026",
-      readTime: "12 min read",
-      difficulty: "Advanced",
-      category: "LinkedIn Growth",
-      badgeColor: "text-brand-purple bg-brand-purple/10 border-brand-purple/20",
-      featured: true
-    },
-    {
-      slug: "linkedin-algorithm-trends-2026",
-      title: "LinkedIn Algorithm Breakdown: What Drives Organic Feed Reach in 2026",
-      desc: "Most LinkedIn posts fail before they even get a chance to perform. In this guide, we'll break down the content patterns, engagement signals, and distribution factors that influence how posts spread across LinkedIn in 2026.",
-      author: "Datta Sable",
-      date: "June 18, 2026",
-      readTime: "6 min read",
-      difficulty: "Advanced",
-      category: "Content Strategy",
-      badgeColor: "text-brand-indigo bg-brand-indigo/10 border-brand-indigo/20"
-    },
-    {
-      slug: "ats-resume-keyword-optimization-guide",
-      title: "ATS and LinkedIn SEO: Optimizing Your Experiences Section for Recruiters",
-      desc: "Hiring systems rely on indexing algorithms. Discover the exact keyword structures and impact statements formulas to make your profile rank high in recruitment search results.",
-      author: "PostIQ Editorial Team",
-      date: "June 15, 2026",
-      readTime: "8 min read",
-      difficulty: "Beginner",
-      category: "Profile Optimization",
-      badgeColor: "text-brand-emerald bg-brand-emerald/10 border-brand-emerald/20"
-    },
-    {
-      slug: "saas-founder-profile-views-case-study",
-      title: "How a SaaS Founder Increased Profile Views by 220%",
-      desc: "Learn the step-by-step optimization strategy that transformed a quiet founder profile into a high-intent inbound lead generator. Contains full keyword breakdowns and positioning maps.",
-      author: "Datta Sable",
-      date: "June 10, 2026",
-      readTime: "7 min read",
-      difficulty: "Intermediate",
-      category: "Case Studies",
-      badgeColor: "text-brand-amber bg-brand-amber/10 border-brand-amber/20"
-    },
-    {
-      slug: "linkedin-hook-conversion-breakdown",
-      title: "From 500 to 15,000 Impressions: A LinkedIn Hook Breakdown",
-      desc: "Analyze before-and-after hook examples to see exactly why some posts trigger feed distribution loops while others fall completely flat. Disrupt scroll habits with smart formatting.",
-      author: "PostIQ Editorial Team",
-      date: "June 08, 2026",
-      readTime: "5 min read",
-      difficulty: "Beginner",
-      category: "LinkedIn Growth",
-      badgeColor: "text-brand-purple bg-brand-purple/10 border-brand-purple/20"
-    },
-    {
-      slug: "analyzing-10000-linkedin-posts",
-      title: "What We Learned Analyzing 10,000 LinkedIn Posts",
-      desc: "We crawled 10,000 simulated posts to identify formatting patterns, optimal whitespace ratios, and CTA strategies that consistently drive high-quality engagement.",
-      author: "Datta Sable",
-      date: "June 05, 2026",
-      readTime: "10 min read",
-      difficulty: "Advanced",
-      category: "Creator Economy",
-      badgeColor: "text-brand-indigo bg-brand-indigo/10 border-brand-indigo/20"
-    },
-    {
-      slug: "how-we-built-post-scoring-engine",
-      title: "How We Built a LinkedIn Post Scoring Engine",
-      desc: "Inside the engineering behind PostIQ. Learn how our weighted heuristic models evaluate scroll stopper scores and identify failure risks in content drafts.",
-      author: "Datta Sable",
-      date: "June 02, 2026",
-      readTime: "9 min read",
-      difficulty: "Advanced",
-      category: "AI & Marketing",
-      badgeColor: "text-brand-emerald bg-brand-emerald/10 border-brand-emerald/20"
-    },
-    {
-      slug: "inside-postiq-hook-framework",
-      title: "Inside PostIQ's Hook Quality Framework",
-      desc: "Discover the psychology behind our 8 hook categories and how Scroll Stopper checks predict initial impression velocity.",
-      author: "PostIQ Editorial Team",
-      date: "May 28, 2026",
-      readTime: "6 min read",
-      difficulty: "Intermediate",
-      category: "Content Strategy",
-      badgeColor: "text-brand-amber bg-brand-amber/10 border-brand-amber/20"
-    },
-    {
-      slug: "understanding-engagement-prediction-models",
-      title: "Understanding Engagement Prediction Models",
-      desc: "A developer guide explaining how heuristic scores translate to simulated reach estimations and how to interpret score deltas.",
-      author: "Datta Sable",
-      date: "May 25, 2026",
-      readTime: "8 min read",
-      difficulty: "Intermediate",
-      category: "AI & Marketing",
-      badgeColor: "text-brand-purple bg-brand-purple/10 border-brand-purple/20"
-    },
-    {
-      slug: "how-profile-intelligence-works",
-      title: "How Profile Intelligence Works",
-      desc: "Understand the algorithms behind LinkedIn SEO scoring, recruiter discoverability indices, and dream job skill matching.",
-      author: "Datta Sable",
-      date: "May 20, 2026",
-      readTime: "7 min read",
-      difficulty: "Beginner",
-      category: "Profile Optimization",
-      badgeColor: "text-brand-emerald bg-brand-emerald/10 border-brand-emerald/20"
+  const getBadgeColor = (category: string) => {
+    switch (category) {
+      case 'LinkedIn Growth':
+        return 'text-brand-purple bg-brand-purple/10 border-brand-purple/20';
+      case 'Profile Optimization':
+        return 'text-brand-emerald bg-brand-emerald/10 border-brand-emerald/20';
+      case 'Personal Branding':
+        return 'text-brand-indigo bg-brand-indigo/10 border-brand-indigo/20';
+      case 'Creator Economy':
+      default:
+        return 'text-brand-amber bg-brand-amber/10 border-brand-amber/20';
     }
-  ];
+  };
+
+  const articles = Object.values(articlesData);
 
   const featuredArticle = articles.find(art => art.featured) || articles[0];
   const regularArticles = articles.filter(art => !art.featured);
@@ -198,7 +97,7 @@ export default function BlogHubPage() {
           <div className="glass-panel rounded-3xl p-6 md:p-10 border border-brand-purple/20 bg-gradient-to-br from-brand-purple/[0.03] to-transparent flex flex-col md:flex-row gap-8 items-center justify-between">
             <div className="space-y-4 flex-1">
               <div className="flex flex-wrap items-center gap-2">
-                <span className="text-[9px] font-bold px-2 py-0.5 rounded-full bg-brand-purple/10 text-brand-purple border border-brand-purple/20 uppercase tracking-wider">
+                <span className={`text-[9px] font-bold px-2 py-0.5 rounded-full border uppercase tracking-wider ${getBadgeColor(featuredArticle.category)}`}>
                   {featuredArticle.category}
                 </span>
                 <span className="text-[9px] font-bold px-2 py-0.5 rounded-full bg-zinc-100 dark:bg-zinc-800 text-zinc-600 dark:text-zinc-400 uppercase tracking-wider">
@@ -286,7 +185,7 @@ export default function BlogHubPage() {
               >
                 <div className="space-y-4">
                   <div className="flex flex-wrap items-center gap-1.5">
-                    <span className={`text-[9px] font-bold px-2 py-0.5 rounded-full border uppercase tracking-wider inline-block ${art.badgeColor}`}>
+                    <span className={`text-[9px] font-bold px-2 py-0.5 rounded-full border uppercase tracking-wider inline-block ${getBadgeColor(art.category)}`}>
                       {art.category}
                     </span>
                     <span className="text-[9px] font-bold px-2 py-0.5 rounded-full bg-zinc-100 dark:bg-zinc-800 text-zinc-500 uppercase tracking-wider">
@@ -370,6 +269,41 @@ export default function BlogHubPage() {
         </div>
       </section>
 
+      {/* Blog Hub Schema */}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify({
+            "@context": "https://schema.org",
+            "@graph": [
+              {
+                "@type": "Blog",
+                "@id": "https://postiq.nexdial.io/blog/#blog",
+                "name": "PostIQ LinkedIn Growth Blog",
+                "url": "https://postiq.nexdial.io/blog",
+                "description": "Actionable guides on LinkedIn growth, personal branding, content strategy, profile optimization, and creator analytics."
+              },
+              {
+                "@type": "BreadcrumbList",
+                "itemListElement": [
+                  {
+                    "@type": "ListItem",
+                    "position": 1,
+                    "name": "Home",
+                    "item": "https://postiq.nexdial.io"
+                  },
+                  {
+                    "@type": "ListItem",
+                    "position": 2,
+                    "name": "Blog",
+                    "item": "https://postiq.nexdial.io/blog"
+                  }
+                ]
+              }
+            ]
+          })
+        }}
+      />
     </div>
   );
 }

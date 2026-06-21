@@ -108,11 +108,11 @@ export default function Home() {
           </div>
           
           <h1 className="text-4xl sm:text-6xl font-extrabold tracking-tight leading-[1.1] text-gradient">
-            Grow Faster on LinkedIn<br />With Creator Intelligence
+            AI-Powered LinkedIn Growth Platform
           </h1>
           
           <p className="text-lg md:text-xl text-zinc-600 dark:text-zinc-400 max-w-2xl mx-auto font-medium">
-            Optimize your content, strengthen your profile, discover trending opportunities, and build a personal brand that attracts recruiters, clients, and followers.
+            Optimize your content with our LinkedIn Post Analyzer, audit profile visibility via LinkedIn Profile Optimization, track keyword metrics with LinkedIn Analytics, and build a high-impact LinkedIn Content Strategy to accelerate your personal brand.
           </p>
 
           <div className="flex items-center justify-center gap-2 py-1 text-xs font-bold text-brand-purple tracking-wide uppercase">
@@ -188,7 +188,7 @@ export default function Home() {
       {/* How It Works Section */}
       <section className="w-full max-w-5xl px-4 py-12 space-y-12">
         <div className="text-center space-y-3">
-          <h2 className="text-3xl font-extrabold text-zinc-900 dark:text-white">How It Works</h2>
+          <h3 className="text-3xl font-extrabold text-zinc-900 dark:text-white">How It Works</h3>
           <p className="text-zinc-500 text-sm max-w-md mx-auto font-semibold">
             Optimizing your personal brand and content drafts takes three simple steps.
           </p>
@@ -211,13 +211,21 @@ export default function Home() {
 
       {/* Live Demo Widget Section */}
       <section id="demo" className="w-full max-w-5xl px-4 py-16 scroll-mt-16">
+        <div className="text-center space-y-3 mb-8">
+          <h2 className="text-3xl font-extrabold text-zinc-900 dark:text-white">
+            Analyze LinkedIn Posts
+          </h2>
+          <p className="text-zinc-500 text-sm max-w-md mx-auto font-semibold">
+            Evaluate your drafts with our advanced LinkedIn Post Analyzer to predict virality score and detect layout failure risks.
+          </p>
+        </div>
         <div className="glass-panel rounded-xl p-6 md:p-8 border border-card-border/70">
           <div className="flex flex-col lg:flex-row gap-8">
             {/* Input Box */}
             <div className="flex-1 space-y-4">
               <div className="flex justify-between items-center">
-                <h3 className="font-bold text-lg md:text-xl flex items-center gap-2">
-                  <Sparkles className="text-brand-purple" size={20} />
+                <h3 className="font-bold text-base md:text-lg flex items-center gap-2">
+                  <Sparkles className="text-brand-purple" size={16} />
                   Test the Live Post Scorer
                 </h3>
                 <span className="text-xs text-zinc-500 font-semibold">{demoContent.length} chars</span>
@@ -396,10 +404,10 @@ export default function Home() {
           <div className="absolute top-0 right-0 w-64 h-64 bg-brand-purple/5 blur-[80px] pointer-events-none"></div>
           <div className="max-w-2xl mx-auto space-y-4 mb-10">
             <h2 className="text-3xl font-extrabold tracking-tight">
-              Track Your Entire LinkedIn Presence
+              Build a Stronger Personal Brand
             </h2>
             <p className="text-sm text-zinc-600 dark:text-zinc-400 font-semibold">
-              PostIQ is not just an AI writing tool. It is your **LinkedIn Growth Operating System** that monitors, scores, and optimizes every dimension of your personal brand.
+              PostIQ is your unified personal branding tool and LinkedIn growth engine. Simulate your content score, check recruiter reach metrics, and audit keyword coverage to scale your professional footprint.
             </p>
           </div>
 
@@ -429,7 +437,7 @@ export default function Home() {
       {/* Comparison Section */}
       <section className="w-full max-w-4xl px-4 py-16 space-y-12">
         <div className="text-center space-y-3">
-          <h2 className="text-2xl md:text-3xl font-extrabold">A Smarter Approach to LinkedIn</h2>
+          <h3 className="text-2xl md:text-3xl font-extrabold">A Smarter Approach to LinkedIn</h3>
           <p className="text-zinc-500 text-sm max-w-sm mx-auto font-semibold">See how PostIQ compares to traditional content creation methods.</p>
         </div>
 
@@ -491,9 +499,9 @@ export default function Home() {
       {/* Features Grid */}
       <section id="features" className="w-full max-w-7xl px-4 py-20 space-y-12">
         <div className="text-center space-y-3">
-          <h2 className="text-3xl md:text-4xl font-extrabold text-zinc-900 dark:text-white">
+          <h3 className="text-3xl md:text-4xl font-extrabold text-zinc-900 dark:text-white">
             Supercharged Growth Tools
-          </h2>
+          </h3>
           <p className="text-zinc-600 dark:text-zinc-400 max-w-xl mx-auto text-sm md:text-base">
             Optimize every metric of your LinkedIn activity. Our analytics suite analyzes performance patterns to tell you exactly how to grow.
           </p>
@@ -517,23 +525,50 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Visual Product Showcase Section */}
+      {/* Visual Product Showcase Section - Optimize LinkedIn Profiles */}
       <section className="w-full max-w-5xl px-4 py-16 space-y-12">
         <div className="text-center space-y-3">
           <h2 className="text-2xl md:text-3xl font-extrabold text-zinc-900 dark:text-white font-sans">
-            Explore the Growth Engine
+            Optimize LinkedIn Profiles
           </h2>
-          <p className="text-zinc-600 dark:text-zinc-400 max-w-xl mx-auto text-xs font-semibold">
-            Take a closer look at the advanced creator intelligence workspace screens designed to accelerate your reach.
+          <p className="text-zinc-650 dark:text-zinc-400 max-w-xl mx-auto text-xs font-semibold">
+            Evaluate your search appearance potential and draft high-relevance experience blocks using our custom personal branding tool.
           </p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-stretch">
           {[
-            { title: "Estimated Content Intelligence", desc: "Gain immediate feedback on post structure. Optimize hooks, CTA placement, formatting styles, and get estimated reach metrics dynamically.", img: "/analyzer_preview.png" },
             { title: "Simulated Profile Optimizer", desc: "Audit your LinkedIn SEO score, identify missing key phrases, compare current vs. potential search visibility, and rewrite copy using optimized templates.", img: "/profile_intel_preview.png" },
-            { title: "Hook & Content Studio", desc: "Never stare at a blank screen again. Compare two hook structures side-by-side to predict CTR differences, filter swipe templates, and auto-generate draft frameworks.", img: "/hook_studio_preview.png" },
-            { title: "Simulated Trends Discovery", desc: "Capitalize on emerging industry conversations. Map out opportunity signals based on competition density vs. topic interest across your target demographic.", img: "/trends_preview.png" }
+            { title: "Hook & Content Studio", desc: "Never stare at a blank screen again. Compare two hook structures side-by-side to predict CTR differences, filter swipe templates, and auto-generate draft frameworks.", img: "/hook_studio_preview.png" }
+          ].map((item, idx) => (
+            <div key={idx} className="glass-panel rounded-3xl p-6 border border-card-border/60 flex flex-col justify-between space-y-4 hover:border-brand-purple/20 transition-all group">
+              <div className="space-y-2">
+                <h3 className="font-extrabold text-lg text-zinc-955 dark:text-zinc-50">{item.title}</h3>
+                <p className="text-xs text-zinc-500 font-semibold leading-relaxed">{item.desc}</p>
+              </div>
+              <div className="rounded-2xl border border-card-border overflow-hidden bg-black/5 dark:bg-black/25 relative aspect-[16/10] mt-4 flex items-center justify-center">
+                <img src={item.img} alt={item.title} className="w-full h-full object-cover group-hover:scale-[1.015] transition-all duration-300" />
+              </div>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      {/* Visual Product Showcase Section - Discover Trending Topics */}
+      <section className="w-full max-w-5xl px-4 py-16 space-y-12">
+        <div className="text-center space-y-3">
+          <h2 className="text-2xl md:text-3xl font-extrabold text-zinc-900 dark:text-white font-sans">
+            Discover Trending Topics
+          </h2>
+          <p className="text-zinc-650 dark:text-zinc-400 max-w-xl mx-auto text-xs font-semibold">
+            Track shifts in professional discussions and identify high-opportunity content angles before your competitors do.
+          </p>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-stretch">
+          {[
+            { title: "Simulated Trends Discovery", desc: "Capitalize on emerging industry conversations. Map out opportunity signals based on competition density vs. topic interest across your target demographic.", img: "/trends_preview.png" },
+            { title: "Estimated Content Intelligence", desc: "Gain immediate feedback on post structure. Optimize hooks, CTA placement, formatting styles, and get estimated reach metrics dynamically.", img: "/analyzer_preview.png" }
           ].map((item, idx) => (
             <div key={idx} className="glass-panel rounded-3xl p-6 border border-card-border/60 flex flex-col justify-between space-y-4 hover:border-brand-purple/20 transition-all group">
               <div className="space-y-2">
@@ -551,7 +586,7 @@ export default function Home() {
       {/* Pricing Section */}
       <section id="pricing" className="w-full max-w-6xl px-4 py-20 space-y-12">
         <div className="text-center space-y-4">
-          <h2 className="text-3xl md:text-4xl font-extrabold">Predictable Pricing</h2>
+          <h3 className="text-3xl md:text-4xl font-extrabold">Predictable Pricing</h3>
           <p className="text-zinc-500 text-sm max-w-md mx-auto">
             Choose the right plan for your professional journey. Switch billing cycles anytime.
           </p>
@@ -649,6 +684,52 @@ export default function Home() {
           </Link>
         </div>
       </section>
+
+      {/* Schema Markup */}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify({
+            "@context": "https://schema.org",
+            "@graph": [
+              {
+                "@type": "Organization",
+                "@id": "https://postiq.nexdial.io/#organization",
+                "name": "PostIQ",
+                "url": "https://postiq.nexdial.io",
+                "logo": "https://postiq.nexdial.io/postiq-icon.png",
+                "sameAs": [
+                  "https://www.linkedin.com/in/dattasable/",
+                  "https://x.com/sabledattatray"
+                ]
+              },
+              {
+                "@type": "WebSite",
+                "@id": "https://postiq.nexdial.io/#website",
+                "url": "https://postiq.nexdial.io",
+                "name": "PostIQ",
+                "description": "AI-Powered LinkedIn Growth Platform",
+                "publisher": {
+                  "@id": "https://postiq.nexdial.io/#organization"
+                }
+              },
+              {
+                "@type": "SoftwareApplication",
+                "@id": "https://postiq.nexdial.io/#software",
+                "name": "PostIQ",
+                "applicationCategory": "BusinessApplication",
+                "operatingSystem": "All",
+                "url": "https://postiq.nexdial.io",
+                "offers": {
+                  "@type": "Offer",
+                  "price": "0",
+                  "priceCurrency": "USD"
+                }
+              }
+            ]
+          })
+        }}
+      />
     </div>
   );
 }

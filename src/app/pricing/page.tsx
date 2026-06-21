@@ -355,6 +355,101 @@ export default function PricingPage() {
           ))}
         </div>
       </section>
+
+      {/* Pricing and FAQ Schema */}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify({
+            "@context": "https://schema.org",
+            "@graph": [
+              {
+                "@type": "SoftwareApplication",
+                "name": "PostIQ Pro",
+                "applicationCategory": "BusinessApplication",
+                "operatingSystem": "All",
+                "url": "https://postiq.nexdial.io/pricing",
+                "offers": {
+                  "@type": "AggregateOffer",
+                  "priceCurrency": "USD",
+                  "lowPrice": "19",
+                  "highPrice": "24",
+                  "offerCount": "2",
+                  "offers": [
+                    {
+                      "@type": "Offer",
+                      "name": "PostIQ Pro Monthly",
+                      "price": "24.00",
+                      "priceCurrency": "USD",
+                      "url": "https://postiq.nexdial.io/pricing"
+                    },
+                    {
+                      "@type": "Offer",
+                      "name": "PostIQ Pro Annual",
+                      "price": "19.00",
+                      "priceCurrency": "USD",
+                      "url": "https://postiq.nexdial.io/pricing"
+                    }
+                  ]
+                }
+              },
+              {
+                "@type": "FAQPage",
+                "mainEntity": [
+                  {
+                    "@type": "Question",
+                    "name": "How are engagement predictions calculated?",
+                    "acceptedAnswer": {
+                      "@type": "Answer",
+                      "text": "Predictions are generated using weighted heuristic scoring models that analyze hooks, paragraph formatting, emotional sentiment, and structural layout against historical virality patterns. These serve as directional estimates rather than guarantees."
+                    }
+                  },
+                  {
+                    "@type": "Question",
+                    "name": "Are recruiter scores real LinkedIn scores?",
+                    "acceptedAnswer": {
+                      "@type": "Answer",
+                      "text": "No. The Recruiter Appeal Index and other visibility scores are independent heuristics that simulate recruiter search behaviors based on keyword densities, profile completeness, and role alignments."
+                    }
+                  },
+                  {
+                    "@type": "Question",
+                    "name": "Does PostIQ connect directly to LinkedIn?",
+                    "acceptedAnswer": {
+                      "@type": "Answer",
+                      "text": "No. PostIQ is an independent analytics platform and does not connect to your LinkedIn profile. You paste draft content and profile copy manually. We do not automate actions or scrape LinkedIn to guarantee compliance with their Terms of Service."
+                    }
+                  },
+                  {
+                    "@type": "Question",
+                    "name": "Can I export my profile audits?",
+                    "acceptedAnswer": {
+                      "@type": "Answer",
+                      "text": "Yes. Pro users can export keywords audits, competitor gaps, and action checklists in CSV format for reference or team use."
+                    }
+                  },
+                  {
+                    "@type": "Question",
+                    "name": "How often are trend signals updated?",
+                    "acceptedAnswer": {
+                      "@type": "Answer",
+                      "text": "Simulated trend signals, opportunity scores, and topic lifecycle tags are updated daily to reflect fresh industry topics and momentum shifts."
+                    }
+                  },
+                  {
+                    "@type": "Question",
+                    "name": "Will PostIQ post content automatically?",
+                    "acceptedAnswer": {
+                      "@type": "Answer",
+                      "text": "No. PostIQ is purely an intelligence and advisory planner. You copy your finalized, optimized posts from the analyzer workspace and publish them manually to LinkedIn."
+                    }
+                  }
+                ]
+              }
+            ]
+          })
+        }}
+      />
     </div>
   );
 }

@@ -1,6 +1,4 @@
-"use client";
-
-import React, { use } from 'react';
+import React from 'react';
 import { 
   ArrowLeft, 
   Calendar, 
@@ -17,315 +15,55 @@ import {
   ChevronRight
 } from 'lucide-react';
 import Link from 'next/link';
+import { Metadata } from 'next';
 
 interface PageProps {
   params: Promise<{ slug: string }>;
 }
 
-export default function BlogPostPage({ params }: PageProps) {
-  const resolvedParams = use(params);
-  const slug = resolvedParams.slug;
+import { articlesData } from '@/lib/blogData';
 
-  const articlesData: Record<string, {
-    title: string;
-    author: string;
-    date: string;
-    readTime: string;
-    difficulty: string;
-    category: string;
-    intro: string;
-    content: React.ReactNode;
-    ctaText: string;
-    ctaLink: string;
-  }> = {
-    "the-complete-linkedin-growth-playbook-2026": {
-      title: "The Complete LinkedIn Growth Playbook for 2026",
-      author: "Datta Sable",
-      date: "June 20, 2026",
-      readTime: "12 min read",
-      difficulty: "Advanced",
-      category: "LinkedIn Growth",
-      intro: "Everything professionals, creators, founders, and job seekers need to know to build authority and grow visibility on LinkedIn. In this playbook, we'll break down the content patterns, engagement signals, and distribution factors that influence reach.",
-      content: (
-        <div className="space-y-4">
-          <p>
-            Scaling your visibility on LinkedIn in 2026 is no longer about raw publishing volume or hoping the algorithm favors your updates. With millions of creators competing for the same feed slots, success depends on understanding content structures, profile optimization, and user intent.
-          </p>
-          <h4 className="font-extrabold text-base text-zinc-800 dark:text-zinc-200 mt-6">1. Optimize the First 150 Characters (The Hook)</h4>
-          <p>
-            Your post's first two lines determine whether scrolling users will click "See More". If they don't click, the feed algorithm immediately flags the post as low-engagement and dampens its reach. Use pattern interrupts or statistical hooks to trigger this click.
-          </p>
-          <p>
-            To check if your hook is strong enough, try testing your drafts in the <Link href="/analyzer" className="text-brand-purple font-bold hover:underline">AI Post Analyzer</Link>. It will audit your hook opening against virality models before you publish.
-          </p>
-          <h4 className="font-extrabold text-base text-zinc-800 dark:text-zinc-200 mt-6">2. Adopt a Recruiter-Friendly SEO Structure</h4>
-          <p>
-            If you are looking for roles or consulting clients, your profile must act as a landing page. Recruiters use Boolean queries to find candidates. If you lack critical keywords in your headline or experience bullets, your profile remains hidden.
-          </p>
-          <p>
-            Audit your keyword density maps and search visibility targets using the <Link href="/profile-intelligence" className="text-brand-purple font-bold hover:underline">Profile Intelligence</Link> analyzer to find and close gaps instantly.
-          </p>
-          <h4 className="font-extrabold text-base text-zinc-800 dark:text-zinc-200 mt-6">3. Build Content Around Trending Opportunity Scores</h4>
-          <p>
-            Write about topics before they saturate. Our trends discoverer ranks industry trends by their opportunity score (search velocity vs. competitor density). Target emerging topics early to establish authority.
-          </p>
-        </div>
-      ),
-      ctaText: "Analyze Your First Draft Now",
-      ctaLink: "/analyzer"
+
+export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
+  const resolvedParams = await params;
+  const slug = resolvedParams.slug;
+  const article = articlesData[slug];
+
+  if (!article) {
+    return {
+      title: "Article Not Found | PostIQ",
+    };
+  }
+
+  return {
+    title: `${article.title} | PostIQ`,
+    description: article.intro,
+    alternates: {
+      canonical: `https://postiq.nexdial.io/blog/${slug}`,
     },
-    "linkedin-algorithm-trends-2026": {
-      title: "LinkedIn Algorithm Breakdown: What Drives Organic Feed Reach in 2026",
-      author: "Datta Sable",
-      date: "June 18, 2026",
-      readTime: "6 min read",
-      difficulty: "Advanced",
-      category: "Content Strategy",
-      intro: "Outbound link updates and immediate comment replies are key in the 2026 LinkedIn distribution engine. Here is the technical breakdown of how to adapt your sharing strategies.",
-      content: (
-        <div className="space-y-4">
-          <p>
-            Most LinkedIn posts fail before they even get a chance to perform. Creators write high-quality copy but trigger algorithm penalties that cut their seed audience reach by half.
-          </p>
-          <h4 className="font-extrabold text-base text-zinc-800 dark:text-zinc-200 mt-6">The Outbound Link Penalty</h4>
-          <p>
-            LinkedIn wants to keep users on their site. Pasting external links directly in the post body signals to the algorithm that users will leave. This lowers your initial feed weight.
-          </p>
-          <div className="p-4 rounded-2xl border border-brand-purple/10 bg-brand-purple/[0.01] my-4 space-y-2">
-            <h5 className="font-bold text-xs text-brand-purple flex items-center gap-1.5">
-              <CheckCircle2 size={13} className="text-brand-emerald" />
-              SaaS Action Step:
-            </h5>
-            <p className="text-xs text-zinc-500 font-medium">
-              Publish your post as text-only. Add your link in the comments, or direct readers to a link pinned in your profile's featured section.
-            </p>
-          </div>
-          <p>
-            You can verify your links and formatting score with the <Link href="/analyzer" className="text-brand-purple font-bold hover:underline">AI Post Analyzer</Link> to ensure formatting penalties are avoided.
-          </p>
-          <h4 className="font-extrabold text-base text-zinc-800 dark:text-zinc-200 mt-6">Immediate Conversational Loops</h4>
-          <p>
-            Feed distribution loops prioritize posts that generate comments within the first 60 minutes. Replying to comments quickly tells the algorithm the post is highly engaging, boosting organic impressions.
-          </p>
-        </div>
-      ),
-      ctaText: "Audit Post Formatting Risks",
-      ctaLink: "/analyzer"
+    openGraph: {
+      title: article.title,
+      description: article.intro,
+      url: `https://postiq.nexdial.io/blog/${slug}`,
+      type: "article",
+      images: [
+        {
+          url: "/og-image.png",
+          alt: article.title,
+        }
+      ]
     },
-    "ats-resume-keyword-optimization-guide": {
-      title: "ATS and LinkedIn SEO: Optimizing Your Experiences Section for Recruiters",
-      author: "PostIQ Editorial Team",
-      date: "June 15, 2026",
-      readTime: "8 min read",
-      difficulty: "Beginner",
-      category: "Profile Optimization",
-      intro: "Hiring lookup tools rely on indexing parameters. Make your experience statements rank high in active searches.",
-      content: (
-        <div className="space-y-4">
-          <p>
-            When recruiters look for talent, they use complex search terms on LinkedIn Recruiter. If your profile is missing these target phrases, you're invisible.
-          </p>
-          <h4 className="font-extrabold text-base text-zinc-800 dark:text-zinc-200 mt-6">The Experience statement XYZ Formula</h4>
-          <p>
-            Do not list passive tasks. Frame achievements using the Google X-Y-Z formula: "Accomplished [X] as measured by [Y], by doing [Z]."
-          </p>
-          <div className="p-4 rounded-2xl border border-brand-emerald/10 bg-brand-emerald/[0.01] my-4 text-xs text-zinc-500 font-semibold leading-relaxed">
-            <span className="text-brand-emerald font-bold block mb-1">X-Y-Z Example:</span>
-            "Improved dashboard processing speed by 40% (X) as measured by query response times (Y), by implementing PostgreSQL index adjustments (Z)."
-          </div>
-          <p>
-            Run a search presence audit on the <Link href="/profile-intelligence" className="text-brand-purple font-bold hover:underline">Profile Intel</Link> workspace to find out which high-volume industry keywords are missing from your bio.
-          </p>
-        </div>
-      ),
-      ctaText: "Check Your Profile SEO Score",
-      ctaLink: "/profile-intelligence"
-    },
-    "saas-founder-profile-views-case-study": {
-      title: "How a SaaS Founder Increased Profile Views by 220%",
-      author: "Datta Sable",
-      date: "June 10, 2026",
-      readTime: "7 min read",
-      difficulty: "Intermediate",
-      category: "Case Studies",
-      intro: "A detailed breakdown of profile tweaks, positioning adjustments, and content loops that drove 220% growth in high-value page visits.",
-      content: (
-        <div className="space-y-4">
-          <p>
-            In this case study, we document how a B2B SaaS founder optimized their personal profile to turn passive impressions into high-intent inbound inquiries.
-          </p>
-          <h4 className="font-extrabold text-base text-zinc-800 dark:text-zinc-200 mt-6">The Three Key Adjustments</h4>
-          <ul className="list-disc list-inside space-y-2 text-xs font-semibold text-zinc-600 dark:text-zinc-400">
-            <li><strong>Headline Rewrite:</strong> Changed from "Founder at SaaSCo" to "Building SaaS solutions that help marketing agencies automate reporting | Full-stack Engineer".</li>
-            <li><strong>Featured Section Pinning:</strong> Pinned a direct product demonstration link instead of generic articles.</li>
-            <li><strong>About Storytelling:</strong> Focused on the founder journey, problems solved, and client outcomes rather than feature lists.</li>
-          </ul>
-          <p>
-            To rewrite your headline and about sections, use the AI copy generator inside the <Link href="/profile-intelligence" className="text-brand-purple font-bold hover:underline">Profile Intelligence Rewrite Studio</Link>.
-          </p>
-        </div>
-      ),
-      ctaText: "Open Profile Rewrite Studio",
-      ctaLink: "/profile-intelligence"
-    },
-    "linkedin-hook-conversion-breakdown": {
-      title: "From 500 to 15,000 Impressions: A LinkedIn Hook Breakdown",
-      author: "PostIQ Editorial Team",
-      date: "June 08, 2026",
-      readTime: "5 min read",
-      difficulty: "Beginner",
-      category: "LinkedIn Growth",
-      intro: "The first 150 characters determine your reach. We analyze 5 viral posts to see how pattern interrupts drive impressions.",
-      content: (
-        <div className="space-y-4">
-          <p>
-            Writing the body of your post is only half the battle. If your opener fails to stop the scroll, users skip it. Here are two hook strategies:
-          </p>
-          <h4 className="font-extrabold text-base text-zinc-800 dark:text-zinc-200 mt-6">1. The Contrarian Hook</h4>
-          <p>
-            Interrupt expectations by challenging a common belief: "Stop trying to write daily LinkedIn updates. It's hurting your organic growth."
-          </p>
-          <h4 className="font-extrabold text-base text-zinc-800 dark:text-zinc-200 mt-6">2. The Curiosity Hook</h4>
-          <p>
-            Introduce a metric and hold back the secret: "90% of creators fail to grow on LinkedIn because they miss this simple system..."
-          </p>
-          <p>
-            Generate and test different templates in the <Link href="/hooks" className="text-brand-purple font-bold hover:underline">Hook Studio</Link> to compare their scroll stopper potential.
-          </p>
-        </div>
-      ),
-      ctaText: "Test Hooks Side-by-Side",
-      ctaLink: "/hooks"
-    },
-    "analyzing-10000-linkedin-posts": {
-      title: "What We Learned Analyzing 10,000 LinkedIn Posts",
-      author: "Datta Sable",
-      date: "June 05, 2026",
-      readTime: "10 min read",
-      difficulty: "Advanced",
-      category: "Creator Economy",
-      intro: "Data-driven research into length, emoji frequencies, reading level, and hook phrasing. Here is what the numbers say.",
-      content: (
-        <div className="space-y-4">
-          <p>
-            We analyzed 10,000 simulated post drafts to extract the core formatting and content patterns that drive engagement scores:
-          </p>
-          <h4 className="font-extrabold text-base text-zinc-800 dark:text-zinc-200 mt-6">Key Insights</h4>
-          <ul className="list-disc list-inside space-y-2 text-xs font-semibold text-zinc-600 dark:text-zinc-400">
-            <li><strong>Optimal Paragraph Height:</strong> Paragraphs containing 1-2 lines perform 40% better than blocks of text.</li>
-            <li><strong>Emoji Balance:</strong> Using 2-5 emojis maintains professional tone. Exceeding 8 emojis decreases authority ratings.</li>
-            <li><strong>Clear CTA:</strong> Posts ending with a single context-aware question receive double the reply comments.</li>
-          </ul>
-          <p>
-            Audit your drafts against these insights instantly on the <Link href="/analyzer" className="text-brand-purple font-bold hover:underline">AI Post Analyzer</Link>.
-          </p>
-        </div>
-      ),
-      ctaText: "Run Formatting Audit",
-      ctaLink: "/analyzer"
-    },
-    "how-we-built-post-scoring-engine": {
-      title: "How We Built a LinkedIn Post Scoring Engine",
-      author: "Datta Sable",
-      date: "June 02, 2026",
-      readTime: "9 min read",
-      difficulty: "Advanced",
-      category: "AI & Marketing",
-      intro: "An engineering deep dive into building content parsing systems, classifying hooks, and calculating simulated audience affinity indices.",
-      content: (
-        <div className="space-y-4">
-          <p>
-            Building the scoring engine for PostIQ involved translating professional writing guidelines into weighted heuristic algorithms.
-          </p>
-          <h4 className="font-extrabold text-base text-zinc-800 dark:text-zinc-200 mt-6">The Algorithm Blueprint</h4>
-          <p>
-            Our core evaluator parses raw string data to assess character lengths, spacing ratios, hashtag counts, and matches hooks against patterns of curiosity or authority. This calculates a **Scroll Stopper Score** that estimates scroll retention.
-          </p>
-          <p>
-            To understand how our engine weights each category, read the <Link href="/docs" className="text-brand-purple font-bold hover:underline">Scoring Methodology Documentation</Link>.
-          </p>
-        </div>
-      ),
-      ctaText: "Read Scoring Model Specs",
-      ctaLink: "/docs"
-    },
-    "inside-postiq-hook-framework": {
-      title: "Inside PostIQ's Hook Quality Framework",
-      author: "PostIQ Editorial Team",
-      date: "May 28, 2026",
-      readTime: "6 min read",
-      difficulty: "Intermediate",
-      category: "Content Strategy",
-      intro: "Why curiosity, contrarian, and authority hooks drive different audience actions, and how to balance them on your calendar.",
-      content: (
-        <div className="space-y-4">
-          <p>
-            Not all hooks are created equal. A curiosity hook works best for broad viral impressions, while an authority hook is essential to convert high-value buyers or recruiters.
-          </p>
-          <h4 className="font-extrabold text-base text-zinc-800 dark:text-zinc-200 mt-6">The 8 Key Hook Categories</h4>
-          <p>
-            PostIQ generates hooks across 8 key templates including Story, Statistic, Founder, and Contrarian. Keeping your content calendar balanced between these hooks maintains reader interest.
-          </p>
-          <p>
-            Generate templates matching your brand on the <Link href="/hooks" className="text-brand-purple font-bold hover:underline">Hook Studio</Link>.
-          </p>
-        </div>
-      ),
-      ctaText: "Open Hook Studio",
-      ctaLink: "/hooks"
-    },
-    "understanding-engagement-prediction-models": {
-      title: "Understanding Engagement Prediction Models",
-      author: "Datta Sable",
-      date: "May 25, 2026",
-      readTime: "8 min read",
-      difficulty: "Intermediate",
-      category: "AI & Marketing",
-      intro: "How scoring parameters like CTA strength, readability level, and trend weights compute simulated feed performance.",
-      content: (
-        <div className="space-y-4">
-          <p>
-            PostIQ computes reach predictions by evaluating how well your draft conforms to formatting guidelines, active industry trends, and emotional hooks.
-          </p>
-          <h4 className="font-extrabold text-base text-zinc-800 dark:text-zinc-200 mt-6">Simulated Feedback Loops</h4>
-          <p>
-            A high score indicates strong optimization against established readability models, helping you spot failure risks before you publish.
-          </p>
-          <p>
-            For a technical guide on programmatic integrations, check out the <Link href="/docs" className="text-brand-purple font-bold hover:underline">REST API Documentation</Link>.
-          </p>
-        </div>
-      ),
-      ctaText: "Check Developer Docs",
-      ctaLink: "/docs"
-    },
-    "how-profile-intelligence-works": {
-      title: "How Profile Intelligence Works",
-      author: "Datta Sable",
-      date: "May 20, 2026",
-      readTime: "7 min read",
-      difficulty: "Beginner",
-      category: "Profile Optimization",
-      intro: "A detailed guide to profile indexing, Boolean search terms match rates, and how keyword density maps to target roles.",
-      content: (
-        <div className="space-y-4">
-          <p>
-            Your LinkedIn profile is indexed by search engines. The Profile Intel engine evaluates your Headline, About summary, and Experiences list for search keyword coverage.
-          </p>
-          <h4 className="font-extrabold text-base text-zinc-800 dark:text-zinc-200 mt-6">Recruiter Visibility Index</h4>
-          <p>
-            This score simulates recruiter search matching, helping you identify missing high-volume skills in your profile copy.
-          </p>
-          <p>
-            To run a profile audit and generate optimized headlines, check the <Link href="/profile-intelligence" className="text-brand-purple font-bold hover:underline">Profile Intelligence</Link> section.
-          </p>
-        </div>
-      ),
-      ctaText: "Audit Your LinkedIn Profile",
-      ctaLink: "/profile-intelligence"
+    twitter: {
+      card: "summary_large_image",
+      title: article.title,
+      description: article.intro,
     }
   };
+}
 
+export default async function BlogPostPage({ params }: PageProps) {
+  const resolvedParams = await params;
+  const slug = resolvedParams.slug;
   const article = articlesData[slug];
 
   if (!article) {
@@ -386,9 +124,13 @@ export default function BlogPostPage({ params }: PageProps) {
             </h1>
             
             {/* Meta details */}
-            <div className="flex items-center gap-4 text-[10px] text-zinc-500 font-semibold border-b border-card-border/50 pb-4">
-              <span className="flex items-center gap-1"><User size={12} className="text-brand-purple" /> {article.author}</span>
-              <span className="flex items-center gap-1"><Calendar size={12} /> {article.date}</span>
+            <div className="flex flex-wrap items-center gap-4 text-[10px] text-zinc-500 font-semibold border-b border-card-border/50 pb-4">
+              <span className="flex items-center gap-1">
+                <User size={12} className="text-brand-purple" /> 
+                {article.author} ({article.authorRole})
+              </span>
+              <span className="flex items-center gap-1"><Calendar size={12} /> Published: {article.date}</span>
+              <span className="flex items-center gap-1"><Calendar size={12} className="opacity-70" /> Updated: {article.updatedDate}</span>
               <span className="flex items-center gap-1"><Clock size={12} /> {article.readTime}</span>
             </div>
           </div>
@@ -401,6 +143,20 @@ export default function BlogPostPage({ params }: PageProps) {
             {article.content}
           </div>
         </div>
+
+        {/* Author Bio Card for EEAT */}
+        {article.author === "Datta Sable" && (
+          <div className="glass-panel rounded-3xl p-6 border border-card-border/60 flex flex-col sm:flex-row items-center gap-4 bg-black/[0.01] dark:bg-white/[0.01] my-8 text-left">
+            <img src="/author.png" alt="Datta Sable" className="w-12 h-12 rounded-full object-cover border border-brand-purple/30 shrink-0" />
+            <div className="space-y-1">
+              <h4 className="font-extrabold text-sm text-zinc-900 dark:text-white">Datta Sable</h4>
+              <p className="text-[10px] text-zinc-500 font-semibold">Founder & Lead Architect, PostIQ</p>
+              <p className="text-[10px] text-zinc-650 dark:text-zinc-400 font-medium leading-relaxed font-semibold">
+                Datta Sable is the Founder & Lead Architect of PostIQ. As an active software builder and creator, he designs advisory frameworks to help professionals optimize content reach and LinkedIn search presence.
+              </p>
+            </div>
+          </div>
+        )}
 
         {/* Product-Led CTA */}
         <div className="glass-panel rounded-3xl p-8 bg-gradient-to-r from-brand-purple/5 to-brand-indigo/5 border-brand-purple/20 text-center space-y-4">
@@ -445,6 +201,60 @@ export default function BlogPostPage({ params }: PageProps) {
         </div>
 
       </section>
+
+      {/* Dynamic BlogPosting & BreadcrumbList Schema */}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify({
+            "@context": "https://schema.org",
+            "@graph": [
+              {
+                "@type": "BlogPosting",
+                "headline": article.title,
+                "description": article.intro,
+                "datePublished": article.date,
+                "dateModified": article.updatedDate,
+                "author": {
+                  "@type": "Person",
+                  "name": article.author,
+                  "jobTitle": article.authorRole,
+                  "url": "https://www.linkedin.com/in/dattasable/"
+                },
+                "publisher": {
+                  "@type": "Organization",
+                  "name": "PostIQ",
+                  "logo": "https://postiq.nexdial.io/postiq-icon.png"
+                },
+                "mainEntityOfPage": `https://postiq.nexdial.io/blog/${slug}`
+              },
+              {
+                "@type": "BreadcrumbList",
+                "itemListElement": [
+                  {
+                    "@type": "ListItem",
+                    "position": 1,
+                    "name": "Home",
+                    "item": "https://postiq.nexdial.io"
+                  },
+                  {
+                    "@type": "ListItem",
+                    "position": 2,
+                    "name": "Blog",
+                    "item": "https://postiq.nexdial.io/blog"
+                  },
+                  {
+                    "@type": "ListItem",
+                    "position": 3,
+                    "name": article.title,
+                    "item": `https://postiq.nexdial.io/blog/${slug}`
+                  }
+                ]
+              }
+            ]
+          })
+        }}
+      />
     </div>
   );
 }

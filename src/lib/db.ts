@@ -139,11 +139,11 @@ const generateDummyUsers = (): NetworkUser[] => {
     const bannerIdx = Math.floor(random() * 5);
     const presets = ["Aurora", "Sunset", "Oceanic", "Silk", "Cosmic"];
     const bannerPresetMap: Record<string, string> = {
-      Aurora: "gradient:bg-gradient-to-r from-emerald-400 via-teal-500 to-indigo-500",
-      Sunset: "gradient:bg-gradient-to-r from-pink-500 via-purple-600 to-indigo-700",
-      Oceanic: "gradient:bg-gradient-to-r from-cyan-500 via-blue-600 to-indigo-900",
-      Silk: "gradient:bg-gradient-to-r from-zinc-200 via-zinc-400 to-zinc-650",
-      Cosmic: "gradient:bg-gradient-to-r from-purple-800 via-indigo-900 to-black"
+      Aurora: "/banners/aurora.png",
+      Sunset: "/banners/sunset.png",
+      Oceanic: "/banners/oceanic.png",
+      Silk: "/banners/silk.png",
+      Cosmic: "/banners/cosmic.png"
     };
     const bannerUrl = bannerPresetMap[presets[bannerIdx]];
     
@@ -179,7 +179,7 @@ export const MOCK_NETWORK_USERS: NetworkUser[] = [
     name: "Datta Sable",
     headline: "Founder @ Nexdial & PostIQ | Lead Architect | SaaS Growth Strategist",
     avatarUrl: "/author.png",
-    bannerUrl: "gradient:bg-gradient-to-r from-purple-800 via-indigo-900 to-black",
+    bannerUrl: "/banners/cosmic.png",
     profileScore: 99,
     contentScore: 98,
     recruiterScore: 95,
@@ -200,7 +200,7 @@ export const MOCK_NETWORK_USERS: NetworkUser[] = [
     name: "Alex Rivera",
     headline: "Senior Product Manager @ FinTech Leader | Building AI-Driven Growth Engines | Product Consultant",
     avatarUrl: "",
-    bannerUrl: "gradient:bg-gradient-to-r from-emerald-400 via-teal-500 to-indigo-500",
+    bannerUrl: "/banners/aurora.png",
     profileScore: 72,
     contentScore: 78,
     recruiterScore: 70,
@@ -220,7 +220,7 @@ export const MOCK_NETWORK_USERS: NetworkUser[] = [
     name: "Sarah Chen",
     headline: "Lead PM & AI Architect | Ex-Google | Tech Writer (48k+ followers) | Speaking on AI UX & Career Growth",
     avatarUrl: "",
-    bannerUrl: "gradient:bg-gradient-to-r from-pink-500 via-purple-600 to-indigo-700",
+    bannerUrl: "/banners/sunset.png",
     profileScore: 94,
     contentScore: 91,
     recruiterScore: 88,
@@ -240,7 +240,7 @@ export const MOCK_NETWORK_USERS: NetworkUser[] = [
     name: "Marcus Vance",
     headline: "Founder & SaaS Growth Advisor | 102k+ LinkedIn Followers | Sharing PLG Loops & B2B Plays",
     avatarUrl: "",
-    bannerUrl: "gradient:bg-gradient-to-r from-cyan-500 via-blue-600 to-indigo-900",
+    bannerUrl: "/banners/oceanic.png",
     profileScore: 88,
     contentScore: 95,
     recruiterScore: 82,
@@ -260,7 +260,7 @@ export const MOCK_NETWORK_USERS: NetworkUser[] = [
     name: "Elena Rostova",
     headline: "Recruiting Director @ Global Scaleups | Career Architect | Hiring Tech Leaders, PMs & Engineers",
     avatarUrl: "",
-    bannerUrl: "gradient:bg-gradient-to-r from-purple-800 via-indigo-900 to-black",
+    bannerUrl: "/banners/cosmic.png",
     profileScore: 85,
     contentScore: 80,
     recruiterScore: 92,
@@ -280,7 +280,7 @@ export const MOCK_NETWORK_USERS: NetworkUser[] = [
     name: "Devin Patel",
     headline: "Full-Stack Engineer & Dev Rel | Creating Interactive Web Tools | Writing about Next.js & AI Eng",
     avatarUrl: "",
-    bannerUrl: "gradient:bg-gradient-to-r from-zinc-200 via-zinc-400 to-zinc-650",
+    bannerUrl: "/banners/silk.png",
     profileScore: 79,
     contentScore: 84,
     recruiterScore: 85,

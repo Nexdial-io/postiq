@@ -21,11 +21,11 @@ import { mockDb } from '@/lib/mockDb';
 import confetti from 'canvas-confetti';
 
 const BANNER_PRESETS = [
-  { name: 'Aurora', value: 'gradient:bg-gradient-to-r from-emerald-400 via-teal-500 to-indigo-500', colors: 'bg-gradient-to-r from-emerald-400 via-teal-500 to-indigo-500' },
-  { name: 'Sunset', value: 'gradient:bg-gradient-to-r from-pink-500 via-purple-600 to-indigo-700', colors: 'bg-gradient-to-r from-pink-500 via-purple-600 to-indigo-700' },
-  { name: 'Oceanic', value: 'gradient:bg-gradient-to-r from-cyan-500 via-blue-600 to-indigo-900', colors: 'bg-gradient-to-r from-cyan-500 via-blue-600 to-indigo-900' },
-  { name: 'Silk', value: 'gradient:bg-gradient-to-r from-zinc-200 via-zinc-400 to-zinc-650', colors: 'bg-gradient-to-r from-zinc-200 via-zinc-400 to-zinc-650' },
-  { name: 'Cosmic', value: 'gradient:bg-gradient-to-r from-purple-800 via-indigo-900 to-black', colors: 'bg-gradient-to-r from-purple-800 via-indigo-900 to-black' },
+  { name: 'Aurora', value: '/banners/aurora.png' },
+  { name: 'Sunset', value: '/banners/sunset.png' },
+  { name: 'Oceanic', value: '/banners/oceanic.png' },
+  { name: 'Silk', value: '/banners/silk.png' },
+  { name: 'Cosmic', value: '/banners/cosmic.png' },
 ];
 
 export default function SettingsPage() {
@@ -310,18 +310,20 @@ export default function SettingsPage() {
                     <div className="flex flex-wrap gap-2.5 pt-1">
                       {BANNER_PRESETS.map((preset) => {
                         const isSelected = bannerUrl === preset.value;
+                        const isGradient = preset.value.startsWith('gradient:');
                         return (
                           <button
                             key={preset.name}
                             type="button"
                             onClick={() => setBannerUrl(preset.value)}
-                            className={`w-7 h-7 rounded-lg ${preset.colors} transition-all relative ${
+                            className={`w-12 h-8 rounded-lg border border-card-border/60 transition-all relative ${
                               isSelected ? 'ring-2 ring-brand-purple ring-offset-2 dark:ring-offset-zinc-900 scale-105' : 'hover:scale-105 opacity-80 hover:opacity-100'
                             }`}
+                            style={!isGradient ? { backgroundImage: `url(${preset.value})`, backgroundSize: 'cover', backgroundPosition: 'center' } : {}}
                             title={preset.name}
                           >
                             {isSelected && (
-                              <span className="absolute inset-0 flex items-center justify-center text-white bg-black/20 rounded-lg">
+                              <span className="absolute inset-0 flex items-center justify-center text-white bg-black/40 rounded-lg">
                                 <Check size={11} className="stroke-[3px]" />
                               </span>
                             )}

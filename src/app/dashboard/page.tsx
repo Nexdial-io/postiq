@@ -404,9 +404,9 @@ export default function Dashboard() {
             <h4 className="text-xs font-bold text-zinc-900 dark:text-white mb-2">My pages</h4>
             <div className="space-y-0.5">
               {[
-                { name: 'Nexdial', initial: 'N', color: 'bg-blue-600' },
-                { name: 'Viral UX', initial: 'V', color: 'bg-rose-500' },
-                { name: 'Bigdata Automation', initial: 'B', color: 'bg-emerald-600' },
+                { name: 'Nexdial', initial: 'N', color: 'bg-blue-600', stat: '+12% Reach' },
+                { name: 'Viral UX', initial: 'V', color: 'bg-rose-500', stat: '+4 Followers' },
+                { name: 'Bigdata Automation', initial: 'B', color: 'bg-emerald-600', stat: '+8% Engage' },
               ].map((page) => (
                 <div
                   key={page.name}
@@ -415,9 +415,14 @@ export default function Dashboard() {
                   <div className={`w-7 h-7 rounded ${page.color} flex items-center justify-center text-white font-black text-xs shrink-0 shadow-sm`}>
                     {page.initial}
                   </div>
-                  <div className="flex-1 min-w-0">
-                    <p className="text-[10px] font-bold text-zinc-900 dark:text-white truncate group-hover:text-brand-purple transition-colors">{page.name}</p>
-                    <p className="text-[9px] text-zinc-500">Activity <span className="font-bold text-zinc-600 dark:text-zinc-300">0</span></p>
+                  <div className="flex-1 min-w-0 flex items-center justify-between">
+                    <div>
+                      <p className="text-[10px] font-bold text-zinc-900 dark:text-white truncate group-hover:text-brand-purple transition-colors">{page.name}</p>
+                      <p className="text-[8px] text-zinc-500">Business Page</p>
+                    </div>
+                    <span className="text-[9px] font-black text-brand-emerald bg-brand-emerald/10 px-1.5 py-0.5 rounded-md shrink-0">
+                      {page.stat}
+                    </span>
                   </div>
                 </div>
               ))}
@@ -442,22 +447,34 @@ export default function Dashboard() {
         {/* Quick Shortcuts — compact */}
         <div className="glass-panel rounded-xl border border-card-border/70 px-3 py-3">
           <h4 className="text-[9px] font-bold uppercase tracking-wider text-zinc-400 mb-1.5">Quick Shortcuts</h4>
-          <div className="grid grid-cols-2 gap-1">
-            <Link href="/analyzer" className="flex items-center gap-1.5 px-2 py-1.5 rounded-lg hover:bg-black/5 dark:hover:bg-white/5 text-zinc-700 dark:text-zinc-300 text-[10px] font-semibold">
-              <Sparkles size={11} className="text-brand-purple shrink-0" />
-              Post Scorer
+          <div className="grid grid-cols-2 gap-1.5">
+            <Link href="/analyzer" className="flex items-start gap-1.5 px-2 py-1.5 rounded-lg hover:bg-black/5 dark:hover:bg-white/5 text-zinc-700 dark:text-zinc-300 text-[10px] font-semibold transition-all">
+              <Sparkles size={11} className="text-brand-purple shrink-0 mt-0.5" />
+              <div>
+                <span className="block font-bold">Post Scorer</span>
+                <span className="text-[8px] text-zinc-500 font-semibold block">124 uses</span>
+              </div>
             </Link>
-            <Link href="/profile-intelligence" className="flex items-center gap-1.5 px-2 py-1.5 rounded-lg hover:bg-black/5 dark:hover:bg-white/5 text-zinc-700 dark:text-zinc-300 text-[10px] font-semibold">
-              <UserCheck size={11} className="text-brand-emerald shrink-0" />
-              Profile IQ
+            <Link href="/profile-intelligence" className="flex items-start gap-1.5 px-2 py-1.5 rounded-lg hover:bg-black/5 dark:hover:bg-white/5 text-zinc-700 dark:text-zinc-300 text-[10px] font-semibold transition-all">
+              <UserCheck size={11} className="text-brand-emerald shrink-0 mt-0.5" />
+              <div>
+                <span className="block font-bold">Profile IQ</span>
+                <span className="text-[8px] text-zinc-500 font-semibold block">34 uses</span>
+              </div>
             </Link>
-            <Link href="/hooks" className="flex items-center gap-1.5 px-2 py-1.5 rounded-lg hover:bg-black/5 dark:hover:bg-white/5 text-zinc-700 dark:text-zinc-300 text-[10px] font-semibold">
-              <PenTool size={11} className="text-brand-indigo shrink-0" />
-              Hook Studio
+            <Link href="/hooks" className="flex items-start gap-1.5 px-2 py-1.5 rounded-lg hover:bg-black/5 dark:hover:bg-white/5 text-zinc-700 dark:text-zinc-300 text-[10px] font-semibold transition-all">
+              <PenTool size={11} className="text-brand-indigo shrink-0 mt-0.5" />
+              <div>
+                <span className="block font-bold">Hook Studio</span>
+                <span className="text-[8px] text-zinc-500 font-semibold block">82 uses</span>
+              </div>
             </Link>
-            <Link href="/calendar" className="flex items-center gap-1.5 px-2 py-1.5 rounded-lg hover:bg-black/5 dark:hover:bg-white/5 text-zinc-700 dark:text-zinc-300 text-[10px] font-semibold">
-              <CalendarIcon size={11} className="text-brand-amber shrink-0" />
-              Calendar
+            <Link href="/calendar" className="flex items-start gap-1.5 px-2 py-1.5 rounded-lg hover:bg-black/5 dark:hover:bg-white/5 text-zinc-700 dark:text-zinc-300 text-[10px] font-semibold transition-all">
+              <CalendarIcon size={11} className="text-brand-amber shrink-0 mt-0.5" />
+              <div>
+                <span className="block font-bold">Calendar</span>
+                <span className="text-[8px] text-zinc-500 font-semibold block">45 scheduled</span>
+              </div>
             </Link>
           </div>
         </div>
@@ -518,39 +535,125 @@ export default function Dashboard() {
             const brandScoreVal = Math.round((contentScoreVal + profileScoreVal + networkScoreVal + trendScoreVal) / 4);
 
             return (
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-6 items-center">
-                {/* Circular brand score gauge */}
-                <div className="flex flex-col items-center justify-center p-4 border border-card-border/60 bg-black/5 dark:bg-black/10 rounded-2xl text-center space-y-2 shrink-0 select-none">
-                  <div className="relative w-24 h-24 flex items-center justify-center rounded-full border-[6px] border-brand-purple/20 bg-brand-purple/5 shadow-inner">
-                    <span className="text-3xl font-extrabold text-brand-purple">{brandScoreVal}</span>
-                    <span className="text-[10px] text-zinc-500 absolute bottom-3">/100</span>
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-6 items-stretch">
+                {/* Column 1: Overall Brand Score Circle + Last 30 Days Brand Score Trend */}
+                <div className="flex flex-col p-4 border border-card-border/60 bg-black/5 dark:bg-black/10 rounded-2xl text-center justify-between min-h-[250px] select-none">
+                  <div className="flex flex-col items-center">
+                    <div className="relative w-20 h-20 flex items-center justify-center rounded-full border-[5px] border-brand-purple/20 bg-brand-purple/5 shadow-inner">
+                      <span className="text-2xl font-extrabold text-brand-purple">{brandScoreVal}</span>
+                      <span className="text-[8px] text-zinc-500 absolute bottom-2">/100</span>
+                    </div>
+                    <div className="mt-2">
+                      <span className="text-[9px] uppercase font-black text-zinc-500 tracking-wider block">Overall Brand Score</span>
+                      <span className="text-[9px] text-brand-purple font-bold block mt-0.5">
+                        {brandScoreVal >= 85 ? "Authoritative Presence" : brandScoreVal >= 70 ? "Consistent Optimizer" : "Growth Required"}
+                      </span>
+                      <span className="text-[8px] text-zinc-500 font-semibold block mt-0.5 bg-brand-purple/5 px-2 py-0.5 rounded border border-brand-purple/10">
+                        {activeUser?.id === 'user-datta' ? "Top 3% of SaaS Founders" : "Top 5% of Creators"}
+                      </span>
+                    </div>
                   </div>
-                  <div>
-                    <span className="text-[10px] uppercase font-black text-zinc-500 tracking-wider">Overall Brand Score</span>
-                    <span className="text-[9px] text-brand-purple font-bold block mt-0.5">
-                      {brandScoreVal >= 85 ? "Authoritative Presence" : brandScoreVal >= 70 ? "Consistent Optimizer" : "Growth Required"}
-                    </span>
+                  
+                  {/* Brand Score Trend (Last 30 Days) Sparkline */}
+                  <div className="border-t border-card-border/40 pt-2.5">
+                    <span className="text-[8px] font-black uppercase text-zinc-450 tracking-wider block text-left mb-1.5">Brand Score Trend (30d)</span>
+                    <div className="relative h-12 w-full flex flex-col justify-end">
+                      <svg className="w-full h-8 overflow-visible" viewBox="0 0 100 30" preserveAspectRatio="none">
+                        <defs>
+                          <linearGradient id="chart-grad" x1="0" y1="0" x2="0" y2="1">
+                            <stop offset="0%" stopColor="#8b5cf6" stopOpacity="0.4" />
+                            <stop offset="100%" stopColor="#8b5cf6" stopOpacity="0.0" />
+                          </linearGradient>
+                        </defs>
+                        {/* Sparkline mapping points: 85 (y=25), 88 (y=20), 91 (y=15), 94 (y=10), 97 (y=5) */}
+                        <path d="M0 25 L 25 20 L 50 15 L 75 10 L 100 5" fill="none" stroke="#8b5cf6" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                        <path d="M0 25 L 25 20 L 50 15 L 75 10 L 100 5 L 100 30 L 0 30 Z" fill="url(#chart-grad)" />
+                        
+                        {/* Points */}
+                        <circle cx="0" cy="25" r="2" fill="#8b5cf6" />
+                        <circle cx="25" cy="20" r="2" fill="#8b5cf6" />
+                        <circle cx="50" cy="15" r="2" fill="#8b5cf6" />
+                        <circle cx="75" cy="10" r="2" fill="#8b5cf6" />
+                        <circle cx="100" cy="5" r="2" fill="#71B7FB" className="animate-pulse" />
+                      </svg>
+                      <div className="flex justify-between text-[8px] text-zinc-550 font-bold px-1 mt-1">
+                        <span>30d ago: 85</span>
+                        <span className="text-[#71B7FB]">Now: {brandScoreVal}</span>
+                      </div>
+                    </div>
                   </div>
                 </div>
 
-                {/* Subscores Grid */}
-                <div className="md:col-span-2 grid grid-cols-2 gap-3">
+                {/* Column 2: Brand Health Report Widget */}
+                <div className="flex flex-col p-4 border border-card-border/60 bg-black/5 dark:bg-black/10 rounded-2xl justify-between min-h-[250px] select-none">
+                  <div>
+                    <span className="text-[10px] uppercase font-black text-zinc-550 tracking-wider block mb-3 border-b border-card-border/40 pb-1.5">Brand Health Report</span>
+                    
+                    <div className="space-y-3">
+                      {/* Strengths */}
+                      <div>
+                        <span className="text-[8px] font-black uppercase text-brand-emerald tracking-wide block mb-1">Strengths</span>
+                        <ul className="space-y-1 text-[9px] font-bold text-zinc-700 dark:text-zinc-300">
+                          <li className="flex items-center gap-1.5 text-zinc-750 dark:text-zinc-250">
+                            <span className="text-brand-emerald text-[10px] shrink-0 font-extrabold">✓</span>
+                            <span>Authority</span>
+                          </li>
+                          <li className="flex items-center gap-1.5 text-zinc-750 dark:text-zinc-250">
+                            <span className="text-brand-emerald text-[10px] shrink-0 font-extrabold">✓</span>
+                            <span>Profile Optimization</span>
+                          </li>
+                          <li className="flex items-center gap-1.5 text-zinc-750 dark:text-zinc-250">
+                            <span className="text-brand-emerald text-[10px] shrink-0 font-extrabold">✓</span>
+                            <span>Trend Alignment</span>
+                          </li>
+                        </ul>
+                      </div>
+                      
+                      {/* Weaknesses */}
+                      <div>
+                        <span className="text-[8px] font-black uppercase text-brand-rose tracking-wide block mb-1">Opportunities to Improve</span>
+                        <ul className="space-y-1 text-[9px] font-bold text-zinc-700 dark:text-zinc-300">
+                          <li className="flex items-center gap-1.5 text-zinc-750 dark:text-zinc-250">
+                            <span className="text-brand-amber text-[10px] shrink-0 font-extrabold">⚠</span>
+                            <span>CTA Conversion</span>
+                          </li>
+                          <li className="flex items-center gap-1.5 text-zinc-750 dark:text-zinc-250">
+                            <span className="text-brand-amber text-[10px] shrink-0 font-extrabold">⚠</span>
+                            <span>Network Expansion</span>
+                          </li>
+                        </ul>
+                      </div>
+                    </div>
+                  </div>
+                  
+                  <div className="text-[8px] text-zinc-550 dark:text-zinc-450 font-semibold italic mt-2 leading-tight">
+                    Focus on weaknesses to push score past 98.
+                  </div>
+                </div>
+
+                {/* Column 3: Subscores Grid */}
+                <div className="grid grid-cols-1 gap-2.5 justify-between h-full">
                   {[
-                    { name: "Content Score", val: contentScoreVal, path: "/analyzer", color: "text-[#71B7FB] border-[#71B7FB]/20" },
-                    { name: "Profile Score", val: profileScoreVal, path: "/profile-intelligence", color: "text-brand-emerald border-brand-emerald/20" },
-                    { name: "Network Score", val: networkScoreVal, path: "/network", color: "text-brand-amber border-brand-amber/20" },
-                    { name: "Trend Score", val: trendScoreVal, path: "/trends", color: "text-brand-indigo border-brand-indigo/20" }
+                    { name: "Content Score", val: contentScoreVal, trend: "↑ 4", isUp: true, path: "/analyzer", color: "text-[#71B7FB] border-[#71B7FB]/20" },
+                    { name: "Profile Score", val: profileScoreVal, trend: "↑ 2", isUp: true, path: "/profile-intelligence", color: "text-brand-emerald border-brand-emerald/20" },
+                    { name: "Network Score", val: networkScoreVal, trend: "↓ 1", isUp: false, path: "/network", color: "text-brand-amber border-brand-amber/20" },
+                    { name: "Trend Score", val: trendScoreVal, trend: "↑ 6", isUp: true, path: "/trends", color: "text-brand-indigo border-brand-indigo/20" }
                   ].map((sub, idx) => (
                     <Link 
                       href={sub.path} 
                       key={idx}
-                      className="p-3 rounded-xl border border-card-border bg-[#f8f9fa] dark:bg-[#141b22] hover:border-brand-purple/40 hover:-translate-y-0.5 transition-all flex justify-between items-center group cursor-pointer"
+                      className="p-2.5 rounded-xl border border-card-border bg-[#f8f9fa] dark:bg-[#141b22] hover:border-brand-purple/45 hover:-translate-y-0.5 transition-all flex justify-between items-center group cursor-pointer"
                     >
-                      <div>
-                        <span className="text-[10px] font-bold text-zinc-500 block group-hover:text-brand-purple transition-colors">{sub.name}</span>
-                        <strong className={`text-lg font-black ${sub.color.split(" ")[0]} mt-0.5 block`}>{sub.val}</strong>
+                      <div className="flex-1 min-w-0">
+                        <span className="text-[9px] font-bold text-zinc-500 block group-hover:text-brand-purple transition-colors">{sub.name}</span>
+                        <div className="flex items-baseline gap-1.5 mt-0.5">
+                          <strong className={`text-base font-black ${sub.color.split(" ")[0]}`}>{sub.val}</strong>
+                          <span className={`text-[8px] font-black px-1.5 rounded-md ${sub.isUp ? 'bg-brand-emerald/10 text-brand-emerald' : 'bg-brand-rose/10 text-brand-rose'}`}>
+                            {sub.trend}
+                          </span>
+                        </div>
                       </div>
-                      <ChevronRight size={14} className="text-zinc-400 group-hover:text-brand-purple group-hover:translate-x-0.5 transition-all shrink-0" />
+                      <ChevronRight size={12} className="text-zinc-400 group-hover:text-brand-purple group-hover:translate-x-0.5 transition-all shrink-0" />
                     </Link>
                   ))}
                 </div>
@@ -609,9 +712,12 @@ export default function Dashboard() {
                       </Link>
                     </div>
                     
-                    <Link href={act.path} className="text-[10px] font-bold text-brand-purple flex items-center gap-0.5 opacity-0 group-hover:opacity-100 transition-opacity">
-                      Take Action
-                      <ChevronRight size={10} />
+                    <Link 
+                      href={act.path} 
+                      className="px-2.5 py-1 rounded-lg bg-brand-purple text-white text-[9px] font-black hover:opacity-90 transition-all shadow-sm shrink-0 flex items-center gap-0.5"
+                    >
+                      Fix Now
+                      <ChevronRight size={8} />
                     </Link>
                   </div>
 
@@ -988,6 +1094,44 @@ export default function Dashboard() {
       {/* ⚡ Column 3: News & creator tips — sticky right column on large screens, natural scroll on mobile */}
       <div className="lg:col-span-1 lg:sticky lg:top-[60px] lg:max-h-[calc(100vh-68px)] lg:overflow-y-auto space-y-3 pb-2 scrollbar-hide">
         
+        {/* AI Growth Coach */}
+        <div className="glass-panel rounded-2xl p-4 md:p-5 border border-brand-purple/35 bg-gradient-to-br from-brand-purple/[0.08] to-transparent space-y-3 relative overflow-hidden">
+          <div className="absolute top-0 right-0 w-24 h-24 bg-brand-purple/10 rounded-full blur-2xl pointer-events-none"></div>
+          
+          <div className="flex items-center gap-2 border-b border-card-border/40 pb-2">
+            <div className="relative">
+              <div className="w-6 h-6 rounded-full bg-brand-purple flex items-center justify-center text-white shrink-0">
+                <Sparkles size={12} className="animate-pulse" />
+              </div>
+              <span className="absolute bottom-0 right-0 w-2 h-2 bg-brand-emerald rounded-full border border-card-bg animate-ping"></span>
+              <span className="absolute bottom-0 right-0 w-2 h-2 bg-brand-emerald rounded-full border border-card-bg"></span>
+            </div>
+            <div>
+              <h3 className="font-extrabold text-xs text-zinc-900 dark:text-white leading-none">
+                AI Growth Coach
+              </h3>
+              <span className="text-[8px] text-brand-purple font-bold tracking-wide uppercase mt-0.5 block">Today's Recommendation</span>
+            </div>
+          </div>
+          
+          <p className="text-[10px] font-medium leading-relaxed text-zinc-650 dark:text-zinc-300">
+            Your profile is already optimized. The biggest opportunity this week is publishing <span className="font-bold text-zinc-900 dark:text-white">2 AI Agent related posts</span>.
+          </p>
+          
+          <div className="p-2.5 rounded-xl bg-brand-emerald/10 border border-brand-emerald/20 flex justify-between items-center">
+            <span className="text-[8px] font-bold text-zinc-500 uppercase">Expected Impact</span>
+            <span className="text-xs font-black text-brand-emerald">+22% Reach</span>
+          </div>
+
+          <button
+            onClick={() => handleInjectTopic("Generative AI Agents in B2B")}
+            className="w-full py-2 rounded-xl bg-brand-purple text-white text-[10px] font-black hover:opacity-90 transition-all flex items-center justify-center gap-1.5 shadow-md shadow-brand-purple/10"
+          >
+            <PenTool size={11} />
+            Write Coach Draft
+          </button>
+        </div>
+
         {/* Creator opportunities / Trending news */}
         <div className="glass-panel rounded-2xl p-4 md:p-5 border border-card-border/70 space-y-4">
           <h3 className="font-extrabold text-xs uppercase tracking-wider text-zinc-400 flex items-center gap-1">

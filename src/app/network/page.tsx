@@ -386,7 +386,15 @@ export default function NetworkPage() {
                   </div>
                 ))
               ) : (() => {
+                // Exclude the active user themselves from the discover hint
                 const discoverMatches = searchQuery ? discoverCreators.filter(creator => 
+                  creator.id !== activeUser?.id &&
+                  (creator.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+                  creator.headline.toLowerCase().includes(searchQuery.toLowerCase()))
+                ) : [];
+
+                // Check if the searched user is in pending invites
+                const pendingMatches = searchQuery ? pendingRequests.filter(creator =>
                   creator.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
                   creator.headline.toLowerCase().includes(searchQuery.toLowerCase())
                 ) : [];
@@ -400,7 +408,20 @@ export default function NetworkPage() {
                     <p className="text-xs text-zinc-500 max-w-sm mx-auto font-semibold">
                       {searchQuery ? "No creators matched your search query in connections." : "Discover and connect with other LinkedIn creators to start comparing analytics."}
                     </p>
-                    {searchQuery && discoverMatches.length > 0 ? (
+                    {searchQuery && pendingMatches.length > 0 ? (
+                      <div className="p-4 rounded-2xl border border-brand-emerald/20 bg-brand-emerald/[0.02] max-w-sm mx-auto space-y-3 mt-2 animate-in fade-in slide-in-from-bottom-2 duration-200">
+                        <p className="text-[10px] text-zinc-550 dark:text-zinc-400 leading-relaxed font-semibold">
+                          <strong className="text-zinc-900 dark:text-white">{pendingMatches[0].name}</strong> has already sent you a connection request! Accept it in <strong>Pending Invites</strong>.
+                        </p>
+                        <button 
+                          onClick={() => { setActiveTab('invites'); }}
+                          className="px-4 py-2 rounded-xl bg-brand-emerald text-white text-[10px] font-black hover:opacity-95 transition-all shadow-md shadow-brand-emerald/10 cursor-pointer w-full flex items-center justify-center gap-1"
+                        >
+                          <Check size={11} />
+                          View Pending Invites
+                        </button>
+                      </div>
+                    ) : searchQuery && discoverMatches.length > 0 ? (
                       <div className="p-4 rounded-2xl border border-brand-purple/20 bg-brand-purple/[0.02] max-w-sm mx-auto space-y-3 mt-2 animate-in fade-in slide-in-from-bottom-2 duration-200">
                         <p className="text-[10px] text-zinc-550 dark:text-zinc-400 leading-relaxed font-semibold">
                           We found <strong className="text-zinc-900 dark:text-white">{discoverMatches.length} matching creator(s)</strong> in the <strong>Discover Creators</strong> tab, including <strong>{discoverMatches[0].name}</strong>!
@@ -428,7 +449,7 @@ export default function NetworkPage() {
                         Discover Creators
                       </button>
                     )}
-                  </div>
+                   </div>
                 );
               })()}
             </div>
@@ -575,17 +596,49 @@ export default function NetworkPage() {
                     </div>
                   );
                 })
-              ) : (
-                <div className="glass-panel border border-card-border/75 rounded-2xl p-12 bg-card-bg text-center space-y-3">
-                  <div className="w-12 h-12 rounded-2xl bg-zinc-100 dark:bg-zinc-800 flex items-center justify-center mx-auto text-zinc-400">
-                    <Search size={20} />
+              ) : (() => {
+                // Check if the searched person is in pending invites (sent a request to you)
+                const pendingDiscoverMatches = searchQuery ? pendingRequests.filter(creator =>
+                  creator.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+                  creator.headline.toLowerCase().includes(searchQuery.toLowerCase())
+                ) : [];
+
+                // Check if it's the active user searching for themselves
+                const isSelf = searchQuery && activeUser &&
+                  (activeUser.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+                  activeUser.headline.toLowerCase().includes(searchQuery.toLowerCase()));
+
+                return (
+                  <div className="glass-panel border border-card-border/75 rounded-2xl p-12 bg-card-bg text-center space-y-3">
+                    <div className="w-12 h-12 rounded-2xl bg-zinc-100 dark:bg-zinc-800 flex items-center justify-center mx-auto text-zinc-400">
+                      <Search size={20} />
+                    </div>
+                    <h4 className="font-black text-sm">No creators found</h4>
+                    {isSelf ? (
+                      <p className="text-xs text-zinc-500 max-w-sm mx-auto font-semibold">
+                        That&apos;s you! You can&apos;t connect with yourself.
+                      </p>
+                    ) : pendingDiscoverMatches.length > 0 ? (
+                      <div className="space-y-3">
+                        <p className="text-xs text-zinc-500 max-w-sm mx-auto font-semibold">
+                          <strong className="text-zinc-800 dark:text-zinc-200">{pendingDiscoverMatches[0].name}</strong> already sent you a connection request!
+                        </p>
+                        <button
+                          onClick={() => setActiveTab('invites')}
+                          className="px-4 py-2 rounded-xl bg-brand-emerald text-white text-[10px] font-black hover:opacity-95 transition-all shadow-md shadow-brand-emerald/10 cursor-pointer flex items-center justify-center gap-1 mx-auto"
+                        >
+                          <Check size={11} />
+                          View Pending Invites
+                        </button>
+                      </div>
+                    ) : (
+                      <p className="text-xs text-zinc-500 max-w-sm mx-auto font-semibold">
+                        {searchQuery ? "No creators matched your search query." : "All registered PostIQ creators are already connected to your network!"}
+                      </p>
+                    )}
                   </div>
-                  <h4 className="font-black text-sm">No creators found</h4>
-                  <p className="text-xs text-zinc-500 max-w-sm mx-auto font-semibold">
-                    {searchQuery ? "No creators matched your search query." : "All registered PostIQ creators are already connected to your network!"}
-                  </p>
-                </div>
-              )}
+                );
+              })()}
             </div>
           )}
 

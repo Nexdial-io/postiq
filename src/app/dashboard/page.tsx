@@ -1268,7 +1268,7 @@ export default function Dashboard() {
 
               {/* GitHub */}
               <div className="flex items-start gap-3">
-                <GithubIcon className="text-brand-indigo shrink-0 mt-0.5" size={15} />
+                <GithubIcon className="text-brand-purple shrink-0 mt-0.5" size={15} />
                 <div className="flex-1 min-w-0">
                   <span className="text-[10px] text-zinc-400 dark:text-zinc-550 uppercase tracking-wider block">GitHub Profile</span>
                   {profile.contactInfo?.github ? (
@@ -1277,7 +1277,7 @@ export default function Dashboard() {
                         href={profile.contactInfo.github} 
                         target="_blank" 
                         rel="noopener noreferrer" 
-                        className="text-brand-indigo hover:underline truncate"
+                        className="text-brand-purple hover:underline truncate"
                       >
                         {profile.contactInfo.github}
                       </a>

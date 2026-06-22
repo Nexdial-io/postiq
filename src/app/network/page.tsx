@@ -387,14 +387,14 @@ export default function NetworkPage() {
                 ))
               ) : (() => {
                 // Exclude the active user themselves from the discover hint
-                const discoverMatches = searchQuery ? discoverCreators.filter(creator => 
+                const discoverMatches = searchQuery.length >= 3 ? discoverCreators.filter(creator => 
                   creator.id !== activeUser?.id &&
                   (creator.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
                   creator.headline.toLowerCase().includes(searchQuery.toLowerCase()))
                 ) : [];
 
-                // Check if the searched user is in pending invites
-                const pendingMatches = searchQuery ? pendingRequests.filter(creator =>
+                // Check if the searched user is in pending invites (min 3 chars to avoid false positives)
+                const pendingMatches = searchQuery.length >= 3 ? pendingRequests.filter(creator =>
                   creator.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
                   creator.headline.toLowerCase().includes(searchQuery.toLowerCase())
                 ) : [];
@@ -597,14 +597,14 @@ export default function NetworkPage() {
                   );
                 })
               ) : (() => {
-                // Check if the searched person is in pending invites (sent a request to you)
-                const pendingDiscoverMatches = searchQuery ? pendingRequests.filter(creator =>
+                // Check if the searched person is in pending invites (min 3 chars to avoid false positives)
+                const pendingDiscoverMatches = searchQuery.length >= 3 ? pendingRequests.filter(creator =>
                   creator.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
                   creator.headline.toLowerCase().includes(searchQuery.toLowerCase())
                 ) : [];
 
-                // Check if it's the active user searching for themselves
-                const isSelf = searchQuery && activeUser &&
+                // Check if it's the active user searching for themselves (min 3 chars)
+                const isSelf = searchQuery.length >= 3 && activeUser &&
                   (activeUser.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
                   activeUser.headline.toLowerCase().includes(searchQuery.toLowerCase()));
 

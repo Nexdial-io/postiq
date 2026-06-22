@@ -81,6 +81,8 @@ export default function NetworkPage() {
   
   // Comparative modal state
   const [compareTarget, setCompareTarget] = useState<NetworkUser | null>(null);
+  const [comparisonType, setComparisonType] = useState<'connection' | 'top_performer' | 'industry_avg' | 'network_avg'>('connection');
+  const [showShareReport, setShowShareReport] = useState(false);
   const [chartMounted, setChartMounted] = useState(false);
   const [selectedContactUser, setSelectedContactUser] = useState<NetworkUser | null>(null);
   const [copiedLink, setCopiedLink] = useState(false);
@@ -179,13 +181,13 @@ export default function NetworkPage() {
     : 0;
 
   // Data for Recharts Radar comparison
-  const getComparisonData = (target: NetworkUser) => {
+  const getComparisonData = (targetScores: { profile: number; content: number; recruiter: number; seo: number }) => {
     if (!activeUser) return [];
     return [
-      { subject: 'Profile Strength', You: activeUser.profileScore, Target: target.profileScore, fullMark: 100 },
-      { subject: 'Content Creator', You: activeUser.contentScore, Target: target.contentScore, fullMark: 100 },
-      { subject: 'Recruiter Appeal', You: activeUser.recruiterScore, Target: target.recruiterScore, fullMark: 100 },
-      { subject: 'SEO Position', You: activeUser.seoScore, Target: target.seoScore, fullMark: 100 },
+      { subject: 'Profile Strength', You: activeUser.profileScore, Target: targetScores.profile, fullMark: 100 },
+      { subject: 'Content Creator', You: activeUser.contentScore, Target: targetScores.content, fullMark: 100 },
+      { subject: 'Recruiter Appeal', You: activeUser.recruiterScore, Target: targetScores.recruiter, fullMark: 100 },
+      { subject: 'SEO Position', You: activeUser.seoScore, Target: targetScores.seo, fullMark: 100 },
     ];
   };
 
@@ -676,166 +678,436 @@ export default function NetworkPage() {
       </div>
 
       {/* COMPARISON MODAL */}
-      {compareTarget && activeUser && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4">
-          <div className="w-full max-w-3xl glass-panel border border-card-border bg-card-bg rounded-3xl shadow-2xl flex flex-col max-h-[90vh] overflow-hidden animate-in zoom-in-95 duration-250">
-            
-            {/* Modal Header */}
-            <div className="flex items-center justify-between border-b border-card-border p-5 shrink-0">
-              <div className="flex items-center gap-2">
-                <ArrowLeftRight size={16} className="text-brand-purple" />
-                <h3 className="font-black text-base text-zinc-900 dark:text-white">Creator Analytics Comparison</h3>
+      {compareTarget && activeUser && (() => {
+        // Resolve dynamic Target Metadata based on selection
+        const targetMeta = (() => {
+          switch (comparisonType) {
+            case 'top_performer':
+              return {
+                name: "Top Performer (Datta Sable)",
+                headline: "Founder @ Nexdial & PostIQ | B2B SaaS Growth Lead",
+                avatarUrl: "/author.png",
+                isVerified: true,
+                scores: { profile: 99, content: 98, recruiter: 95, seo: 97 }
+              };
+            case 'industry_avg':
+              return {
+                name: "Industry Average",
+                headline: "Average Benchmark of B2B SaaS Creators",
+                avatarUrl: "",
+                isVerified: false,
+                scores: { profile: 74, content: 71, recruiter: 68, seo: 72 }
+              };
+            case 'network_avg':
+              return {
+                name: "Your Network Average",
+                headline: "Average metrics of your connected peers",
+                avatarUrl: "",
+                isVerified: false,
+                scores: { profile: averageNetworkScore || 78, content: 80, recruiter: 76, seo: 79 }
+              };
+            case 'connection':
+            default:
+              return {
+                name: compareTarget.name,
+                headline: compareTarget.headline,
+                avatarUrl: compareTarget.avatarUrl,
+                isVerified: compareTarget.isVerified,
+                scores: { profile: compareTarget.profileScore, content: compareTarget.contentScore, recruiter: compareTarget.recruiterScore, seo: compareTarget.seoScore }
+              };
+          }
+        })();
+
+        // Calculate differences
+        const diffs = [
+          { name: 'Profile Strength', you: activeUser.profileScore, target: targetMeta.scores.profile, diff: activeUser.profileScore - targetMeta.scores.profile },
+          { name: 'Content Creator', you: activeUser.contentScore, target: targetMeta.scores.content, diff: activeUser.contentScore - targetMeta.scores.content },
+          { name: 'Recruiter Appeal', you: activeUser.recruiterScore, target: targetMeta.scores.recruiter, diff: activeUser.recruiterScore - targetMeta.scores.recruiter },
+          { name: 'SEO Position', you: activeUser.seoScore, target: targetMeta.scores.seo, diff: activeUser.seoScore - targetMeta.scores.seo },
+        ];
+
+        // Find biggest trailing gap
+        const sortedDiffs = [...diffs].sort((a, b) => a.diff - b.diff);
+        const biggestGapItem = sortedDiffs[0]; // most negative diff
+
+        // Dynamic AI Summary
+        const wins = diffs.filter(d => d.diff > 0).map(d => d.name);
+        const losses = diffs.filter(d => d.diff < 0).map(d => d.name);
+        let aiSummaryText = "";
+        if (wins.length > 0) {
+          aiSummaryText += `You're outperforming the target in ${wins.join(" and ")}. `;
+        } else {
+          aiSummaryText += `You are currently matching or trailing the target across the board. `;
+        }
+        if (losses.length > 0) {
+          aiSummaryText += `Your biggest growth opportunity is in ${biggestGapItem.name}. Improving this score can close the gap by up to ${Math.round(Math.abs(biggestGapItem.diff) * 1.5)}% of total reach capacity.`;
+        } else {
+          aiSummaryText += `You have secured a dominant personal brand score against this benchmark!`;
+        }
+
+        // Estimated Improvement Outcomes for Biggest Opportunity
+        const gapOutcome = (() => {
+          switch (biggestGapItem.name) {
+            case 'Profile Strength': return '+24% search visibility';
+            case 'Content Creator': return '+18% engagement lift';
+            case 'Recruiter Appeal': return '+15% recruiter response';
+            case 'SEO Position': return '+20% organic footprint';
+            default: return '+15% visibility boost';
+          }
+        })();
+
+        return (
+          <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4">
+            <div className="w-full max-w-4xl glass-panel border border-card-border bg-card-bg rounded-3xl shadow-2xl flex flex-col max-h-[92vh] overflow-hidden animate-in zoom-in-95 duration-250">
+              
+              {/* Modal Header */}
+              <div className="flex items-center justify-between border-b border-card-border p-5 shrink-0">
+                <div className="flex items-center gap-2">
+                  <ArrowLeftRight size={16} className="text-brand-purple" />
+                  <h3 className="font-black text-base text-zinc-900 dark:text-white">Creator Benchmark Comparison</h3>
+                </div>
+                <button 
+                  onClick={() => { setCompareTarget(null); setComparisonType('connection'); }} 
+                  className="p-1 rounded-lg border border-card-border text-zinc-455 hover:text-zinc-700 dark:hover:text-white hover:bg-black/5 dark:hover:bg-white/5 transition-all cursor-pointer"
+                >
+                  <X size={15} />
+                </button>
               </div>
+
+              {/* Modal Body */}
+              <div className="p-6 overflow-y-auto space-y-6 flex-grow scrollbar-hide">
+                
+                {/* Benchmark Selector */}
+                <div className="p-3 rounded-2xl border border-card-border bg-[#f8f9fa] dark:bg-[#141b22] flex flex-col sm:flex-row items-center justify-between gap-3 shrink-0">
+                  <span className="text-xs font-bold text-zinc-650 dark:text-zinc-350">
+                    Benchmark against:
+                  </span>
+                  <select
+                    value={comparisonType}
+                    onChange={(e: any) => setComparisonType(e.target.value)}
+                    className="bg-card-bg border border-card-border rounded-xl px-3 py-1.5 text-xs font-bold text-zinc-800 dark:text-white focus:outline-none focus:border-brand-purple cursor-pointer"
+                  >
+                    <option value="connection">Selected Connection ({compareTarget.name})</option>
+                    <option value="top_performer">Top Performer (Datta Sable)</option>
+                    <option value="industry_avg">Industry Average (SaaS Creators)</option>
+                    <option value="network_avg">Your Network Average</option>
+                  </select>
+                </div>
+
+                {/* AI Summary Box */}
+                <div className="p-4 rounded-2xl border border-brand-purple/20 bg-brand-purple/[0.02] space-y-2.5">
+                  <div className="flex items-center gap-1.5">
+                    <Sparkles size={14} className="text-brand-purple" />
+                    <h4 className="text-xs font-black uppercase tracking-wider text-zinc-905 dark:text-white">AI Summary</h4>
+                  </div>
+                  <p className="text-[11px] font-semibold leading-relaxed text-zinc-650 dark:text-zinc-350">
+                    {aiSummaryText}
+                  </p>
+                </div>
+
+                {/* Header Cards (Side by Side) */}
+                <div className="grid grid-cols-2 gap-4">
+                  {/* You Card */}
+                  <div className="p-4 rounded-2xl border border-brand-purple/20 bg-brand-purple/[0.02] flex items-center gap-3">
+                    <div className="w-10 h-10 rounded-xl bg-brand-purple flex items-center justify-center text-white font-black text-base uppercase shrink-0 overflow-hidden">
+                      {activeUser.avatarUrl ? (
+                        <img src={activeUser.avatarUrl} alt="You" className="w-full h-full object-cover" />
+                      ) : (
+                        activeUser.name[0]
+                      )}
+                    </div>
+                    <div className="truncate">
+                      <span className="text-[9px] uppercase font-black text-brand-purple tracking-wider">You</span>
+                      <h4 className="font-extrabold text-xs text-zinc-900 dark:text-white truncate flex items-center gap-1">
+                        {activeUser.name}
+                        {activeUser.isVerified && (
+                          <span className="inline-flex items-center justify-center bg-blue-600 dark:bg-blue-500 text-white rounded-full w-3 h-3 shrink-0 shadow-sm" title="Verified Creator">
+                            <svg className="w-1.5 h-1.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={4}>
+                              <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+                            </svg>
+                          </span>
+                        )}
+                      </h4>
+                      <p className="text-[10px] text-zinc-500 font-semibold truncate leading-none mt-1 font-bold">Overall Score: {Math.round((activeUser.profileScore + activeUser.contentScore + activeUser.recruiterScore + activeUser.seoScore)/4)}%</p>
+                    </div>
+                  </div>
+
+                  {/* Target Creator Card */}
+                  <div className="p-4 rounded-2xl border border-brand-emerald/20 bg-brand-emerald/[0.02] flex items-center gap-3">
+                    <div className="w-10 h-10 rounded-xl bg-brand-emerald flex items-center justify-center text-white font-black text-base uppercase shrink-0 overflow-hidden">
+                      {targetMeta.avatarUrl ? (
+                        <img src={targetMeta.avatarUrl} alt={targetMeta.name} className="w-full h-full object-cover" />
+                      ) : (
+                        targetMeta.name[0]
+                      )}
+                    </div>
+                    <div className="truncate">
+                      <span className="text-[9px] uppercase font-black text-brand-emerald tracking-wider">{comparisonType === 'connection' ? 'Connection' : 'Benchmark'}</span>
+                      <h4 className="font-extrabold text-xs text-zinc-900 dark:text-white truncate flex items-center gap-1">
+                        {targetMeta.name}
+                        {targetMeta.isVerified && (
+                          <span className="inline-flex items-center justify-center bg-blue-600 dark:bg-blue-500 text-white rounded-full w-3 h-3 shrink-0 shadow-sm" title="Verified Creator">
+                            <svg className="w-1.5 h-1.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={4}>
+                              <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+                            </svg>
+                          </span>
+                        )}
+                      </h4>
+                      <p className="text-[10px] text-zinc-500 font-semibold truncate leading-none mt-1 font-bold">Overall Score: {Math.round((targetMeta.scores.profile + targetMeta.scores.content + targetMeta.scores.recruiter + targetMeta.scores.seo)/4)}%</p>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Radar Chart & Diffs Row */}
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6 items-start">
+                  
+                  {/* Radar Chart Block */}
+                  {chartMounted && (
+                    <div className="p-4 rounded-2xl border border-card-border bg-black/5 dark:bg-black/20 flex flex-col items-center">
+                      <h4 className="font-bold text-xs text-zinc-500 dark:text-zinc-400 mb-2">Personal Brand Benchmark</h4>
+                      <div className="w-full h-64">
+                        <ResponsiveContainer width="100%" height="100%">
+                          <RadarChart cx="50%" cy="50%" outerRadius="75%" data={getComparisonData(targetMeta.scores)}>
+                            <PolarGrid stroke="#e4e4e7" strokeDasharray="3 3" opacity={0.3} />
+                            <PolarAngleAxis 
+                              dataKey="subject" 
+                              tick={{ fill: '#888888', fontSize: 9, fontWeight: '700' }} 
+                            />
+                            <PolarRadiusAxis 
+                              angle={30} 
+                              domain={[0, 100]} 
+                              tick={{ fill: '#888888', fontSize: 8 }} 
+                            />
+                            <Radar 
+                              name="You" 
+                              dataKey="You" 
+                              stroke="#8b5cf6" 
+                              fill="#8b5cf6" 
+                              fillOpacity={0.2} 
+                            />
+                            <Radar 
+                              name={targetMeta.name} 
+                              dataKey="Target" 
+                              stroke="#059669" 
+                              fill="#059669" 
+                              fillOpacity={0.2} 
+                            />
+                            <Tooltip 
+                              contentStyle={{ 
+                                backgroundColor: 'rgba(29, 34, 38, 0.95)', 
+                                border: '1px solid rgba(255, 255, 255, 0.1)', 
+                                borderRadius: '12px',
+                                color: '#ffffff',
+                                fontSize: '11px',
+                                fontWeight: '600'
+                              }} 
+                            />
+                            <Legend wrapperStyle={{ fontSize: '9px', fontWeight: 'bold' }} />
+                          </RadarChart>
+                        </ResponsiveContainer>
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Diffs Win/Loss Checklist */}
+                  <div className="space-y-4">
+                    <div className="p-4 rounded-2xl border border-card-border/75 bg-card-bg space-y-3">
+                      <h4 className="font-extrabold text-xs uppercase tracking-wider text-zinc-500">Metric Breakdown & Diffs</h4>
+                      <div className="space-y-2 font-bold text-[10px]">
+                        {diffs.map((d, i) => (
+                          <div key={i} className="flex justify-between items-center p-2 rounded-xl bg-black/5 dark:bg-white/5 border border-card-border/40">
+                            <span className="text-zinc-650 dark:text-zinc-400">{d.name}</span>
+                            <div className="flex items-center gap-3">
+                              <span className="text-zinc-500">You: <strong className="text-zinc-800 dark:text-zinc-200">{d.you}</strong> | Target: <strong className="text-zinc-800 dark:text-zinc-200">{d.target}</strong></span>
+                              <span className={`px-2 py-0.5 rounded font-black text-[9px] min-w-[45px] text-center ${
+                                d.diff > 0 ? 'bg-brand-emerald/10 text-brand-emerald' : 
+                                d.diff < 0 ? 'bg-brand-rose/10 text-brand-rose' : 'bg-zinc-200 dark:bg-zinc-800 text-zinc-500'
+                              }`}>
+                                {d.diff > 0 ? `↑ +${d.diff}` : d.diff < 0 ? `↓ ${d.diff}` : '0'}
+                              </span>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+
+                    {/* Biggest Opportunity Card */}
+                    {biggestGapItem.diff < 0 ? (
+                      <div className="p-4 rounded-2xl border border-brand-amber/35 bg-brand-amber/[0.02] space-y-2 relative overflow-hidden">
+                        <div className="absolute top-0 right-0 w-16 h-16 bg-brand-amber/5 rounded-full blur-xl pointer-events-none"></div>
+                        <span className="text-[8px] font-black uppercase bg-brand-amber/20 text-brand-amber border border-brand-amber/25 px-1.5 py-0.5 rounded">
+                          Biggest Opportunity
+                        </span>
+                        <h4 className="font-extrabold text-xs text-zinc-900 dark:text-white mt-1">
+                          {biggestGapItem.name}
+                        </h4>
+                        <p className="text-[10px] text-zinc-500 font-semibold">
+                          You trail by <span className="text-brand-rose font-extrabold">{Math.abs(biggestGapItem.diff)} points</span>. Fixing this area is estimated to deliver:
+                        </p>
+                        <div className="text-xs font-black text-brand-emerald">
+                          {gapOutcome}
+                        </div>
+                      </div>
+                    ) : (
+                      <div className="p-4 rounded-2xl border border-brand-emerald/35 bg-brand-emerald/[0.02] space-y-1">
+                        <span className="text-[8px] font-black uppercase bg-brand-emerald/20 text-brand-emerald px-1.5 py-0.5 rounded">
+                          Benchmark Domination
+                        </span>
+                        <p className="text-[10px] text-zinc-500 font-semibold mt-1">
+                          You are outperforming this target benchmark across all personal brand metrics!
+                        </p>
+                      </div>
+                    )}
+                  </div>
+                </div>
+
+                {/* Concrete Comparisons & Patterns */}
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  {/* Detailed Metric Comparison */}
+                  <div className="p-4 rounded-2xl border border-card-border/75 bg-card-bg space-y-3">
+                    <h4 className="font-extrabold text-xs flex items-center gap-1.5 text-zinc-900 dark:text-white border-b border-card-border/40 pb-1.5">
+                      <TrendingUp size={14} className="text-brand-purple" />
+                      Detailed Metric Insights
+                    </h4>
+                    <div className="space-y-2 text-[10px] leading-relaxed font-semibold text-zinc-550 dark:text-zinc-400">
+                      <div className="p-2.5 rounded-xl border border-card-border/50 bg-[#f8f9fa] dark:bg-[#141b22] flex justify-between items-center">
+                        <span>Average Post Hook Score:</span>
+                        <span className="font-extrabold text-zinc-800 dark:text-zinc-200">You: 72% | Target: 88%</span>
+                      </div>
+                      <div className="p-2.5 rounded-xl border border-card-border/50 bg-[#f8f9fa] dark:bg-[#141b22] flex justify-between items-center">
+                        <span>Experience Quantifiers:</span>
+                        <span className="font-extrabold text-zinc-800 dark:text-zinc-200">You: 1.8x metrics / post | Target: 4.8x metrics</span>
+                      </div>
+                      <div className="p-2.5 rounded-xl border border-card-border/50 bg-[#f8f9fa] dark:bg-[#141b22] flex justify-between items-center">
+                        <span>Post Paragraph Length:</span>
+                        <span className="font-extrabold text-zinc-800 dark:text-zinc-200">You: 3-4 sentences | Target: Spaced single sentences</span>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Patterns Worth Adopting */}
+                  <div className="p-4 rounded-2xl border border-card-border/75 bg-card-bg space-y-3">
+                    <h4 className="font-extrabold text-xs flex items-center gap-1.5 text-zinc-900 dark:text-white border-b border-card-border/40 pb-1.5">
+                      <Check size={14} className="text-brand-emerald" />
+                      Patterns Worth Adopting
+                    </h4>
+                    <ul className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-[9px] leading-relaxed font-semibold text-zinc-550 dark:text-zinc-400">
+                      <li className="flex items-center gap-1.5 p-2 rounded-xl bg-black/5 dark:bg-white/5 border border-card-border/30">
+                        <span className="text-brand-emerald font-extrabold">✓</span>
+                        <span>Uses 3 hashtags consistently</span>
+                      </li>
+                      <li className="flex items-center gap-1.5 p-2 rounded-xl bg-black/5 dark:bg-white/5 border border-card-border/30">
+                        <span className="text-brand-emerald font-extrabold">✓</span>
+                        <span>Posts between 8 AM and 10 AM</span>
+                      </li>
+                      <li className="flex items-center gap-1.5 p-2 rounded-xl bg-black/5 dark:bg-white/5 border border-card-border/30">
+                        <span className="text-brand-emerald font-extrabold">✓</span>
+                        <span>Uses question-based CTAs</span>
+                      </li>
+                      <li className="flex items-center gap-1.5 p-2 rounded-xl bg-black/5 dark:bg-white/5 border border-card-border/30">
+                        <span className="text-brand-emerald font-extrabold">✓</span>
+                        <span>Publishes 4 times per week</span>
+                      </li>
+                    </ul>
+                  </div>
+                </div>
+
+              </div>
+
+              {/* Modal Footer */}
+              <div className="border-t border-card-border p-4 bg-black/5 dark:bg-black/20 flex justify-between gap-2 shrink-0">
+                <button
+                  onClick={() => setShowShareReport(true)}
+                  className="px-4 py-2 rounded-xl border border-brand-purple hover:bg-brand-purple/5 text-brand-purple text-[10px] font-black transition-all cursor-pointer flex items-center gap-1"
+                >
+                  <Sparkles size={11} />
+                  Generate Shareable Report
+                </button>
+                <button 
+                  onClick={() => { setCompareTarget(null); setComparisonType('connection'); }}
+                  className="px-4 py-2 rounded-xl bg-brand-purple text-white text-[10px] font-black hover:opacity-95 transition-all shadow-md shadow-brand-purple/10 cursor-pointer"
+                >
+                  Close Comparison
+                </button>
+              </div>
+
+            </div>
+          </div>
+        );
+      })()}
+
+
+      {/* SHAREABLE REPORT MODAL */}
+      {showShareReport && activeUser && (
+        <div className="fixed inset-0 z-[60] flex items-center justify-center bg-black/75 backdrop-blur-md p-4">
+          <div className="w-full max-w-md glass-panel border border-brand-purple bg-card-bg rounded-3xl shadow-2xl p-6 space-y-6 animate-in zoom-in-95 duration-250">
+            <div className="flex justify-between items-center border-b border-card-border pb-3">
+              <h3 className="font-black text-sm text-zinc-900 dark:text-white flex items-center gap-1.5">
+                <Sparkles className="text-brand-purple" size={16} />
+                Personal Brand Benchmark Report
+              </h3>
               <button 
-                onClick={() => setCompareTarget(null)} 
+                onClick={() => { setShowShareReport(false); setCopiedLink(false); }} 
                 className="p-1 rounded-lg border border-card-border text-zinc-450 hover:text-zinc-700 dark:hover:text-white hover:bg-black/5 dark:hover:bg-white/5 transition-all cursor-pointer"
               >
-                <X size={15} />
+                <X size={14} />
               </button>
             </div>
 
-            {/* Modal Body */}
-            <div className="p-6 overflow-y-auto space-y-6 flex-grow">
+            {/* Mock Report Card to share */}
+            <div id="share-card" className="p-6 rounded-2xl border border-brand-purple/20 bg-gradient-to-br from-brand-purple/[0.05] to-transparent space-y-4 text-center select-none relative overflow-hidden">
+              <div className="absolute top-0 right-0 w-24 h-24 bg-brand-purple/10 rounded-full blur-2xl pointer-events-none"></div>
               
-              {/* Header Cards (Side by Side) */}
-              <div className="grid grid-cols-2 gap-4">
-                {/* You Card */}
-                <div className="p-4 rounded-2xl border border-brand-purple/20 bg-brand-purple/[0.02] flex items-center gap-3">
-                  <div className="w-10 h-10 rounded-xl bg-brand-purple flex items-center justify-center text-white font-black text-base uppercase shrink-0 overflow-hidden">
-                    {activeUser.avatarUrl ? (
-                      <img src={activeUser.avatarUrl} alt="You" className="w-full h-full object-cover" />
-                    ) : (
-                      activeUser.name[0]
-                    )}
-                  </div>
-                  <div className="truncate">
-                    <span className="text-[9px] uppercase font-black text-brand-purple tracking-wider">You</span>
-                    <h4 className="font-extrabold text-xs text-zinc-900 dark:text-white truncate flex items-center gap-1">
-                      {activeUser.name}
-                      {activeUser.isVerified && (
-                        <span className="inline-flex items-center justify-center bg-blue-600 dark:bg-blue-500 text-white rounded-full w-3 h-3 shrink-0 shadow-sm" title="Verified Creator">
-                          <svg className="w-1.5 h-1.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={4}>
-                            <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
-                          </svg>
-                        </span>
-                      )}
-                    </h4>
-                    <p className="text-[10px] text-zinc-500 font-semibold truncate leading-none mt-1 font-bold">Score: {activeUser.profileScore}%</p>
-                  </div>
-                </div>
+              <div className="space-y-1">
+                <strong className="text-[10px] uppercase tracking-wider text-brand-purple font-black">PostIQ Authority Ranking</strong>
+                <h4 className="text-lg font-black text-zinc-900 dark:text-white">{activeUser.name}</h4>
+                <p className="text-[9px] text-zinc-500 font-semibold">{activeUser.headline.split('|')[0]}</p>
+              </div>
 
-                {/* Target Creator Card */}
-                <div className="p-4 rounded-2xl border border-brand-emerald/20 bg-brand-emerald/[0.02] flex items-center gap-3">
-                  <div className="w-10 h-10 rounded-xl bg-brand-emerald flex items-center justify-center text-white font-black text-base uppercase shrink-0 overflow-hidden">
-                    {compareTarget.avatarUrl ? (
-                      <img src={compareTarget.avatarUrl} alt={compareTarget.name} className="w-full h-full object-cover" />
-                    ) : (
-                      compareTarget.name[0]
-                    )}
-                  </div>
-                  <div className="truncate">
-                    <span className="text-[9px] uppercase font-black text-brand-emerald tracking-wider">Connection</span>
-                    <h4 className="font-extrabold text-xs text-zinc-900 dark:text-white truncate flex items-center gap-1">
-                      {compareTarget.name}
-                      {compareTarget.isVerified && (
-                        <span className="inline-flex items-center justify-center bg-blue-600 dark:bg-blue-500 text-white rounded-full w-3 h-3 shrink-0 shadow-sm" title="Verified Creator">
-                          <svg className="w-1.5 h-1.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={4}>
-                            <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
-                          </svg>
-                        </span>
-                      )}
-                    </h4>
-                    <p className="text-[10px] text-zinc-500 font-semibold truncate leading-none mt-1 font-bold">Score: {compareTarget.profileScore}%</p>
-                  </div>
+              <div className="grid grid-cols-2 gap-3 pt-2">
+                <div className="p-3 rounded-xl bg-black/10 dark:bg-white/5 border border-card-border/50 text-center">
+                  <span className="text-[9px] uppercase font-black text-zinc-455 tracking-wider">Profile Strength</span>
+                  <span className="text-sm font-black text-brand-emerald block mt-0.5">Top 15%</span>
+                </div>
+                <div className="p-3 rounded-xl bg-black/10 dark:bg-white/5 border border-card-border/50 text-center">
+                  <span className="text-[9px] uppercase font-black text-zinc-455 tracking-wider">Recruiter Appeal</span>
+                  <span className="text-sm font-black text-brand-emerald block mt-0.5">Top 30%</span>
+                </div>
+                <div className="p-3 rounded-xl bg-black/10 dark:bg-white/5 border border-card-border/50 text-center">
+                  <span className="text-[9px] uppercase font-black text-zinc-455 tracking-wider">SEO Visibility</span>
+                  <span className="text-sm font-black text-[#71B7FB] block mt-0.5">Top 10%</span>
+                </div>
+                <div className="p-3 rounded-xl bg-black/10 dark:bg-white/5 border border-card-border/50 text-center">
+                  <span className="text-[9px] uppercase font-black text-zinc-455 tracking-wider">Overall Brand Score</span>
+                  <span className="text-sm font-black text-brand-purple block mt-0.5">{Math.round((activeUser.profileScore + activeUser.contentScore + activeUser.recruiterScore + activeUser.seoScore)/4)}%</span>
                 </div>
               </div>
 
-              {/* Radar Chart Section */}
-              {chartMounted && (
-                <div className="p-4 rounded-2xl border border-card-border bg-black/5 dark:bg-black/20 flex flex-col items-center">
-                  <h4 className="font-bold text-xs text-zinc-500 dark:text-zinc-400 mb-4">Competency Blueprint</h4>
-                  <div className="w-full h-64 md:h-80">
-                    <ResponsiveContainer width="100%" height="100%">
-                      <RadarChart cx="50%" cy="50%" outerRadius="80%" data={getComparisonData(compareTarget)}>
-                        <PolarGrid stroke="#e4e4e7" strokeDasharray="3 3" opacity={0.3} />
-                        <PolarAngleAxis 
-                          dataKey="subject" 
-                          tick={{ fill: '#888888', fontSize: 10, fontWeight: '700' }} 
-                        />
-                        <PolarRadiusAxis 
-                          angle={30} 
-                          domain={[0, 100]} 
-                          tick={{ fill: '#888888', fontSize: 8 }} 
-                        />
-                        <Radar 
-                          name="You" 
-                          dataKey="You" 
-                          stroke="#0a66c2" 
-                          fill="#0a66c2" 
-                          fillOpacity={0.25} 
-                        />
-                        <Radar 
-                          name={compareTarget.name} 
-                          dataKey="Target" 
-                          stroke="#059669" 
-                          fill="#059669" 
-                          fillOpacity={0.25} 
-                        />
-                        <Tooltip 
-                          contentStyle={{ 
-                            backgroundColor: 'rgba(29, 34, 38, 0.95)', 
-                            border: '1px solid rgba(255, 255, 255, 0.1)', 
-                            borderRadius: '12px',
-                            color: '#ffffff',
-                            fontSize: '11px',
-                            fontWeight: '600'
-                          }} 
-                        />
-                        <Legend wrapperStyle={{ fontSize: '10px', fontWeight: 'bold' }} />
-                      </RadarChart>
-                    </ResponsiveContainer>
-                  </div>
-                </div>
-              )}
-
-              {/* Dynamic Analytics Interpretation */}
-              <div className="p-4 rounded-2xl border border-card-border/75 bg-card-bg space-y-3">
-                <h4 className="font-extrabold text-xs flex items-center gap-1.5">
-                  <Sparkles size={14} className="text-brand-amber" />
-                  Creator Collaboration Insights
-                </h4>
-                <ul className="space-y-2 text-[11px] leading-relaxed font-semibold text-zinc-650 dark:text-zinc-350 font-bold">
-                  <li className="flex items-start gap-2">
-                    <span className="w-1.5 h-1.5 rounded-full bg-brand-purple mt-1.5 shrink-0"></span>
-                    <span>
-                      {activeUser.contentScore > compareTarget.contentScore 
-                        ? `Your Content Creator Score (${activeUser.contentScore}) leads by ${activeUser.contentScore - compareTarget.contentScore} points. Marcus's PLG loops or Sarah's editorial structure could benefit from your engaging writing formats.`
-                        : `Your Content Creator Score (${activeUser.contentScore}) is trailing ${compareTarget.name}'s (${compareTarget.contentScore}). Try referencing their formatting layouts or hooks to drive engagement.`}
-                    </span>
-                  </li>
-                  <li className="flex items-start gap-2">
-                    <span className="w-1.5 h-1.5 rounded-full bg-brand-emerald mt-1.5 shrink-0"></span>
-                    <span>
-                      {activeUser.seoScore > compareTarget.seoScore
-                        ? `You have a stronger LinkedIn SEO profile (${activeUser.seoScore} vs ${compareTarget.seoScore}), which helps in recruiter keyword visibility.`
-                        : `${compareTarget.name} has a highly optimized keyword footprint (${compareTarget.seoScore} vs your ${activeUser.seoScore}). Reviewing their Headline & Skills tags might uncover high-value search terms.`}
-                    </span>
-                  </li>
-                </ul>
-              </div>
-
+              <p className="text-[8px] text-zinc-500 font-semibold italic mt-2">Verified via PostIQ Personal Brand Intelligence Engine.</p>
             </div>
 
-            {/* Modal Footer */}
-            <div className="border-t border-card-border p-4 bg-black/5 dark:bg-black/20 flex justify-end gap-2 shrink-0">
+            <div className="space-y-3">
               <button 
-                onClick={() => setCompareTarget(null)}
-                className="px-4 py-2 rounded-xl bg-brand-purple text-white text-[10px] font-black hover:opacity-95 transition-all shadow-md shadow-brand-purple/10 cursor-pointer"
+                onClick={() => {
+                  navigator.clipboard.writeText(`https://postiq.ai/benchmark-report/${activeUser.id}`);
+                  setCopiedLink(true);
+                  setTimeout(() => setCopiedLink(false), 2000);
+                }}
+                className="w-full py-2.5 rounded-xl bg-brand-purple text-white text-[11px] font-black hover:opacity-90 transition-all flex items-center justify-center gap-1.5 shadow-md shadow-brand-purple/15 cursor-pointer"
               >
-                Close Comparison
+                {copiedLink ? <Check size={12} /> : <Copy size={12} />}
+                {copiedLink ? 'Copied Link!' : 'Copy Shareable Link'}
               </button>
-            </div>
 
+              <a 
+                href={`https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(`https://postiq.ai/benchmark-report/${activeUser.id}`)}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="w-full py-2.5 rounded-xl border border-card-border hover:border-brand-purple hover:bg-brand-purple/[0.01] text-zinc-755 dark:text-white text-[11px] font-black transition-all flex items-center justify-center gap-1.5 cursor-pointer"
+              >
+                Share to LinkedIn Feed
+              </a>
+            </div>
           </div>
         </div>
       )}

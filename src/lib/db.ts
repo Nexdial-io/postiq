@@ -455,16 +455,19 @@ export const networkDb = {
   getDiscoverCreators: (userId: string): NetworkUser[] => {
     const relations = networkDb.getRelations();
     
-    // Find all user IDs that have any relationship with the current user
-    const relatedIds = relations
-      .filter(r => r.senderId === userId || r.receiverId === userId)
+    // Find all user IDs that have an accepted relationship with the current user, or sent a pending request to the current user
+    const excludedIds = relations
+      .filter(r => 
+        (r.status === 'accepted' && (r.senderId === userId || r.receiverId === userId)) ||
+        (r.status === 'pending' && r.receiverId === userId)
+      )
       .map(r => r.senderId === userId ? r.receiverId : r.senderId);
 
     // Also exclude ourselves
-    const excludedIds = [...relatedIds, userId];
+    const finalExcluded = [...excludedIds, userId];
 
     return MOCK_NETWORK_USERS
-      .filter(u => !excludedIds.includes(u.id))
+      .filter(u => !finalExcluded.includes(u.id))
       .map(u => networkDb.getUserById(u.id))
       .filter((u): u is NetworkUser => u !== undefined);
   }
